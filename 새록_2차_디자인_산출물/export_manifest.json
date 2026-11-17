@@ -1,0 +1,31 @@
+{
+  "sourceUnchanged": true,
+  "screenCount": 32,
+  "date": "2026-11-02",
+  "images": [
+    {
+      "file": "01_user_flow.png",
+      "width": 2600,
+      "height": 2760,
+      "sha256": "247f5337c3876688197fc78b361d832c6f1b73dad530c8c8f7e5d5a8808a6224"
+    },
+    {
+      "file": "02_information_architecture.png",
+      "width": 2600,
+      "height": 2370,
+      "sha256": "e76e0327354cf0093cb67e4358a50a3371a1ed18ee489d28f4fe0627609263b5"
+    },
+    {
+      "file": "03_wireframes.png",
+      "width": 5600,
+      "height": 4050,
+      "sha256": "1ed0958ea84274a73493be0ea1bf4631431146fe9eaafc698a8792fd0a3bc5d8"
+    },
+    {
+      "file": "04_UIUX_portfolio.png",
+      "width": 2400,
+      "height": 4150,
+      "sha256": "b3d4923248cd55adc711f61aecf8aeefb8e3cb569c79630a17924a6ba24eccd5"
+    }
+  ]
+}
