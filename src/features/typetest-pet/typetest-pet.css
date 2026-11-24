@@ -1,43 +1,56 @@
-.tp-tag { align-self: flex-start; justify-self: start; display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px;
-  border-radius: 999px; background: var(--lavender); font-weight: 700; font-size: var(--fs-small); }
+/* 시안 17–27: 유형 테스트 · 기억 친구. 간격은 4px 단위 토큰, 굵기는 토큰만 쓴다. */
+.tp-tag { align-self: flex-start; justify-self: start; display: inline-flex; align-items: center; min-height: 40px; padding: 0 var(--sp-5);
+  border-radius: 999px; background: var(--lavender); font-weight: var(--w-medium); font-size: var(--fs-small); }
 .tp-lavender { background: var(--lavender); }
 .tp-peach { background: var(--peach); }
 .tp-mint { background: var(--mint); }
 
-.tp-option { min-height: 120px; padding: 20px 24px; border: 3px solid transparent; border-radius: var(--radius-lg);
-  display: grid; gap: 12px; justify-items: start; text-align: left; }
+/* 18–21 선택지 카드 */
+.tp-option { min-height: 120px; padding: var(--sp-5) var(--sp-6); border: 2px solid transparent; border-radius: var(--radius-lg);
+  display: grid; gap: var(--sp-3); justify-items: start; text-align: left; }
 .tp-option[aria-checked='true'] { border-color: var(--primary); }
-.tp-option strong { font-size: calc(var(--fs) + 2px); font-weight: 800; }
-.tp-letter { min-width: 56px; min-height: 40px; display: grid; place-items: center; padding: 0 12px;
-  border-radius: 999px; background: var(--surface); font-weight: 800; }
+.tp-option strong { font-size: calc(var(--fs) + 2px); font-weight: var(--w-bold); }
+.tp-letter { min-width: 56px; min-height: 40px; display: grid; place-items: center; padding: 0 var(--sp-3);
+  border-radius: 999px; background: var(--surface); font-weight: var(--w-bold); }
 
-.tp-intro { display: flex; gap: 16px; align-items: center; }
-.tp-intro strong { font-size: calc(var(--fs) + 2px); line-height: 1.4; }
+/* 17 안내 카드: 캐릭터 왼쪽 · 문장 오른쪽 */
+.tp-intro { display: flex; gap: var(--sp-4); align-items: center; }
+.tp-intro strong { font-size: calc(var(--fs) + 2px); line-height: 1.4; font-weight: var(--w-bold); }
 
-.tp-pics { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
-.tp-pics li { display: flex; align-items: center; gap: 20px; font-size: calc(var(--fs) + 2px); }
-
-.tp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.tp-pick { min-height: 112px; display: grid; justify-items: center; align-content: center; gap: 6px;
-  border-radius: var(--radius); border: 3px solid var(--line); background: var(--surface); }
+/* 22–23 그림 카드 */
+.tp-pics { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-4); }
+.tp-pics li { display: flex; align-items: center; gap: var(--sp-5); font-size: calc(var(--fs) + 2px); }
+.tp-pics li svg, .tp-pick svg { color: var(--primary); }
+.tp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.tp-pick { min-height: 112px; display: grid; justify-items: center; align-content: center; gap: var(--sp-2);
+  border-radius: var(--radius); border: 2px solid var(--line); background: var(--surface); }
 .tp-pick.on { border-color: var(--primary); background: var(--lavender-soft); }
-.tp-pick.seen { box-shadow: 0 0 0 4px var(--mint) inset; }
+.tp-pick.seen { outline: 4px solid var(--mint); outline-offset: -6px; }
 
-.tp-code { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+/* 24 유형 코드 네 칸 */
+.tp-code { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-3); }
 .tp-code span { aspect-ratio: 1.15; display: grid; place-items: center; border-radius: var(--radius);
-  background: var(--lavender); font-size: calc(var(--fs-title) + 12px); font-weight: 800; }
-.tp-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: calc(var(--fs) + 2px); }
+  background: var(--lavender); font-size: calc(var(--fs-title) + 12px); font-weight: var(--w-bold); }
+.tp-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); font-size: calc(var(--fs) + 2px); }
 
-.tp-pet { width: 100%; min-height: 124px; padding: 12px 20px 12px 12px; display: flex; align-items: center; gap: 16px;
-  border: 3px solid transparent; border-radius: var(--radius-lg); text-align: left; }
+/* 25 펫 고르기 */
+.tp-pet { width: 100%; min-height: 124px; padding: var(--sp-3) var(--sp-5) var(--sp-3) var(--sp-3); display: flex; align-items: center; gap: var(--sp-4);
+  border: 2px solid transparent; border-radius: var(--radius-lg); text-align: left; }
 .tp-pet[aria-checked='true'] { border-color: var(--primary); }
-.tp-pet > span { display: grid; gap: 4px; min-width: 0; }
-.tp-pet strong { font-size: calc(var(--fs) + 4px); font-weight: 800; }
+.tp-pet > span { display: grid; gap: var(--sp-1); min-width: 0; }
+.tp-pet strong { font-size: calc(var(--fs) + 4px); font-weight: var(--w-bold); }
 
-.tp-stage { display: grid; justify-items: center; gap: 10px; padding: 8px 0; text-align: center; }
-.tp-pill { min-height: 44px; padding: 0 24px; display: inline-flex; align-items: center; border-radius: 999px;
-  background: var(--surface); font-weight: 700; }
-.tp-seeds { font-size: calc(var(--fs) + 6px); font-weight: 800; }
+/* 26–27 펫 무대 */
+.tp-stage { display: grid; justify-items: center; gap: var(--sp-3); padding: var(--sp-2) 0; text-align: center; }
+.tp-pill { min-height: 44px; padding: 0 var(--sp-6); display: inline-flex; align-items: center; border-radius: 999px;
+  background: var(--surface); font-weight: var(--w-medium); font-variant-numeric: tabular-nums; }
+.tp-name { font-size: calc(var(--fs) + 6px); font-weight: var(--w-bold); }
+
+/* 씨앗 칩: 새록의 표시. 씨앗 개수를 보여 줄 때 늘 같은 모양으로 쓴다 */
+.tp-seed { display: inline-flex; align-items: center; gap: var(--sp-2); font-size: calc(var(--fs) + 6px); font-weight: var(--w-bold);
+  font-variant-numeric: tabular-nums; }
+.tp-seed svg { color: var(--primary); }
+.tp-count { font-variant-numeric: tabular-nums; }
 
 @media (min-width: 768px) {
   .tp-pets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
