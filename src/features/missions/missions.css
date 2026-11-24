@@ -1,26 +1,32 @@
+/* 미션 · 출석 달력. 출석한 날은 한 가지 표시(옅은 테마 배경 + 체크)만 쓴다 */
+.mission-tag { justify-self: start; align-self: flex-start; display: inline-flex; align-items: center; min-height: 40px; padding: 0 var(--sp-4);
+  border-radius: 999px; background: var(--lavender-soft); font-size: var(--fs-small); font-weight: var(--w-medium); }
+.mission-head { display: grid; gap: var(--sp-1); }
 .mission-layout { align-items: start; }
+.mission-h { font-size: calc(var(--fs) + 2px); font-weight: var(--w-bold); }
+.mission-streak { font-variant-numeric: tabular-nums; }
+.mission-streak b { font-size: calc(var(--fs) * 2); font-weight: var(--w-bold); line-height: 1.1; }
 .mission-month {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
-  text-align: center;
-}
-.mission-month h2 { font-size: calc(var(--fs) + 3px); }
-.mission-month .icon-btn { min-width: 36px; height: 40px; padding-inline: 8px; }
-.mission-month .icon-btn:disabled { opacity: .4; cursor: default; }
-.mission-next svg { transform: rotate(180deg); }
-.mission-calendar {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px;
+  gap: var(--sp-2);
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
-.mission-day { position: relative; display: grid; place-items: center; min-height: 36px; border: 1px solid transparent; border-radius: 8px; }
-.mission-day[data-attended='true'] { background: var(--lavender-soft); color: var(--primary); font-weight: 700; }
+.mission-month .icon-btn { min-width: 40px; height: 40px; padding-inline: var(--sp-2); box-shadow: none; background: var(--lavender-soft); }
+.mission-month .icon-btn:disabled { opacity: .4; cursor: default; }
+.mission-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--sp-1);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.mission-day { position: relative; display: grid; place-items: center; min-height: 40px; border: 2px solid transparent; border-radius: var(--radius-sm); }
+.mission-day[data-attended='true'] { background: var(--lavender-soft); color: var(--primary); font-weight: var(--w-bold); }
 .mission-day[aria-current='date'] { border-color: var(--primary); }
-.mission-day svg { position: absolute; top: 1px; right: 0; }
+.mission-day svg { position: absolute; top: 2px; right: 2px; }
 @media (max-width: 480px) {
-  .mission-layout .card { padding: 16px; }
+  .mission-layout .card { padding: var(--sp-4); }
 }
