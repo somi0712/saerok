@@ -1,14 +1,15 @@
 # 새록
 
-**나만의 기억 방법을 배우고, 기억 친구와 함께 작은 실천을 이어가는 시니어 기억 연습 앱.** 팀 휴즈니스.
+**나만의 기억 방법을 배우고 생활에서 써 보는 시니어 기억 연습 웹사이트.** 팀 휴즈니스.
 
-- 배포: https://saerok-lyart.vercel.app (main 머지 시 Vercel 자동 배포)
+[새록 웹사이트 열기](https://saerok-lyart.vercel.app)
+
 - 대상: 기억이 예전 같지 않다고 느끼는 60–70대
 - 새록은 연습을 돕는 서비스이며 진단·치료 도구가 아니에요.
 
 ## 주요 기능
 
-| 하단 탭 | 화면 |
+| 주요 메뉴 | 화면 |
 | --- | --- |
 | 홈 | 오늘의 연습, 기억 친구(펫) 카드, 이번 주 함께한 날, AI 음성 대화 친구 |
 | 배우기 | 묶기·시각화·의미 연결 전략 카드 |
@@ -28,6 +29,15 @@ npm run build      # 타입 검사 + 배포용 빌드 (dist/)
 
 - React 18 · TypeScript · Vite · React Router
 - 상태: 기기 안 localStorage (`src/store/state.ts`). 계정·가족 실시간 공유는 다음 단계에서 서버로 옮겨요.
+
+## 웹 배포
+
+| 환경 | 접속 방법 | 배포 기준 |
+| --- | --- | --- |
+| 운영 | [새록 웹사이트](https://saerok-lyart.vercel.app) | `main` 머지 시 Vercel 자동 배포 |
+| PR 미리보기 | GitHub PR의 Vercel 검사 또는 봇 댓글 | PR 브랜치 커밋별 배포 |
+
+Vercel은 `npm ci`와 `npm run build`를 실행하고 `dist/`를 배포해요. `vercel.json`에서 `/learn`, `/records` 같은 직접 주소도 열리도록 설정해요.
 
 ## 폴더 구조
 
