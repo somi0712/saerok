@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, PetArt, PET_NAMES, Screen, Steps, toast } from '@/design/ui';
 import { app, createPersisted, useApp, type PetKind } from '@/store/state';
@@ -199,20 +199,26 @@ const PETS: { kind: PetKind; desc: string; tone: string }[] = [
 ];
 
 /* 25 펫 고르기 */
-export function PetPick() {
+export function PetPick({ firstVisit = false }: { firstVisit?: boolean }) {
   const nav = useNavigate();
+  const [query] = useSearchParams();
+  const finish = () => {
+    app.set((s) => ({ ...s, onboarded: true }));
+    nav(query.get('next') === 'practice' ? P.practice : P.home, { replace: true });
+  };
   const current = useApp((s) => s.pet.kind);
   const choose = (kind: PetKind) => {
     app.set((s) => ({ ...s, pet: { ...s.pet, kind, name: PET_NAMES[kind] } }));
     toast(`${PET_NAMES[kind]}과 함께해요.`);
-    nav(P.petCare);
+    if (firstVisit) finish();
+    else nav(P.petCare);
   };
   return (
-    <Screen title={TITLE} back>
+    <Screen title={TITLE} back footer={firstVisit ? <Button variant="ghost" onClick={finish}>나중에 고르기</Button> : undefined}>
       <Tag>함께 자랄 기억 친구</Tag>
       <h2 className="title">마음이 가는 친구를 골라 주세요.</h2>
-      <p className="sub">유형과 관계없이 골라 보세요.</p>
-      <div className="stack" role="radiogroup" aria-label="기억 친구">
+      <p className="sub">처음부터 원하는 친구를 고를 수 있어요.</p>
+      <div className="stack tp-pets" role="radiogroup" aria-label="기억 친구">
         {PETS.map((p) => (
           <button key={p.kind} type="button" role="radio" aria-checked={current === p.kind} className={`tp-pet ${p.tone}`} onClick={() => choose(p.kind)}>
             <PetArt kind={p.kind} size={96} />
