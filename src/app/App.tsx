@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Navigate, useLocation, useRoutes, type RouteObject } from 'react-router-dom';
 import { P } from './paths';
 import { useApp } from '@/store/state';
-import { Button, Screen, ToastHost } from '@/design/ui';
+import { Button, Screen, SiteHeader, ToastHost } from '@/design/ui';
 
 // 기능 폴더(src/features/<이름>/routes.tsx)가 내보내는 routes 를 모두 모은다.
 // 새 기능은 이 파일을 고치지 않고 자기 폴더에 routes.tsx 만 두면 연결된다.
@@ -31,7 +31,7 @@ function Routes() {
   if (!onboarded && !OPEN_BEFORE_ONBOARDING.some((p) => pathname.startsWith(p)) && featureRoutes.some((r) => r.path === P.start)) {
     return <Navigate to={P.start} replace />;
   }
-  return element;
+  return <><SiteHeader />{element}</>;
 }
 
 export default function App() {
