@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
-import { Button, Card, Screen, Steps, toast } from '@/design/ui';
+import { Button, Card, Icon, Screen, Steps, toast } from '@/design/ui';
 import { app, uid, type Assessment, type ModuleId, type PracticeSession } from '@/store/state';
 import { getAccount, useAccount } from '@/store/account';
 import { clearGuestPreview, finishGuestTest, setGuestAssessment } from '@/store/guestTrial';
@@ -101,7 +101,7 @@ export function CheckScreen() {
         <h2 className="title">나중에 여쭤볼게요</h2>
         <Card tone="lavender">
           <p>아래 세 가지를 천천히 읽고 기억해 주세요.</p>
-          <div className="as-words">{RECALL_WORDS.map((w) => <span key={w}>{w}</span>)}</div>
+          <div className="as-words">{RECALL_WORDS.map((w) => <span key={w.text}><Icon name={w.icon} size={32} />{w.text}</span>)}</div>
           <p className="small">테스트 마지막에 다시 여쭤볼게요.</p>
         </Card>
       </Screen>
@@ -114,7 +114,7 @@ export function CheckScreen() {
     setPicked(value);
     answers.current.push({ m: q.m as ModuleId, correct: value === q.a, seconds: (performance.now() - started.current) / 1000, hint: hintShown });
     const last = i + 1 >= questions.length;
-    toast(last ? '마지막까지 함께해 주셨어요!' : '고마워요, 다음 질문으로 갈게요.');
+    toast(last ? '마지막까지 함께해 주셔서 고마워요.' : '고마워요, 다음 질문으로 갈게요.');
     advance.current = setTimeout(() => {
       if (!last) return setI(i + 1);
       nav(complete(answers.current) ? P.checkResult : loginLink(P.check), { replace: true });
@@ -127,13 +127,20 @@ export function CheckScreen() {
       <h2 className="title">{q.q}</h2>
       {q.compass && (
         <div className="as-compass" role="img" aria-label="가운데 집, 위쪽 나무, 오른쪽 우체통, 아래쪽 자동차, 왼쪽 의자">
-          <i /><span>🌳<small>북</small></span><i />
-          <span>🪑<small>서</small></span><span>🏠</span><span>📮<small>동</small></span>
-          <i /><span>🚗<small>남</small></span><i />
+          <i /><span><Icon name="tree" size={32} /><small>북</small></span><i />
+          <span><Icon name="chair" size={32} /><small>서</small></span>
+          <span className="as-center"><Icon name="house" size={32} /></span>
+          <span><Icon name="mailbox" size={32} /><small>동</small></span>
+          <i /><span><Icon name="car" size={32} /><small>남</small></span><i />
         </div>
       )}
-      {q.visual && <div className="as-visual" aria-hidden="true">{q.visual}</div>}
-      <div className="stack" role="radiogroup" aria-label="보기">
+      {q.icon && <div className="as-visual" aria-hidden="true"><Icon name={q.icon} size={72} /></div>}
+      {q.shapes && (
+        <div className="as-visual as-shapes" role="img" aria-label="동그라미, 네모, 동그라미, 네모, 빈칸">
+          <i className="circle" /><i className="square" /><i className="circle" /><i className="square" /><i className="blank">?</i>
+        </div>
+      )}
+      <div className="stack as-options" role="radiogroup" aria-label="보기">
         {q.options.map((o) => (
           <button key={o} type="button" role="radio" aria-checked={picked === o} className="choice" onClick={() => choose(o)}>
             <strong>{o}</strong>
@@ -144,7 +151,7 @@ export function CheckScreen() {
         {hintReady && !picked && (
           <Card tone="mint">
             <p>천천히 생각하셔도 괜찮아요.</p>
-            {hintShown ? <p>💡 {q.h}</p> : <Button variant="secondary" onClick={() => setHintShown(true)}>힌트 보기</Button>}
+            {hintShown ? <p className="as-hint"><Icon name="bulb" size={20} /> {q.h}</p> : <Button variant="secondary" onClick={() => setHintShown(true)}>힌트 보기</Button>}
           </Card>
         )}
       </div>
