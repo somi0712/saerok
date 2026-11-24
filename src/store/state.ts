@@ -58,6 +58,7 @@ export interface AppState {
   sessions: PracticeSession[];
   plan: { days: string[]; goals: string[]; at?: string; history: { at: string; days: string[]; goals: string[] }[] };
   assessments: Assessment[];
+  attendance: string[];
   training?: { level: number; accepted: boolean; at: string };
   diary: DiaryEntry[];
   family: {
@@ -78,6 +79,7 @@ export const initialState: AppState = {
   sessions: [],
   plan: { days: [], goals: [], history: [] },
   assessments: [],
+  attendance: [],
   diary: [],
   family: { linked: true, share: { access: true, practice: true, diary: false }, proposals: [] },
 };
