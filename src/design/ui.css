@@ -66,7 +66,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
 
 .tabbar {
   position: sticky; bottom: 0; margin: 0 -8px; padding: 8px 8px calc(12px + env(safe-area-inset-bottom, 0px));
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px;
   background: var(--surface); border-radius: 32px 32px 0 0; box-shadow: 0 -6px 20px rgba(71, 56, 107, 0.08);
 }
 .tabbar a { min-height: 64px; display: grid; justify-items: center; align-content: center; gap: 2px;
@@ -101,7 +101,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 40px;
+    gap: 8px clamp(12px, 3vw, 40px);
   }
   .site-brand, .site-nav a, .site-account a {
     display: inline-flex;
@@ -112,7 +112,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
     min-height: var(--tap);
   }
   .site-brand { gap: 10px; font-size: calc(var(--fs) + 4px); }
-  .site-nav, .site-account { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+  .site-nav, .site-account { display: flex; flex-wrap: wrap; gap: 4px clamp(8px, 1.5vw, 20px); }
   .site-nav a { border-bottom: 3px solid transparent; padding: 3px 10px 0; }
   .site-nav a.active { border-color: var(--primary); color: var(--primary); }
   .site-nav a:hover, .site-account a:hover { color: var(--primary); }

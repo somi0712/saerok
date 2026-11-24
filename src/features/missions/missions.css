@@ -1,0 +1,26 @@
+.mission-layout { align-items: start; }
+.mission-month {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.mission-month h2 { font-size: calc(var(--fs) + 3px); }
+.mission-month .icon-btn { min-width: 36px; height: 40px; padding-inline: 8px; }
+.mission-month .icon-btn:disabled { opacity: .4; cursor: default; }
+.mission-next svg { transform: rotate(180deg); }
+.mission-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.mission-day { position: relative; display: grid; place-items: center; min-height: 36px; border: 1px solid transparent; border-radius: 8px; }
+.mission-day[data-attended='true'] { background: var(--lavender-soft); color: var(--primary); font-weight: 700; }
+.mission-day[aria-current='date'] { border-color: var(--primary); }
+.mission-day svg { position: absolute; top: 1px; right: 0; }
+@media (max-width: 480px) {
+  .mission-layout .card { padding: 16px; }
+}

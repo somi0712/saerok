@@ -80,7 +80,7 @@ export function Screen({ title, back, brand, tabs, help = true, footer, children
   );
 }
 
-const TAB_ICON = { home: 'home', book: 'book', grid: 'grid', chart: 'chart' } as const;
+const TAB_ICON = { home: 'home', book: 'book', grid: 'grid', chart: 'chart', calendar: 'calendar' } as const;
 
 export function SiteHeader() {
   const onboarded = useApp((state) => state.onboarded);

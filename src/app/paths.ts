@@ -42,6 +42,7 @@ export const P = {
   talk: '/talk', //                 AI 음성 대화 친구
 
   // 내 기록 · 설정 (records-settings)
+  missions: '/missions',
   records: '/records', //           10 나의 기록 (하단 탭: 내 기록)
   diary: '/records/diary', //       기억 일기장
   settings: '/settings', //         11 설정과 가족 공유
@@ -54,5 +55,6 @@ export const TABS = [
   { to: P.home, label: '홈', icon: 'home' },
   { to: P.learn, label: '배우기', icon: 'book' },
   { to: P.practice, label: '연습', icon: 'grid' },
+  { to: P.missions, label: '미션', icon: 'calendar' },
   { to: P.records, label: '내 기록', icon: 'chart' },
 ] as const;
