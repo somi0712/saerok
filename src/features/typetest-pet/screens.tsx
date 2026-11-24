@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { P } from '@/app/paths';
-import { Button, Card, PetArt, PET_NAMES, Screen, Steps, toast } from '@/design/ui';
+import { Button, Card, Icon, PetArt, PET_NAMES, Screen, Steps, toast, type IconName } from '@/design/ui';
 import { app, useApp, type PetKind } from '@/store/state';
 import { getAccount, useAccount } from '@/store/account';
 import { finishGuestTest } from '@/store/guestTrial';
@@ -12,6 +12,8 @@ import './typetest-pet.css';
 
 const TITLE = '나의 기억 연습';
 const Tag = ({ children }: { children: ReactNode }) => <span className="tp-tag">{children}</span>;
+/** 씨앗 칩: 씨앗 개수는 늘 이 모양으로 보여 준다 */
+const Seeds = ({ n }: { n: number }) => <strong className="tp-seed"><Icon name="seed" />씨앗 {n}개</strong>;
 
 function completeTypeTest() {
   if (getAccount().userId || !progress.get().answers.length || finishGuestTest(P.typeResult)) return P.typeResult;
@@ -40,7 +42,7 @@ export function TypeIntro() {
       {!userId && <p className="small">이 브라우저에서 로그인 없이 테스트 1회를 완료할 수 있어요.</p>}
       <Card tone="lavender">
         <div className="tp-intro">
-          <PetArt kind="mongle" size={120} />
+          <PetArt kind="mongle" size={96} />
           <strong>정답 없는 질문으로 내 연습 취향을 찾아보세요.</strong>
         </div>
         <p>결과는 네 글자 코드와 쉬운 설명으로 보여 드려요.</p>
@@ -91,26 +93,12 @@ export function TypeQuestion() {
   );
 }
 
-/* 그림 카드에 쓰는 단순한 선 그림 */
-const PICS: Record<string, { label: string; path: string }> = {
-  apple: { label: '사과', path: 'M12 7c-2-2-6-1.5-6 3 0 5 3 9 6 8 3 1 6-3 6-8 0-4.5-4-5-6-3zM12 7c0-2 1-3 3-4' },
-  milk: { label: '우유', path: 'M8 21V9l2-4h4l2 4v12zM8 9h8M11 13h2v4h-2z' },
-  bread: { label: '빵', path: 'M7 21V12a4 4 0 1 1 2-7.5A4 4 0 0 1 17 12v9z' },
-  cup: { label: '컵', path: 'M6 6h10v9a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4zM16 9h2a2 2 0 0 1 0 5h-2' },
-  glasses: { label: '안경', path: 'M3 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0zM15 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0zM9 13h6M3 13l1-5M21 13l-1-5' },
-  key: { label: '열쇠', path: 'M8 15a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM12 11h9M18 11v3M21 11v2' },
-  umbrella: { label: '우산', path: 'M3 12a9 9 0 0 1 18 0zM12 12v7a2 2 0 0 1-4 0' },
-  clock: { label: '시계', path: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2' },
+/* 그림 카드: 앱 공통 사물 아이콘 */
+const LABELS: Partial<Record<IconName, string>> = {
+  apple: '사과', milk: '우유', bread: '빵', cup: '컵', glasses: '안경', key: '열쇠', umbrella: '우산', clock: '시계',
 };
-const SEEN = ['apple', 'milk', 'bread'];
-const CHOICES = ['cup', 'apple', 'glasses', 'milk', 'key', 'bread', 'umbrella', 'clock'];
-
-function Pic({ id, size = 56 }: { id: string; size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}
-      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={PICS[id].path} /></svg>
-  );
-}
+const SEEN: IconName[] = ['apple', 'milk', 'bread'];
+const CHOICES: IconName[] = ['cup', 'apple', 'glasses', 'milk', 'key', 'bread', 'umbrella', 'clock'];
 
 /* 22 기억 준비 · 그림 보기 */
 export function TypePrepView() {
@@ -126,7 +114,7 @@ export function TypePrepView() {
       <p className="sub">시간 제한은 없어요.</p>
       <Card>
         <ul className="tp-pics">
-          {SEEN.map((id) => <li key={id}><Pic id={id} /><strong>{PICS[id].label}</strong></li>)}
+          {SEEN.map((id) => <li key={id}><Icon name={id} size={56} /><strong>{LABELS[id]}</strong></li>)}
         </ul>
       </Card>
       <p className="sub">다음 화면에서 보았던 그림을 다시 찾아볼게요.</p>
@@ -137,9 +125,9 @@ export function TypePrepView() {
 /* 23 기억 준비 · 다시 찾기 — 맞힌 수를 매기지 않고, 함께 본 그림을 다시 보여 준다 */
 export function TypePrepFind() {
   const nav = useNavigate();
-  const [picked, setPicked] = useState<string[]>([]);
+  const [picked, setPicked] = useState<IconName[]>([]);
   const [shown, setShown] = useState(false);
-  const toggle = (id: string) => !shown && setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const toggle = (id: IconName) => !shown && setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   return (
     <Screen title={TITLE} back
       footer={shown
@@ -154,8 +142,8 @@ export function TypePrepFind() {
           const seen = shown && SEEN.includes(id);
           return (
             <button key={id} type="button" aria-pressed={on} className={`tp-pick${on ? ' on' : ''}${seen ? ' seen' : ''}`} onClick={() => toggle(id)}>
-              <Pic id={id} size={48} />
-              <span>{PICS[id].label}</span>
+              <Icon name={id} size={48} />
+              <span>{LABELS[id]}</span>
             </button>
           );
         })}
@@ -237,7 +225,7 @@ export function PetPick({ firstVisit = false }: { firstVisit?: boolean }) {
       <div className="stack tp-pets" role="radiogroup" aria-label="기억 친구">
         {PETS.map((p) => (
           <button key={p.kind} type="button" role="radio" aria-checked={current === p.kind} className={`tp-pet ${p.tone}`} onClick={() => choose(p.kind)}>
-            <PetArt kind={p.kind} size={96} />
+            <PetArt kind={p.kind} size={80} />
             <span><strong>{PET_NAMES[p.kind]}</strong><span>{p.desc}</span></span>
           </button>
         ))}
@@ -266,16 +254,16 @@ export function PetCare() {
       footer={<>
         <Button onClick={feed} disabled={!canFeed}>{canFeed ? `씨앗 ${SEEDS_PER_SNACK}개로 간식 주기` : `씨앗 ${SEEDS_PER_SNACK}개가 모이면 간식을 줄 수 있어요`}</Button>
         <Button variant="secondary" to={P.learn}>오늘의 기억 연습하기</Button>
-        <Button variant="secondary" to={P.petPick}>다른 펫 고르기</Button>
+        <Button variant="ghost" to={P.petPick}>다른 펫 고르기</Button>
       </>}>
       <Tag>나의 펫 돌보기</Tag>
       <h2 className="title">{PET_NAMES[pet.kind]}</h2>
       <Card tone="pet">
         <div className="tp-stage">
-          <PetArt kind={pet.kind} size={180} />
+          <PetArt kind={pet.kind} size={128} />
           <span className="tp-pill">함께한 날 {days}일</span>
-          <strong className="tp-seeds">씨앗 {pet.seeds}개</strong>
-          <span className="small">간식 {pet.snacks} / {SNACKS_TO_GROW} · 다 모으면 한 뼘 자라요</span>
+          <Seeds n={pet.seeds} />
+          <span className="small tp-count">간식 {pet.snacks} / {SNACKS_TO_GROW} · 다 모으면 한 뼘 자라요</span>
         </div>
       </Card>
       <p className="sub">연습하고 생활에서 써 보면 친구를 키울 씨앗이 쌓여요.</p>
@@ -298,9 +286,9 @@ export function PetGrowth() {
       <p className="sub">정답보다 함께해 본 순간을 모아요.</p>
       <Card tone="pet">
         <div className="tp-stage">
-          <PetArt kind={pet.kind} size={pet.grown ? 200 : 170} />
+          <PetArt kind={pet.kind} size={pet.grown ? 136 : 120} />
           <span className="tp-pill">{pet.grown ? 'Lv.2 · 함께 자라는 중' : `Lv.1 · 간식 ${pet.snacks} / ${SNACKS_TO_GROW}`}</span>
-          <strong className="tp-seeds">{PET_NAMES[pet.kind]}</strong>
+          <strong className="tp-name">{PET_NAMES[pet.kind]}</strong>
         </div>
       </Card>
       {pet.grown && (
