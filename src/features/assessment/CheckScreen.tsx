@@ -2,7 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, Screen, Steps, toast } from '@/design/ui';
-import { app, uid, type Assessment, type ModuleId } from '@/store/state';
+import { app, uid, type Assessment, type ModuleId, type PracticeSession } from '@/store/state';
+import { getAccount, useAccount } from '@/store/account';
+import { clearGuestPreview, finishGuestTest, setGuestAssessment } from '@/store/guestTrial';
+import { loginLink } from '@/features/account/routes';
 import { MODULES, MODULE_IDS, RECALL_WORDS, questionsFor } from './data';
 import { levelOf, scoreOf, type Answer } from './scoring';
 import './assessment.css';
@@ -11,7 +14,16 @@ const HINT_DELAY = 10_000; // 노션: 10초간 무응답 시 힌트 제공
 
 const shuffle = <T,>(list: T[]) => list.map((x) => [Math.random(), x] as const).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
 
-function save(answers: Answer[]) {
+export function saveAssessment(assessment: Assessment, session: PracticeSession) {
+  if (!getAccount().userId) return;
+  app.set((s) => s.assessments.some(({ id }) => id === assessment.id) ? s : ({
+    ...s,
+    assessments: [...s.assessments, assessment],
+    sessions: [...s.sessions, session],
+  }));
+}
+
+function complete(answers: Answer[]) {
   const score = scoreOf(answers);
   const modules = Object.fromEntries(
     MODULE_IDS.map((m) => {
@@ -26,20 +38,25 @@ function save(answers: Answer[]) {
   ) as Assessment['modules'];
   const at = new Date().toISOString();
   const assessment: Assessment = { id: uid(), at, score, level: levelOf(score), modules };
-  app.set((s) => ({
-    ...s,
-    assessments: [...s.assessments, assessment],
-    sessions: [...s.sessions, {
-      id: uid(), at, task: 'check',
-      correct: answers.filter((a) => a.correct).length, total: answers.length,
-      hints: answers.filter((a) => a.hint).length,
-      minutes: Math.max(1, Math.round(answers.reduce((t, a) => t + a.seconds, 0) / 60)),
-    }],
-  }));
+  const session: PracticeSession = {
+    id: uid(), at, task: 'check',
+    correct: answers.filter((a) => a.correct).length, total: answers.length,
+    hints: answers.filter((a) => a.hint).length,
+    minutes: Math.max(1, Math.round(answers.reduce((t, a) => t + a.seconds, 0) / 60)),
+  };
+  if (getAccount().userId) {
+    clearGuestPreview();
+    saveAssessment(assessment, session);
+    return true;
+  }
+  if (!finishGuestTest(P.checkResult)) return false;
+  setGuestAssessment(assessment, session);
+  return true;
 }
 
 export function CheckScreen() {
   const nav = useNavigate();
+  const { userId } = useAccount();
   const questions = useMemo(() => questionsFor().map((q) => ({ ...q, options: shuffle([q.a, ...q.o]) })), []);
   const [phase, setPhase] = useState<'intro' | 'memorize' | 'ask'>('intro');
   const [i, setI] = useState(0);
@@ -48,6 +65,8 @@ export function CheckScreen() {
   const [picked, setPicked] = useState<string | null>(null);
   const answers = useRef<Answer[]>([]);
   const started = useRef(0);
+  const advance = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => clearTimeout(advance.current), []);
 
   useEffect(() => {
     if (phase !== 'ask') return;
@@ -65,6 +84,7 @@ export function CheckScreen() {
         <span className="demo-badge">데모 · 진단 도구가 아니에요</span>
         <h2 className="title">오늘의 기억력을 함께 살펴봐요</h2>
         <Card>
+          {!userId && <p className="small">이 브라우저에서 로그인 없이 테스트 1회를 완료할 수 있어요. 결과를 저장하려면 로그인해 주세요.</p>}
           <p>다섯 가지 영역에서 짧은 질문 {questions.length}개를 드릴게요. 10분쯤 걸려요.</p>
           <ul className="as-modules">
             {MODULE_IDS.map((m) => <li key={m}><b>{m}</b> {MODULES[m]}</li>)}
@@ -90,15 +110,14 @@ export function CheckScreen() {
 
   const q = questions[i];
   const choose = (value: string) => {
-    if (picked) return;
+    if (picked || answers.current.length > i) return;
     setPicked(value);
     answers.current.push({ m: q.m as ModuleId, correct: value === q.a, seconds: (performance.now() - started.current) / 1000, hint: hintShown });
     const last = i + 1 >= questions.length;
     toast(last ? '마지막까지 함께해 주셨어요!' : '고마워요, 다음 질문으로 갈게요.');
-    setTimeout(() => {
+    advance.current = setTimeout(() => {
       if (!last) return setI(i + 1);
-      save(answers.current);
-      nav(P.checkResult, { replace: true });
+      nav(complete(answers.current) ? P.checkResult : loginLink(P.check), { replace: true });
     }, 700);
   };
 

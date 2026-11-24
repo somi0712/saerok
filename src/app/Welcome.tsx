@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { P } from './paths';
+import { useAccount } from '@/store/account';
 import { Button, Icon, PetArt } from '@/design/ui';
 import './welcome.css';
 
 export function Welcome() {
+  const { userId } = useAccount();
   return (
     <div className="welcome">
       <header className="welcome-header">
@@ -14,6 +16,7 @@ export function Welcome() {
           </Link>
           <nav aria-label="서비스 메뉴">
             <a href="#how-it-works">이용 방법</a>
+            <Link to={userId ? P.records : P.login}>{userId ? "내 기록" : "로그인"}</Link>
             <Link to={P.help}>도움</Link>
           </nav>
         </div>

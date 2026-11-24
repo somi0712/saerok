@@ -2,6 +2,7 @@
 // 모든 기능 폴더가 이 주소로 서로 연결되므로, 주소를 바꿀 때는 여기만 고친다.
 export const P = {
   // 체험 시작 (onboarding)
+  login: '/login',
   start: '/start', //               13 로그인과 데모 시작
   fontSize: '/start/font', //       14 글자 크기 선택
   profile: '/start/profile', //     15 이름·연령대·성별

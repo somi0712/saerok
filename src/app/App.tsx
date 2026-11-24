@@ -3,6 +3,9 @@ import { BrowserRouter, Navigate, useLocation, useRoutes, type RouteObject } fro
 import { P } from './paths';
 import { Welcome } from './Welcome';
 import { useApp } from '@/store/state';
+import { useAccount, useAccountSession } from '@/store/account';
+import { canSeeGuestResult, hasUsedGuestTest, isGuestTestPath } from '@/store/guestTrial';
+import { loginLink } from '@/features/account/routes';
 import { Button, Screen, SiteHeader, ToastHost } from '@/design/ui';
 
 // 기능 폴더(src/features/<이름>/routes.tsx)가 내보내는 routes 를 모두 모은다.
@@ -19,13 +22,15 @@ function NotReady() {
   );
 }
 
-const OPEN_BEFORE_ONBOARDING = [P.start, '/tour', P.help, P.admin];
+const OPEN_BEFORE_ONBOARDING = [P.start, '/tour', P.help, P.admin, P.login];
+const PRIVATE = [P.records, P.plan, P.training, P.family];
 
 function Routes() {
   const onboarded = useApp((s) => s.onboarded);
   const fontSize = useApp((s) => s.settings.fontSize);
   const pet = useApp((s) => s.pet.kind);
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const { ready, userId } = useAccount();
   useEffect(() => {
     document.documentElement.dataset.font = String(fontSize);
   }, [fontSize]);
@@ -35,6 +40,13 @@ function Routes() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
   }, [pet]);
   const element = useRoutes([...featureRoutes, { path: '*', element: <NotReady /> }]);
+  const needsAccount = PRIVATE.some((p) => pathname === p || pathname.startsWith(p + '/'));
+  const finishedGuestTest = isGuestTestPath(pathname) && hasUsedGuestTest() && !canSeeGuestResult(pathname);
+  if (!ready && (needsAccount || isGuestTestPath(pathname) || pathname === P.login)) {
+    return <Screen title="로그인 확인"><p role="status">계정을 확인하고 있어요.</p></Screen>;
+  }
+  if (!userId && (needsAccount || finishedGuestTest)) return <Navigate to={loginLink(pathname + search)} replace />;
+  if (userId && needsAccount) return <><SiteHeader />{element}</>;
   if (!onboarded && pathname === P.home) return <Welcome />;
   if (!onboarded && !OPEN_BEFORE_ONBOARDING.some((p) => pathname.startsWith(p)) && featureRoutes.some((r) => r.path === P.start)) {
     return <Navigate to={P.start} replace />;
@@ -43,6 +55,7 @@ function Routes() {
 }
 
 export default function App() {
+  useAccountSession();
   return (
     <BrowserRouter>
       <Routes />

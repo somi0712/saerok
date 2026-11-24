@@ -2,17 +2,24 @@ import { useState, type ReactNode } from 'react';
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, PetArt, PET_NAMES, Screen, Steps, toast } from '@/design/ui';
-import { app, createPersisted, useApp, type PetKind } from '@/store/state';
+import { app, useApp, type PetKind } from '@/store/state';
+import { getAccount, useAccount } from '@/store/account';
+import { finishGuestTest } from '@/store/guestTrial';
+import { loginLink } from '@/features/account/routes';
+import { typeProgress as progress } from './progress';
 import { EXAMPLE_ANSWERS, QUESTIONS, SEEDS_PER_SNACK, SNACKS_TO_GROW, daysTogether, feedPet, typeResultOf } from './logic';
 import './typetest-pet.css';
-
-// 이 기능만 쓰는 진행 상태: 질문 답, 그림 다시 찾기를 해 봤는지
-const progress = createPersisted('saerok-typetest', { answers: [] as string[], prep: 'none' as 'none' | 'done' | 'skipped' });
 
 const TITLE = '나의 기억 연습';
 const Tag = ({ children }: { children: ReactNode }) => <span className="tp-tag">{children}</span>;
 
+function completeTypeTest() {
+  if (getAccount().userId || !progress.get().answers.length || finishGuestTest(P.typeResult)) return P.typeResult;
+  return loginLink(P.typeIntro);
+}
+
 function saveResult(answers: string[]) {
+  if (!getAccount().userId) return;
   const { lines: _lines, desc: _desc, ...result } = typeResultOf(answers);
   app.set((s) => ({ ...s, typeResult: result }));
 }
@@ -20,6 +27,7 @@ function saveResult(answers: string[]) {
 /* 17 유형 테스트 안내 */
 export function TypeIntro() {
   const nav = useNavigate();
+  const { userId } = useAccount();
   return (
     <Screen title={TITLE} back
       footer={<>
@@ -29,6 +37,7 @@ export function TypeIntro() {
       <Tag>나의 기억 연습 스타일</Tag>
       <h2 className="title">나는 어떤 방법이 편할까요?</h2>
       <p className="sub">질문 네 개와 그림 연습 하나를 해요.</p>
+      {!userId && <p className="small">이 브라우저에서 로그인 없이 테스트 1회를 완료할 수 있어요.</p>}
       <Card tone="lavender">
         <div className="tp-intro">
           <PetArt kind="mongle" size={120} />
@@ -110,7 +119,7 @@ export function TypePrepView() {
     <Screen title={TITLE} back
       footer={<>
         <Button to={P.typePrepFind}>기억했어요 · 그림 가리기</Button>
-        <Button variant="secondary" onClick={() => { progress.set((s) => ({ ...s, prep: 'skipped' })); nav(P.typeResult); }}>이번에는 건너뛰기</Button>
+        <Button variant="secondary" onClick={() => { progress.set((s) => ({ ...s, prep: 'skipped' })); nav(completeTypeTest()); }}>이번에는 건너뛰기</Button>
       </>}>
       <Tag>기억 준비 · 예시 1문항</Tag>
       <h2 className="title">그림 세 개를 천천히 살펴보세요.</h2>
@@ -134,7 +143,7 @@ export function TypePrepFind() {
   return (
     <Screen title={TITLE} back
       footer={shown
-        ? <Button onClick={() => { progress.set((s) => ({ ...s, prep: 'done' })); nav(P.typeResult); }}>나의 유형 보기</Button>
+        ? <Button onClick={() => { progress.set((s) => ({ ...s, prep: 'done' })); nav(completeTypeTest()); }}>나의 유형 보기</Button>
         : <Button disabled={picked.length === 0} onClick={() => setShown(true)}>다 골랐어요</Button>}>
       <Tag>기억 준비 · 다시 찾기</Tag>
       <h2 className="title">아까 본 그림을 골라 주세요.</h2>
@@ -163,6 +172,7 @@ export function TypePrepFind() {
 
 /* 24 나의 기억 연습 유형 */
 export function TypeResult() {
+  const { userId } = useAccount();
   const answers = progress.use((s) => s.answers);
   const prep = progress.use((s) => s.prep);
   const isExample = answers.length === 0;
@@ -170,7 +180,13 @@ export function TypeResult() {
   const nav = useNavigate();
   return (
     <Screen title={TITLE} back
-      footer={<Button onClick={() => { saveResult(isExample ? EXAMPLE_ANSWERS : answers); nav(P.petPick); }}>어울리는 펫 만나기</Button>}>
+      footer={<>
+        {!userId && !isExample && <Button to={loginLink(P.typeResult)}>로그인하고 유형 저장하기</Button>}
+        <Button variant={userId ? 'primary' : 'secondary'} onClick={() => {
+          saveResult(isExample ? EXAMPLE_ANSWERS : answers);
+          nav(P.petPick);
+        }}>{userId && !isExample ? '유형 저장하고 펫 만나기' : '펫 만나기'}</Button>
+      </>}>
       <Tag>{isExample ? '예시 유형' : '나의 유형'} · {r.code}</Tag>
       <div className="tp-code" aria-label={`유형 코드 ${r.code}`}>
         {r.code.split('').map((c, i) => <span key={i}>{c}</span>)}
