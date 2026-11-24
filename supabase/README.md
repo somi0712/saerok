@@ -15,4 +15,6 @@ values ('00000000-0000-0000-0000-000000000000')
 on conflict do nothing;
 ```
 
+이메일 링크 로그인을 쓸 경우 Supabase의 **Authentication → URL Configuration**에서 운영 주소를 Site URL로 설정하고, 각 허용 배포의 `/admin` 주소를 Redirect URLs에 등록합니다. 내장 SMTP는 프로젝트 팀원의 이메일에만 메일을 보냅니다. 그 외 주소로 이메일 링크를 보내려면 SMTP 설정이 필요합니다.
+
 등록한 계정으로 `/admin`에 로그인하여 글을 초안으로 저장할 수 있습니다. 게시 여부를 바꾸고 저장하면 사용자 홈의 공개 목록에 반영됩니다.

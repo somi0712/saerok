@@ -71,21 +71,29 @@ function AdminSession({ client }: { client: Client }) {
 
 function AdminLogin({ client }: { client: Client }) {
   const [working, setWorking] = useState(false);
-  const [message, setMessage] = useState('');
+  const [useEmailLink, setUseEmailLink] = useState(false);
+  const [message, setMessage] = useState<{ error: boolean; text: string }>();
 
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     setWorking(true);
-    setMessage('');
+    setMessage(undefined);
+    const email = String(form.get('email')).trim();
     try {
-      const { error } = await client.auth.signInWithPassword({
-        email: String(form.get('email')).trim(),
-        password: String(form.get('password')),
-      });
-      if (error) setMessage('로그인할 수 없어요. 이메일과 비밀번호를 확인해 주세요.');
+      if (useEmailLink) {
+        const { error } = await client.auth.signInWithOtp({
+          email,
+          options: { shouldCreateUser: false, emailRedirectTo: new URL(P.admin, window.location.origin).href },
+        });
+        if (error) throw error;
+        setMessage({ error: false, text: '로그인 링크를 보냈어요. 이메일을 확인해 주세요.' });
+      } else {
+        const { error } = await client.auth.signInWithPassword({ email, password: String(form.get('password')) });
+        if (error) throw error;
+      }
     } catch {
-      setMessage('로그인 연결에 실패했어요. 잠시 후 다시 시도해 주세요.');
+      setMessage({ error: true, text: '로그인 요청을 처리하지 못했어요. 입력 내용을 확인하고 잠시 후 다시 시도해 주세요.' });
     } finally {
       setWorking(false);
     }
@@ -96,9 +104,14 @@ function AdminLogin({ client }: { client: Client }) {
       <h1>관리자 로그인</h1>
       <p>관리자 계정으로 로그인하면 새록의 공지를 관리할 수 있어요.</p>
       <label>이메일<input type="email" name="email" autoComplete="username" required /></label>
-      <label>비밀번호<input type="password" name="password" autoComplete="current-password" required /></label>
-      <button className="admin-primary" type="submit" disabled={working}>{working ? '로그인 중' : '로그인'}</button>
-      {message && <p role="alert" className="admin-error">{message}</p>}
+      {!useEmailLink && <label>비밀번호<input type="password" name="password" autoComplete="current-password" required /></label>}
+      <button className="admin-primary" type="submit" disabled={working}>
+        {working ? '요청 중' : useEmailLink ? '로그인 링크 보내기' : '로그인'}
+      </button>
+      <button type="button" disabled={working} onClick={() => { setUseEmailLink(!useEmailLink); setMessage(undefined); }}>
+        {useEmailLink ? '비밀번호로 로그인' : '이메일 링크로 로그인'}
+      </button>
+      {message && <p role={message.error ? 'alert' : 'status'} className={message.error ? 'admin-error' : 'admin-muted'}>{message.text}</p>}
     </form>
   );
 }
