@@ -7,14 +7,14 @@
 .rs-h { font-size: calc(var(--fs) + 2px); font-weight: 800; }
 
 /* 이번 주 요일 동그라미 */
-.rs-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; list-style: none; margin: 0; padding: 0; }
+.rs-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; list-style: none; margin: 0; padding: 0; }
 .rs-days li { display: grid; justify-items: center; gap: 6px; font-size: var(--fs-small); }
 .rs-dot { width: 100%; max-width: 48px; aspect-ratio: 1; border-radius: 50%; background: var(--surface);
   display: grid; place-items: center; color: #fff; }
 .rs-dot.on { background: var(--ink); }
 
 /* 주별 막대 */
-.rs-bars { display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); gap: 12px; align-items: end; min-height: 180px;
+.rs-bars { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 8px; align-items: end; min-height: 180px;
   list-style: none; margin: 0; padding: 0; }
 .rs-bars li { display: grid; justify-items: center; gap: 6px; font-size: var(--fs-small); text-align: center; }
 .rs-bars b { font-weight: 800; color: var(--ink); }
@@ -55,3 +55,4 @@
 .rs-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; min-height: 140px; list-style: none; margin: 0; padding: 0; }
 .rs-week li { display: grid; justify-items: center; gap: 4px; font-size: calc(var(--fs-small) - 2px); text-align: center; }
 .rs-alert { border: 2px solid #f0b37e; background: #fff6ec; box-shadow: none; }
+.rs-bars li { overflow-wrap: anywhere; }
