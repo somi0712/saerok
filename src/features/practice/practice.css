@@ -58,3 +58,8 @@
 .pr-stepper { display: flex; align-items: center; gap: 16px; }
 .pr-stepper button { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 28px; font-weight: 800; }
 .pr-stepper output { font-size: calc(var(--fs) + 16px); font-weight: 800; min-width: 80px; text-align: center; }
+/* 큰 글자(22·24px)에서는 제목이 한 단어씩 끊기지 않도록 캐릭터를 카드 오른쪽 아래로 작게 둔다 */
+.pr-pet { position: relative; }
+.pr-pet .stack { min-width: 0; }
+:root[data-font='22'] .pr-pet, :root[data-font='24'] .pr-pet { grid-template-columns: 1fr; padding-bottom: 28px; }
+:root[data-font='22'] .pr-pet img, :root[data-font='24'] .pr-pet img { position: absolute; right: 16px; bottom: 12px; width: 88px; height: 88px; }
