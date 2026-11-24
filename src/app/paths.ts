@@ -45,6 +45,7 @@ export const P = {
   diary: '/records/diary', //       기억 일기장
   settings: '/settings', //         11 설정과 가족 공유
   family: '/settings/family', //    보호자 연동 (가족 제안 → 본인 승인)
+  admin: '/admin', // 관리자 공지 운영
   help: '/help', //                 12 도움과 쉬어가기
 } as const;
 

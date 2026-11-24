@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { P } from '@/app/paths';
+import { AnnouncementFeed } from '@/features/announcements/AnnouncementFeed';
 import { Button, Card, Icon, PET_NAMES, PetArt, Ring, Screen, toast } from '@/design/ui';
 import { useApp, WEEKDAYS } from '@/store/state';
 import { practicedWeekdays } from './logic';
@@ -33,6 +34,8 @@ export function Home() {
         <h1 className="title">{heading}</h1>
         {!s.member && <p className="sub">로그인 없이 체험 중</p>}
       </div>
+
+      <AnnouncementFeed />
 
       {showReview && (
         <Card tone="mint">
