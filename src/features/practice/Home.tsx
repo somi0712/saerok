@@ -13,7 +13,7 @@ const SIX_DAYS = 6 * 86_400_000;
 export function Home() {
   const s = useApp();
   const reviewedAt = useRun((r) => r.reviewedAt);
-  const hello = s.profile.name ? `${s.profile.name}님, 반가워요.` : '반가워요.';
+  const heading = s.profile.name ? `${s.profile.name}님의 기억 연습` : '오늘의 기억 연습';
   const days = s.plan.days.length ? s.plan.days : DEFAULT_DAYS;
   const done = practicedWeekdays(s.sessions);
   // 계획한 요일 + 계획 밖에 연습한 요일도 함께 보여 준다
@@ -30,7 +30,7 @@ export function Home() {
   return (
     <Screen brand tabs>
       <div className="stack" style={{ gap: 4 }}>
-        <h2 className="title">{hello}</h2>
+        <h1 className="title">{heading}</h1>
         {!s.member && <p className="sub">로그인 없이 체험 중</p>}
       </div>
 
@@ -45,51 +45,55 @@ export function Home() {
         </Card>
       )}
 
-      <Link to={s.pet.kind ? P.petCare : P.petPick} className="card card-pet pr-pet">
-        <div className="stack">
-          <span className="pr-name">{s.pet.kind ? s.pet.name || PET_NAMES[s.pet.kind] : '기억 친구'}</span>
-          <strong>{s.pet.kind ? `${s.pet.name || PET_NAMES[s.pet.kind]}${josa(s.pet.name || PET_NAMES[s.pet.kind])}\n함께해요.` : '기억 친구를\n골라 보세요.'}</strong>
-          <span>씨앗 {s.pet.seeds}개</span>
-        </div>
-        <PetArt kind={s.pet.kind} size={120} />
-      </Link>
-
-      <Card>
-        <div className="pr-week">
-          <strong>이번 주 함께한 날</strong>
-          <Ring value={done.size} total={days.length} size={88} />
-          <div className="pr-days">
-            {shownDays.map((d) => (
-              <span key={d}>
-                <Icon name={done.has(d) ? 'check' : 'calendar'} size={22} /> {d}
-              </span>
-            ))}
+      <div className="pr-home-grid">
+        <Link to={s.pet.kind ? P.petCare : P.petPick} className="card card-pet pr-pet">
+          <div className="stack">
+            <span className="pr-name">{s.pet.kind ? s.pet.name || PET_NAMES[s.pet.kind] : '기억 친구'}</span>
+            <strong>{s.pet.kind ? `${s.pet.name || PET_NAMES[s.pet.kind]}${josa(s.pet.name || PET_NAMES[s.pet.kind])}\n함께해요.` : '기억 친구를\n골라 보세요.'}</strong>
+            <span>씨앗 {s.pet.seeds}개</span>
           </div>
+          <PetArt kind={s.pet.kind} size={120} />
+        </Link>
+
+        <Card>
+          <div className="pr-week">
+            <strong>이번 주 함께한 날</strong>
+            <Ring value={done.size} total={days.length} size={88} />
+            <div className="pr-days">
+              {shownDays.map((d) => (
+                <span key={d}>
+                  <Icon name={done.has(d) ? 'check' : 'calendar'} size={22} /> {d}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Card>
+
+        <div className="pr-home-actions">
+          <Button to={s.consent.use ? P.practice : P.consent}>오늘의 연습 시작하기</Button>
+          <Button variant="secondary" to={P.typeIntro}>유형 테스트 · 펫 고르기</Button>
         </div>
-      </Card>
 
-      <Button to={s.consent.use ? P.practice : P.consent}>오늘의 연습 시작하기</Button>
-      <Button variant="secondary" to={P.typeIntro}>유형 테스트 · 펫 고르기</Button>
-
-      <Link to={P.talk} className="card pr-link">
-        <span className="pr-ico" aria-hidden="true">💬</span>
-        <span><strong>기억 친구와 이야기하기</strong><span>천천히 말하는 대화로 오늘을 떠올려요</span></span>
-        <Icon name="mic" />
-      </Link>
-
-      {last ? (
-        <Link to={P.training} className="card pr-link">
-          <span className="pr-ico" aria-hidden="true">{last.level}</span>
-          <span><strong>나의 단계 {last.level} · 맞춤 훈련</strong><span>지금 단계에 맞는 연습을 이어가요</span></span>
+        <Link to={P.talk} className="card pr-link">
+          <span className="pr-ico" aria-hidden="true"><Icon name="mic" size={22} /></span>
+          <span><strong>기억 친구와 이야기하기</strong><span>천천히 말하는 대화로 오늘을 떠올려요</span></span>
           <span className="pr-go"><Icon name="back" /></span>
         </Link>
-      ) : (
-        <Link to={P.check} className="card pr-link">
-          <span className="pr-ico" aria-hidden="true">A–E</span>
-          <span><strong>정밀 기억력 테스트</strong><span>다섯 영역을 살펴보고 맞춤 훈련을 받아요</span></span>
-          <span className="pr-go"><Icon name="back" /></span>
-        </Link>
-      )}
+
+        {last ? (
+          <Link to={P.training} className="card pr-link">
+            <span className="pr-ico" aria-hidden="true">{last.level}</span>
+            <span><strong>나의 단계 {last.level} · 맞춤 훈련</strong><span>지금 단계에 맞는 연습을 이어가요</span></span>
+            <span className="pr-go"><Icon name="back" /></span>
+          </Link>
+        ) : (
+          <Link to={P.check} className="card pr-link">
+            <span className="pr-ico" aria-hidden="true">A–E</span>
+            <span><strong>정밀 기억력 테스트</strong><span>다섯 영역을 살펴보고 맞춤 훈련을 받아요</span></span>
+            <span className="pr-go"><Icon name="back" /></span>
+          </Link>
+        )}
+      </div>
     </Screen>
   );
 }

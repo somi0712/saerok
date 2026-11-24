@@ -81,3 +81,8 @@
 .ob-recent em { font-style: normal; color: var(--primary); font-weight: 800; }
 
 .btn-kakao { background: #fee500; color: #191600; }
+
+@media (min-width: 768px) {
+  .ob-web-options { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .ob-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
