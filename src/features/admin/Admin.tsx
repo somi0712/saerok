@@ -176,7 +176,7 @@ function AdminNotices({ client }: { client: Client }) {
                 <li key={notice.id}>
                   <span><strong>{notice.title}</strong><small>{notice.published ? '게시 중' : '초안'} · {date.format(new Date(notice.created_at))}</small></span>
                   <button type="button" aria-label={`${notice.title} 수정`} disabled={saving}
-                    onClick={() => { setDraft(notice); setFeedback(undefined); }}>수정</button>
+                    onClick={() => { setDraft({ id: notice.id, title: notice.title, body: notice.body, published: notice.published }); setFeedback(undefined); }}>수정</button>
                 </li>
               ))}
             </ul>
