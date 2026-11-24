@@ -16,7 +16,7 @@ export function Home() {
   const s = useApp();
   const { userId } = useAccount();
   const reviewedAt = useRun((r) => r.reviewedAt);
-  const heading = s.profile.name ? `${s.profile.name}님의 기억 연습` : '오늘의 기억 연습';
+  const heading = `${s.profile.name || '새록 사용자'}님, 반가워요.`;
   const days = s.plan.days.length ? s.plan.days : DEFAULT_DAYS;
   const done = practicedWeekdays(s.sessions);
   // 계획한 요일 + 계획 밖에 연습한 요일도 함께 보여 준다
@@ -27,7 +27,7 @@ export function Home() {
 
   const answerReview = (tried: boolean) => {
     run.set((r) => ({ ...r, reviewedAt: new Date().toISOString() }));
-    toast(tried ? '생활에서 써 보셨군요. 정말 잘하셨어요!' : '괜찮아요. 이번 주에 한 번 써 봐요.');
+    toast(tried ? '생활에서 써 보셨군요. 잘하셨어요.' : '괜찮아요. 이번 주에 한 번 써 봐요.');
   };
 
   return (

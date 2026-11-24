@@ -1,6 +1,7 @@
 /* 새록 디자인 토큰 — design/새록_2차_디자인_산출물/04_UIUX_portfolio.png 기준
    Primary #5D55BE · Lavender #E5DFF9 · Mint #DDF0E8 · Ink #2C283D
-   본문 16·18·20px / 제목 27·29·31px / 주요 버튼 62px */
+   본문 16·18·20px / 제목 27·29·31px / 주요 버튼 62px
+   간격은 4px 단위(--sp-*)만 쓴다. 굵기는 400·600·700 세 가지. */
 :root {
   --primary: #5d55be;
   --primary-press: #4a43a3;
@@ -17,24 +18,40 @@
   --bg: #f6f4fc;
   --web-bg: #fcfbf9;
   --pet-panel: #f0ebfa;
+  /* 홈 기억 친구 카드 — 시안 01의 보라·분홍·살구 그라디언트. 화면에서 색이 가장 풍부한 한 곳 */
+  --pet-grad: linear-gradient(135deg, #e3dcf9 0%, #f4dce7 55%, #fde6d2 100%);
   --danger: #b3405a;
   --ok: #2f7d5b;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
 
   --fs: 16px;
   --fs-title: calc(var(--fs) + 11px);
   --fs-small: calc(var(--fs) - 2px);
   --lh: 1.5;
-  --btn-h: 62px;
+  --w-regular: 400;
+  --w-medium: 600;
+  --w-bold: 700;
+  --btn-h: 60px;
   --tap: 56px;
-  --radius: 24px;
-  --radius-lg: 32px;
-  --shadow: 0 10px 24px rgba(71, 56, 107, 0.08);
+  --radius-sm: 12px;
+  --radius: 20px;
+  --radius-lg: 28px;
+  --shadow: 0 8px 20px rgba(44, 40, 61, 0.06);
   --font: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
   color-scheme: light;
 }
 :root[data-font='22'] { --fs: 18px; }
 :root[data-font='24'] { --fs: 20px; }
 
+/* 고른 기억 친구에 따라 바뀌는 테마 */
 :root[data-pet='saebom'] {
   --primary: #2d6b52;
   --primary-press: #1f523e;
@@ -46,6 +63,7 @@
   --bg: #f2f7f3;
   --web-bg: #f7faf7;
   --pet-panel: #e3f2e7;
+  --pet-grad: linear-gradient(135deg, #d6ecdd 0%, #eaf4e2 55%, #faf0d8 100%);
 }
 :root[data-pet='banjjak'] {
   --primary: #8b4d24;
@@ -58,6 +76,7 @@
   --bg: #faf5ee;
   --web-bg: #fcf9f3;
   --pet-panel: #f8ead7;
+  --pet-grad: linear-gradient(135deg, #f9e2c8 0%, #fcefd2 55%, #f6dde4 100%);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -66,7 +85,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 400 var(--fs) / var(--lh) var(--font);
+  font: var(--w-regular) var(--fs) / var(--lh) var(--font);
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -77,30 +96,5 @@ button { cursor: pointer; }
 img { max-width: 100%; }
 h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
-  :root[data-pet='saebom'] {
-  --primary: #2d6b52;
-  --primary-press: #1f523e;
-  --lavender: #d9ebdf;
-  --lavender-soft: #eaf4ed;
-  --ink: #23352d;
-  --muted: #51695b;
-  --line: #d2e2d7;
-  --bg: #f2f7f3;
-  --web-bg: #f7faf7;
-  --pet-panel: #e3f2e7;
-}
-:root[data-pet='banjjak'] {
-  --primary: #8b4d24;
-  --primary-press: #6c3717;
-  --lavender: #f5e4d1;
-  --lavender-soft: #fbf0e3;
-  --ink: #382a24;
-  --muted: #6f5b4d;
-  --line: #ebdccb;
-  --bg: #faf5ee;
-  --web-bg: #fcf9f3;
-  --pet-panel: #f8ead7;
-}
-
-*, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }

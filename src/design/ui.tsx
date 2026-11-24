@@ -5,9 +5,40 @@ import { useApp, type PetKind } from '@/store/state';
 import { useAccount } from '@/store/account';
 import './ui.css';
 
-type IconName = 'home' | 'book' | 'grid' | 'chart' | 'gear' | 'help' | 'back' | 'check' | 'calendar' | 'mic' | 'speaker' | 'close';
+// 앱 전체가 한 세트의 선 아이콘(24px 격자, 굵기 2)을 쓴다. 이모지 대신 이 아이콘을 쓴다.
+// 사물 아이콘(apple … sprout)은 연습·테스트에서 기억할 물건 그림으로 쓴다.
+export type IconName =
+  | 'home' | 'book' | 'grid' | 'chart' | 'gear' | 'help' | 'back' | 'next' | 'check' | 'calendar' | 'mic' | 'speaker' | 'close'
+  | 'chat' | 'lock' | 'seed' | 'heart' | 'bulb'
+  | 'apple' | 'milk' | 'bread' | 'carrot' | 'fish' | 'cup' | 'pill' | 'glasses' | 'key' | 'umbrella' | 'clock'
+  | 'star' | 'tree' | 'chair' | 'house' | 'mailbox' | 'car' | 'newspaper' | 'sprout';
 
 const PATHS: Record<IconName, ReactNode> = {
+  next: <path d="m9 5 7 7-7 7" />,
+  chat: <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.4A8 8 0 1 1 21 12z" />,
+  lock: <path d="M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4" />,
+  seed: <path d="M12 21c-3.3 0-6-2.5-6-6 0-4.5 6-12 6-12s6 7.5 6 12c0 3.5-2.7 6-6 6zM12 21v-7" />,
+  heart: <path d="M12 20s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 7.5a4.3 4.3 0 0 1 8 2.3C20 15.4 12 20 12 20z" />,
+  bulb: <path d="M9 18h6M10 21h4M15 14c.2-1 .7-1.7 1.5-2.5A5 5 0 1 0 7.5 11.5c.8.8 1.3 1.5 1.5 2.5z" />,
+  apple: <path d="M12 7c-1-.6-2.6-1.6-4.5-1.6A4.3 4.3 0 0 0 3 10c0 4.7 3 11 5.5 11 1.4 0 2.2-.9 3.5-.9s2.1.9 3.5.9C18 21 21 14.7 21 10a4.3 4.3 0 0 0-4.5-4.6C14.6 5.4 13 6.4 12 7zM12 7c0-2 .8-3.6 2.5-4.5" />,
+  milk: <path d="M8 3h8M9 3v3l-2 3.5V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9.5L15 6V3M7 14c1.7-.8 3.3-.8 5 0s3.3.8 5 0" />,
+  bread: <path d="M6 20V11a4 4 0 0 1 1-7.5h10A4 4 0 0 1 18 11v9z" />,
+  carrot: <path d="M14 10 4 20M14 10c2.5 2.5 1.5 5-1 6.5L4 20l3.5-9c1.5-2.5 4-3.5 6.5-1zM14 10l3-5M14 10l5-3M9 15l-2-2" />,
+  fish: <path d="M3 12c2.5-4 6-6 10-6 4 0 7 3 8 6-1 3-4 6-8 6-4 0-7.5-2-10-6zM3 12l-1-4M3 12l-1 4M16 11h.01" />,
+  cup: <path d="M4 9h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M12 3v3" />,
+  pill: <path d="M10.5 20.5 3.5 13.5a4.95 4.95 0 0 1 7-7l7 7a4.95 4.95 0 0 1-7 7zM8.5 8.5l7 7" />,
+  glasses: <path d="M2 14a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM14 14a4 4 0 1 0 8 0 4 4 0 0 0-8 0zM10 14c.6-.7 1.3-1 2-1s1.4.3 2 1M2.5 12 5 6.5C5.6 5.5 6.3 5 7.5 5M21.5 12 19 6.5c-.6-1-1.3-1.5-2.5-1.5" />,
+  key: <path d="M3 15.5a4.5 4.5 0 1 0 9 0 4.5 4.5 0 0 0-9 0zM11 12l9-9M16 7l3 3M18.5 4.5l2 2" />,
+  umbrella: <path d="M21 12a9 9 0 0 0-18 0zM12 12v7a2 2 0 0 0 4 0M12 3V2" />,
+  clock: <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2" />,
+  star: <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z" />,
+  tree: <path d="M8 18a4 4 0 0 1-2.2-7.3A3.5 3.5 0 0 1 9 6V6a3 3 0 1 1 6 0 3.5 3.5 0 0 1 3.2 4.7A4 4 0 0 1 16 18zM12 18v4" />,
+  chair: <path d="M7 3h10v8H7zM5 11h14v3H5zM7 14v7M17 14v7" />,
+  house: <path d="M3 10.5 12 3l9 7.5M5 9v12h14V9M10 21v-6h4v6" />,
+  mailbox: <path d="M4 9a4 4 0 0 1 8 0v10H4zM12 9h6a2 2 0 0 1 2 2v8h-8M7 13h2M16 9V5h3" />,
+  car: <path d="M5 16v-4l2-5h10l2 5v4zM3 16h18M7 16v3M17 16v3M5 12h14" />,
+  newspaper: <path d="M6 4h14v15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h3M6 4v15a2 2 0 0 1-1 1.7M9 8h8M9 12h8M9 16h5" />,
+  sprout: <path d="M12 21v-9M12 12c0-4 3-6 7-6 0 4-3 6-7 6zM12 14c0-3-2.5-5-6-5 0 3 2.5 5 6 5" />,
   home: <path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" />,
   book: <path d="M4 5a2 2 0 0 1 2-1h5v16H6a2 2 0 0 0-2 1zM20 5a2 2 0 0 0-2-1h-5v16h5a2 2 0 0 1 2 1z" />,
   grid: <path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z" />,
@@ -22,7 +53,7 @@ const PATHS: Record<IconName, ReactNode> = {
   close: <path d="M6 6l12 12M18 6 6 18" />,
 };
 
-export function Icon({ name, size = 26 }: { name: IconName; size?: number }) {
+export function Icon({ name, size = 24 }: { name: IconName; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
       strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

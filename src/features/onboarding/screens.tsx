@@ -75,7 +75,7 @@ export function ProfileScreen() {
   const nav = useNavigate();
   const [q] = useSearchParams();
   const saved = useApp((s) => s.profile);
-  const [name, setName] = useState(saved.name || '정희');
+  const [name, setName] = useState(saved.name || '');
   const [ageBand, setAge] = useState(saved.ageBand);
   const [gender, setGender] = useState(saved.gender);
   const save = () => {
@@ -149,7 +149,7 @@ export function ReadyScreen() {
         <Button variant="ghost" to={P.start}>처음부터 다시 고르기</Button>
       </>}>
       <span className="chip ob-chip">준비 완료</span>
-      <h2 className="title">{profile.name || '정희'}님, 반가워요.</h2>
+      <h2 className="title">{profile.name || '새록 사용자'}님, 반가워요.</h2>
       <p className="sub">고른 정보에 맞춰 예제 데이터를 준비했어요.</p>
       <Card>
         <strong>내가 고른 정보</strong>
@@ -175,7 +175,7 @@ export function ReadyScreen() {
 
 /** 29 예제 홈 · 한눈에 보기 */
 export function TourHomeScreen() {
-  const name = useApp((s) => s.profile.name) || '정희';
+  const name = useApp((s) => s.profile.name) || '새록 사용자';
   const now = new Date();
   const today = todayIndex(now);
   return (

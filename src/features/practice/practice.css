@@ -4,8 +4,10 @@
 .pr-pet .pr-name { justify-self: start; background: #fff; border-radius: 999px; padding: 4px 18px; font-weight: 700; font-size: var(--fs-small); }
 .pr-pet strong { font-size: calc(var(--fs) + 8px); line-height: 1.3; }
 .pr-go { display: inline-flex; transform: rotate(180deg); color: var(--muted); }
-.pr-week { grid-template-columns: 1fr auto; align-items: center; }
-.pr-days { grid-column: 1 / -1; display: flex; gap: 20px; flex-wrap: wrap; font-weight: 700; }
+/* 시안 01: 제목 왼쪽 · 링 오른쪽, 요일 줄은 그 아래 */
+.pr-week { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--sp-4); font-variant-numeric: tabular-nums; }
+.pr-week > strong { font-size: calc(var(--fs) + 4px); align-self: start; }
+.pr-days { grid-column: 1 / -1; display: flex; gap: var(--sp-6); flex-wrap: wrap; font-weight: var(--w-medium); }
 .pr-days span { display: inline-flex; align-items: center; gap: 6px; }
 .pr-link { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; text-decoration: none; color: inherit; }
 .pr-link .pr-ico { width: 52px; height: 52px; border-radius: 16px; background: var(--lavender); color: var(--primary); display: grid; place-items: center; font-size: 26px; }
@@ -81,7 +83,8 @@
     box-shadow: none;
   }
   .pr-home-grid .pr-pet {
-    background: var(--lavender-soft);
+    background: var(--pet-grad);
+    border-color: transparent;
     grid-template-columns: minmax(0, 1fr) auto;
     padding: 24px;
   }
