@@ -83,20 +83,25 @@ export const initialState: AppState = {
 };
 
 /** localStorage 에 저장되는 작은 상태 저장소. 저장이 막힌 브라우저에서도 메모리로 동작한다. */
-export function createPersisted<T extends object>(key: string, initial: T) {
-  let value: T = initial;
+function readStorage<T extends object>(key: string | null, initial: T): T {
   try {
-    const raw = localStorage.getItem(key);
-    if (raw) value = { ...initial, ...(JSON.parse(raw) as Partial<T>) };
+    const raw = key && localStorage.getItem(key);
+    if (raw) return { ...initial, ...(JSON.parse(raw) as Partial<T>) };
   } catch {
     /* 저장소를 못 쓰면 기본값으로 시작 */
   }
+  return initial;
+}
+
+export function createPersisted<T extends object>(key: string | null, initial: T) {
+  let storageKey = key;
+  let value = readStorage(key, initial);
   const listeners = new Set<() => void>();
   const get = () => value;
   const set = (next: T | ((prev: T) => T)) => {
     value = typeof next === 'function' ? (next as (p: T) => T)(value) : next;
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      if (storageKey) localStorage.setItem(storageKey, JSON.stringify(value));
     } catch {
       /* 용량 초과 등: 화면 상태는 유지 */
     }
@@ -112,10 +117,22 @@ export function createPersisted<T extends object>(key: string, initial: T) {
     return useSyncExternalStore(subscribe, () => (select ? select(value) : value));
   }
   const reset = () => set(initial);
-  return { get, set, use, subscribe, reset };
+  const open = (key: string | null, seed = initial) => {
+    storageKey = key;
+    value = readStorage(key, seed);
+    listeners.forEach((l) => l());
+  };
+  return { get, set, use, subscribe, reset, open };
 }
 
-export const app = createPersisted<AppState>('saerok-app-v1', initialState);
+export function readGuestPreferences() {
+  const legacy = readStorage('saerok-app-v1', initialState);
+  const guest = readStorage('saerok-guest-v2', legacy);
+  const { onboarded, profile, settings, consent, pet } = guest;
+  return { onboarded, profile, settings, consent, pet: { ...initialState.pet, kind: pet.kind, name: pet.name } };
+}
+
+export const app = createPersisted<AppState>('saerok-guest-v2', { ...initialState, ...readGuestPreferences() });
 export const useApp = app.use;
 
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);

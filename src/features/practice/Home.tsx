@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { P } from '@/app/paths';
+import { useAccount } from '@/store/account';
 import { AnnouncementFeed } from '@/features/announcements/AnnouncementFeed';
 import { Button, Card, Icon, PET_NAMES, PetArt, Ring, Screen, toast } from '@/design/ui';
 import { useApp, WEEKDAYS } from '@/store/state';
@@ -13,6 +14,7 @@ const SIX_DAYS = 6 * 86_400_000;
 // 01 오늘의 연습 (하단 탭: 홈)
 export function Home() {
   const s = useApp();
+  const { userId } = useAccount();
   const reviewedAt = useRun((r) => r.reviewedAt);
   const heading = s.profile.name ? `${s.profile.name}님의 기억 연습` : '오늘의 기억 연습';
   const days = s.plan.days.length ? s.plan.days : DEFAULT_DAYS;
@@ -32,7 +34,7 @@ export function Home() {
     <Screen brand tabs>
       <div className="stack" style={{ gap: 4 }}>
         <h1 className="title">{heading}</h1>
-        {!s.member && <p className="sub">로그인 없이 체험 중</p>}
+        {!userId && <p className="sub">로그인 없이 체험 중 · <Link to={P.login}>로그인</Link></p>}
       </div>
 
       <AnnouncementFeed />

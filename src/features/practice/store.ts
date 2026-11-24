@@ -2,7 +2,7 @@ import { app, createPersisted } from '@/store/state';
 import type { Burden, Cue, StrategyId } from './logic';
 
 // 연습 기능만 쓰는 상태: 지금 진행 중인 연습 한 번 + 본인이 수락한 다음 단계.
-export const run = createPersisted('saerok-practice', {
+export const run = createPersisted(null, {
   length: 4, // 순서 기억 물건 수 (R01 수락 시 3–5)
   focus: '' as StrategyId | '', // 본인이 수락한 다음 전략
   learned: false, // 첫 이용 때 배우기를 거쳤는지

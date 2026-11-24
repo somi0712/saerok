@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { P, TABS } from '@/app/paths';
 import { useApp, type PetKind } from '@/store/state';
+import { useAccount } from '@/store/account';
 import './ui.css';
 
 type IconName = 'home' | 'book' | 'grid' | 'chart' | 'gear' | 'help' | 'back' | 'check' | 'calendar' | 'mic' | 'speaker' | 'close';
@@ -83,6 +84,7 @@ const TAB_ICON = { home: 'home', book: 'book', grid: 'grid', chart: 'chart' } as
 
 export function SiteHeader() {
   const onboarded = useApp((state) => state.onboarded);
+  const { userId } = useAccount();
 
   return (
     <header className="site-header">
@@ -97,6 +99,7 @@ export function SiteHeader() {
             <TabBar desktop />
             <div className="site-account">
               <Link to={P.settings}>설정</Link>
+              {!userId && <Link to={P.login}>로그인</Link>}
               <Link to={P.help}>도움</Link>
             </div>
           </>

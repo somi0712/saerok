@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
+import { useAccount } from '@/store/account';
 import { Button, Card, Choice, Icon, Screen, toast } from '@/design/ui';
 import { app, uid, type PracticeSession } from '@/store/state';
 import { ITEMS, STRATEGIES, itemById, makeOptions, makeTarget, recommend, scoreOrder, type Burden, type Cue } from './logic';
@@ -221,6 +222,7 @@ const CUE_LABEL: Record<Cue, string> = { none: '도움 없이', hint: '힌트를
 export function Result() {
   const nav = useNavigate();
   const r = useRun();
+  const { userId } = useAccount();
   const [decision, setDecision] = useState<'' | 'accepted' | 'kept'>('');
   if (r.target.length === 0 || !r.recall) return <NoRun />;
   const order = scoreOrder(r.target, r.picks);
@@ -237,7 +239,8 @@ export function Result() {
     toast('지금처럼 이어 갈게요.');
   };
   const save = () => {
-    if (!r.saved) {
+    if (!userId) return;
+    if (!run.get().saved) {
       const at = new Date().toISOString();
       const minutes = r.startedAt ? Math.max(1, Math.round((Date.now() - Date.parse(r.startedAt)) / 60000)) : undefined;
       const common = { at, strategy: strategyName(r.strategy), burden: r.burden || undefined, minutes };
@@ -253,7 +256,7 @@ export function Result() {
   };
 
   return (
-    <Screen title={TITLE} back footer={<Button onClick={save}>생활에서 써 볼 목표 정하기</Button>}>
+    <Screen title={TITLE} back footer={userId ? <Button onClick={save}>생활에서 써 볼 목표 정하기</Button> : <Button to={P.login}>로그인하고 다음 연습 저장하기</Button>}>
       <span className="pr-tag">돌아보기</span>
       <h2 className="title">오늘의 연습 기록</h2>
 

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, Choice, Icon, PetArt, Screen, Steps } from '@/design/ui';
 import { app, useApp, WEEKDAYS, type FontSize } from '@/store/state';
@@ -19,10 +19,8 @@ export function StartScreen() {
   return (
     <Screen title="새록" help={false}
       footer={<>
-        <Link className="btn btn-kakao" to={P.fontSize}>카카오 로그인 체험</Link>
-        <Button variant="secondary" to={P.fontSize}>이메일 로그인 체험</Button>
-        <Button variant="ghost" to={P.fontSize}>로그인 없이 둘러보기</Button>
-        <p className="small">세 방법 모두 예제 데이터로 시작해요. 실제 계정은 만들어지지 않아요.</p>
+        <Button to={P.fontSize}>로그인 없이 시작하기</Button>
+        <Button variant="secondary" to={P.login}>이메일로 로그인하기</Button>
       </>}>
       <span className="chip ob-chip">새록 · 데모 체험</span>
       <div className="ob-hero"><PetArt size={200} /></div>
@@ -262,8 +260,7 @@ export function TourFinishScreen() {
   return (
     <Screen title="나의 기억 연습" back help={false}
       footer={<>
-        <Link className="btn btn-kakao" to={`${P.signedUp}?via=kakao`}>카카오로 계정 만들기</Link>
-        <Button variant="secondary" to={`${P.signedUp}?via=email`}>이메일로 계정 만들기</Button>
+        <Button to={P.login}>이메일로 가입하거나 로그인하기</Button>
         <Button variant="ghost" to={P.tourHome}>조금 더 둘러볼게요</Button>
       </>}>
       <span className="chip ob-chip">체험 마치기</span>
@@ -277,38 +274,11 @@ export function TourFinishScreen() {
           <li>몽글이와 처음부터 함께 자라기</li>
         </ul>
       </Card>
-      <p className="small">데모라서 실제 계정은 만들어지지 않아요.</p>
     </Screen>
   );
 }
 
 /** 32 가입 완료 */
 export function SignedUpScreen() {
-  const [q] = useSearchParams();
-  const { profile, settings } = useApp();
-  useEffect(() => {
-    app.set((s) => ({ ...s, member: true, onboarded: true }));
-  }, []);
-  const via = q.get('via') === 'email' ? '이메일' : '카카오';
-  return (
-    <Screen title="나의 기억 연습" back
-      footer={<>
-        <Button to={P.practice}>첫 연습 시작하기</Button>
-        <Button variant="secondary" to={P.home}>홈으로</Button>
-      </>}>
-      <p className="ob-note">계정이 만들어지지 않는 데모 화면이에요.</p>
-      <span className="chip ob-chip">가입 완료</span>
-      <Card tone="pet"><div className="ob-hero"><PetArt size={180} /></div></Card>
-      <h2 className="title">환영해요! 오늘부터 내 기록이 쌓여요.</h2>
-      <p className="sub">{via} 계정으로 가입했어요.</p>
-      <Card>
-        <strong>체험에서 고른 설정을 그대로 이어가요</strong>
-        <Summary rows={[
-          ['이름', profile.name],
-          ['글자 크기', FONT_LABEL[settings.fontSize]],
-          ['연령대', profile.ageBand],
-        ]} />
-      </Card>
-    </Screen>
-  );
+  return <Navigate to={P.login} replace />;
 }

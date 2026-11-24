@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, Screen, toast } from '@/design/ui';
 import { P } from '@/app/paths';
+import { database } from '@/data/announcements';
+import { useAccount } from '@/store/account';
 import { app, useApp, type FontSize } from '@/store/state';
 import './records.css';
 
@@ -25,6 +27,7 @@ export function CounselInfo() {
 export default function Settings() {
   const nav = useNavigate();
   const { profile, settings, family } = useApp();
+  const { userId } = useAccount();
   const [stopAsk, setStopAsk] = useState(false);
   const [wipeAsk, setWipeAsk] = useState(false);
 
@@ -103,6 +106,13 @@ export default function Settings() {
       </section>
 
       <CounselInfo />
+
+      {userId && <Button variant="secondary" onClick={() => {
+        void database?.auth.signOut({ scope: 'local' }).then(({ error }) => {
+          if (error) toast('로그아웃에 실패했어요. 다시 시도해 주세요.');
+          else nav(P.home);
+        });
+      }}>로그아웃</Button>}
 
       <Card>
         <p className="rs-h">기록 지우기</p>

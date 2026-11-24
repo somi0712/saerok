@@ -1,5 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
+import { useAccount } from '@/store/account';
+import { clearGuestPreview, getGuestAssessment } from '@/store/guestTrial';
+import { loginLink } from '@/features/account/routes';
+import { saveAssessment } from './CheckScreen';
 import { Button, Card, Screen, toast } from '@/design/ui';
 import { app, useApp, type Assessment } from '@/store/state';
 import { LEVELS, MODULES, MODULE_IDS, type LevelPlan } from './data';
@@ -40,18 +44,30 @@ function NoAssessment({ title }: { title: string }) {
 /** 나의 기억 단계 — 노션 2주차 「기억력 수준 단계별 구분」 */
 export function ResultScreen() {
   const nav = useNavigate();
-  const last = useApp((s) => s.assessments.at(-1));
+  const { userId } = useAccount();
+  const saved = useApp((s) => s.assessments.at(-1));
+  const preview = getGuestAssessment();
+  const last = preview?.assessment ?? (userId ? saved : undefined);
   if (!last) return <NoAssessment title="나의 기억 단계" />;
   const plan = LEVELS[last.level - 1];
   const weak = weakOf(last);
   const accept = () => {
+    if (!userId) return;
+    if (preview) {
+      clearGuestPreview();
+      saveAssessment(preview.assessment, preview.session);
+      toast('내 기록에 저장했어요.');
+      return;
+    }
     app.set((s) => ({ ...s, training: { level: last.level, accepted: true, at: new Date().toISOString() } }));
     toast('이번 단계 훈련으로 정했어요.');
     nav(P.training);
   };
   return (
     <Screen title="나의 기억 단계" back={P.home} footer={<>
-      <Button onClick={accept}>이 훈련으로 할게요</Button>
+      {userId
+        ? <Button onClick={accept}>{preview ? '이 결과 저장하기' : '이 훈련으로 할게요'}</Button>
+        : <Button to={loginLink(P.checkResult)}>로그인하고 결과 저장하기</Button>}
       <Button variant="secondary" to={P.home}>다음에 정할게요</Button>
     </>}>
       <span className="demo-badge">데모 · 진단 결과가 아니에요</span>
