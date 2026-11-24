@@ -1,0 +1,14 @@
+{
+  "name": "새록",
+  "short_name": "새록",
+  "description": "나만의 기억 방법을 배우고 생활로 이어가는 기억 연습 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F4FC",
+  "theme_color": "#5D55BE",
+  "lang": "ko",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/pets/mongle.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

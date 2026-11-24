@@ -1,0 +1,53 @@
+/* 새록 디자인 토큰 — design/새록_2차_디자인_산출물/04_UIUX_portfolio.png 기준
+   Primary #5D55BE · Lavender #E5DFF9 · Mint #DDF0E8 · Ink #2C283D
+   본문 20·22·24px / 제목 30·32·34px / 주요 버튼 62px */
+:root {
+  --primary: #5d55be;
+  --primary-press: #4a43a3;
+  --on-primary: #ffffff;
+  --lavender: #e5dff9;
+  --lavender-soft: #f1eefc;
+  --mint: #ddf0e8;
+  --peach: #fde6d2;
+  --rose: #f6dbe6;
+  --ink: #2c283d;
+  --muted: #6b6880;
+  --line: #dcd7ea;
+  --surface: #ffffff;
+  --bg: #f6f4fc;
+  --danger: #b3405a;
+  --ok: #2f7d5b;
+
+  --fs: 20px;                      /* 본문: 설정에서 20 / 22 / 24 */
+  --fs-title: calc(var(--fs) + 10px);
+  --fs-small: calc(var(--fs) - 3px);
+  --lh: 1.5;
+  --btn-h: 62px;
+  --tap: 56px;
+  --radius: 24px;
+  --radius-lg: 32px;
+  --shadow: 0 10px 24px rgba(71, 56, 107, 0.08);
+  --font: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', system-ui, sans-serif;
+  color-scheme: light;
+}
+:root[data-font='22'] { --fs: 22px; }
+:root[data-font='24'] { --fs: 24px; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--fs) / var(--lh) var(--font);
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; border-radius: 12px; }
+img { max-width: 100%; }
+h1, h2, h3, p { margin: 0; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
