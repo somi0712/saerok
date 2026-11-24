@@ -33,15 +33,15 @@ export function Consent() {
 
       <label className="pr-toggle">
         <input type="checkbox" checked={use} onChange={(e) => setUse(e.target.checked)} />
-        <div><strong>연습 기록 저장 (필수)</strong><span>연습 결과를 이 기기에 저장해 다음 연습에 써요.</span></div>
+        <div><strong>연습 기록 저장 (필수)</strong><span>연습 결과를 이 브라우저에 저장해 다음 연습에 써요.</span></div>
       </label>
       <label className="pr-toggle">
         <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} />
-        <div><strong>가족과 공유 (선택)</strong><span>연습한 날과 기록을 가족이 볼 수 있어요. 언제든 끌 수 있어요.</span></div>
+        <div><strong>가족과 공유 (선택)</strong><span>가족 공유 설정을 체험해요. 실제로 전송되는 기록은 없어요.</span></div>
       </label>
       <label className="pr-toggle">
         <input type="checkbox" checked={research} onChange={(e) => setResearch(e.target.checked)} />
-        <div><strong>서비스 개선에 활용 (선택)</strong><span>이름 없이 기록만 모아 더 좋은 연습을 만들어요.</span></div>
+        <div><strong>서비스 개선에 활용 (선택)</strong><span>개선 연구에 참여하는 설정을 체험해요. 이 버전에서는 기록을 수집하지 않아요.</span></div>
       </label>
 
       {share && (
