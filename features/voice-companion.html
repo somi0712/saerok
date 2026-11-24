@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>새록 · 기억 친구와 대화</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='10' fill='%235d55be'/></svg>">
+<style>
+:root{--bg:#f3f1f8;--panel:#fff;--ink:#2c283d;--muted:#6b6880;--line:#e4e0ee;--brand:#5d55be;--brand-soft:#efebfa;--on-brand:#fff;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#17151f;--panel:#221f2d;--ink:#f1eff8;--muted:#a9a5bd;--line:#34304a;--brand:#9c95f0;--brand-soft:#2c2840;--on-brand:#17151f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/29px system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;word-break:keep-all}
+.wrap{max-width:420px;margin:0 auto;padding:16px;min-height:100vh;display:flex;flex-direction:column;gap:14px}
+a,button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.back{display:inline-flex;align-items:center;min-height:56px;padding:0 6px;color:var(--brand);font-weight:700;text-decoration:none}
+h1{font-size:30px;line-height:43px;margin:0}
+.sub{margin:0;color:var(--muted)}
+.btn{min-height:56px;border-radius:18px;border:2px solid var(--line);background:var(--panel);padding:10px 16px;cursor:pointer;font-weight:600}
+.btn[aria-pressed="false"]{color:var(--muted)}
+.log{flex:1;display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:16px;min-height:320px}
+.msg{max-width:88%;padding:12px 16px;border-radius:20px;white-space:pre-line}
+.ai{align-self:flex-start;background:var(--brand-soft);border-bottom-left-radius:6px}
+.ai b{display:block;font-size:16px;line-height:22px;color:var(--brand)}
+.me{align-self:flex-end;background:var(--brand);color:var(--on-brand);border-bottom-right-radius:6px}
+.typing{align-self:flex-start;color:var(--muted);font-size:16px}
+.replies{display:flex;flex-direction:column;gap:10px}
+.reply{width:100%;text-align:left;min-height:64px;border-radius:20px;border:2px solid var(--brand);background:var(--panel);padding:12px 18px;cursor:pointer;font-weight:600}
+.reply:hover{background:var(--brand-soft)}
+.reply:disabled{opacity:.5;cursor:default}
+.tools{display:flex;gap:10px}
+.tools .btn{flex:1}
+.foot{margin:0;color:var(--muted);font-size:16px;line-height:22px;text-align:center}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">
+    <a class="back" href="../index.html">← 새록 데모</a>
+    <button class="btn" id="sound" type="button" aria-pressed="true">🔊 소리 켜짐</button>
+  </div>
+  <header>
+    <h1>기억 친구와 대화</h1>
+    <p class="sub">편하게 이야기 나누듯 답해 주세요.</p>
+  </header>
+  <section class="log" id="log" role="log" aria-live="polite" aria-label="대화 내용"></section>
+  <div class="replies" id="replies" aria-label="답하기"></div>
+  <div class="tools">
+    <button class="btn" id="again" type="button">🔁 다시 듣기</button>
+    <button class="btn" id="mic" type="button" hidden>🎤 말하기</button>
+  </div>
+  <p class="foot">데모 · 실제 AI 연결 없이 정해진 대본으로 진행돼요</p>
+</main>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const log = $('log'), replies = $('replies'), soundBtn = $('sound'), micBtn = $('mic');
+  const IDLE_MS = 7000; // Notion: 답변 대기 5~7초 이상
+  const RATE = 0.85;    // Notion: 일반 성인보다 1.2배 느리게
+  const fmt = d => (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+  const today = new Date(), wrongDay = new Date(today.getTime() - 3 * 864e5);
+  const todayText = fmt(today);
+
+  // One question per AI message. A reply (r) never asks a question; the next turn's q does.
+  const turns = [
+    { q: '좋은 아침이에요! 오늘 햇살이 아주 따뜻한데, 식사는 맛있게 드셨어요?', a: [
+      { t: '응, 아침에 누룽지를 먹었어', k: ['누룽지', '먹었'], r: '따뜻한 누룽지 드셨군요! 속이 편안하셨겠어요.' },
+      { t: '아직 못 먹었어', k: ['아직', '못', '안 먹'], r: '그러셨군요. 이따가 따뜻한 걸로 꼭 챙겨 드세요.' },
+      { t: '잘 모르겠어요', k: ['모르'], r: '괜찮아요. 금방 떠오르지 않을 때도 있죠.' } ] },
+    { q: '벌써 단풍이 예쁘게 물드는 계절이에요. 혹시 오늘이 며칠인지 기억나시나요?', a: [
+      { t: todayText + '인가?', k: [String(today.getDate()) + '일'], r: '맞아요! ' + todayText + '이에요. 기억력이 아주 또렷하시네요.' },
+      { t: fmt(wrongDay) + '인가?', k: [String(wrongDay.getDate()) + '일'], r: '아, 요즘 날이 비슷해서 헷갈리실 수 있죠! 오늘은 ' + todayText + '이에요. 저도 가끔 날짜를 헷갈려요. 괜찮아요!' },
+      { t: '잘 모르겠어요', k: ['모르'], r: '괜찮아요. 오늘은 ' + todayText + '이에요. 저도 가끔 날짜를 깜빡해요.' } ] },
+    { q: '오늘 오후에 약속이나 계획 있으신가요?', a: [
+      { t: '오후 3시에 복지관 가서 친구 만나기로 했어', k: ['3시', '세 시', '복지관', '친구'], r: '친구를 만나시는 날이군요! 3시, 복지관, 친구와의 만남이라니 정말 즐거운 시간이 되겠어요.' },
+      { t: '특별한 계획은 없어', k: ['없'], r: '편히 쉬는 날도 좋죠. 연습 삼아 하나만 기억해 주세요. 오후 3시, 복지관에서 친구 만나기예요.' },
+      { t: '잘 모르겠어요', k: ['모르'], r: '괜찮아요. 연습 삼아 하나만 기억해 주세요. 오후 3시, 복지관에서 친구 만나기예요.' } ] },
+    { q: '복지관 가시는 길에 과일도 사 드시면 좋겠어요. 요즘 제철인 가을 과일 두 가지만 말씀해 주시겠어요?', a: [
+      { t: '사과와 배', k: ['사과', '배'], r: '사과랑 배! 둘 다 달콤하고 맛있죠. 잘 말씀해 주셨어요!' },
+      { t: '감이랑 귤', k: ['감', '귤'], r: '감이랑 귤! 요즘 정말 맛있을 때예요. 잘 말씀해 주셨어요!' },
+      { t: '잘 모르겠어요', k: ['모르'], r: '괜찮아요. 요즘은 사과, 배, 감이 참 맛있어요.' } ] },
+    { q: '아까 오늘 몇 시에 누구를 만나러 가신다고 하셨죠?', a: [
+      { t: '3시에 친구 만나러 가', k: ['3시', '세 시', '친구'], r: '맞아요! 3시에 복지관에서 친구를 만나시죠. 기억력이 정말 꼼꼼하시네요.' },
+      { t: '5시에 딸 만나러 가', k: ['5시', '다섯 시', '딸'], r: '아, 헷갈리실 수 있죠! 3시에 복지관에서 친구를 만나신다고 하셨어요. 저도 가끔 약속 시간을 헷갈려요. 괜찮아요!' },
+      { t: '잘 모르겠어요', k: ['모르'], r: '괜찮아요. 3시에 복지관에서 친구를 만나신다고 하셨어요. 천천히 떠올려 주셔서 고마워요.' } ] }
+  ];
+  const IDLE_TEXT = '천천히 생각하셔도 돼요. 편하게 떠오르는 대로 말씀해 주세요.';
+  const END_TEXT = '오늘 이야기 나눠 주셔서 고마워요. 친구분과 즐거운 오후 보내세요!';
+
+  const tts = 'speechSynthesis' in window ? window.speechSynthesis : null;
+  let soundOn = !!tts, idx = 0, lastAi = '', idleTimer = 0, idleShown = false, busy = false;
+  try { if (localStorage.getItem('saerok-voice-sound') === 'off') soundOn = false; } catch (_) {}
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function renderSound() {
+    soundBtn.setAttribute('aria-pressed', String(soundOn));
+    soundBtn.textContent = !tts ? '🔇 소리 지원 안 됨' : soundOn ? '🔊 소리 켜짐' : '🔇 소리 꺼짐';
+    soundBtn.disabled = !tts;
+  }
+  function voice() { return tts && tts.getVoices().find(v => /^ko/i.test(v.lang)); }
+  // Calls done() when speech ends, or right away when muted or unsupported.
+  function speak(text, done) {
+    if (!tts || !soundOn) { if (done) done(); return; }
+    tts.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ko-KR'; u.rate = RATE; u.pitch = 0.95;
+    const v = voice(); if (v) u.voice = v;
+    let fired = false;
+    const fin = () => { if (!fired) { fired = true; if (done) done(); } };
+    u.onend = fin; u.onerror = fin;
+    // ponytail: some browsers skip onend, so cap the wait at ~0.35s/char. Tune it if long lines get cut off.
+    setTimeout(fin, 2000 + text.length * 350);
+    tts.speak(u);
+  }
+  function bubble(cls, text) {
+    const el = document.createElement('div');
+    el.className = 'msg ' + cls;
+    if (cls === 'ai') { const b = document.createElement('b'); b.textContent = '기억 친구'; el.append(b); }
+    el.append(document.createTextNode(text));
+    log.append(el);
+    el.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }
+  async function ai(text, done) {
+    const t = document.createElement('div');
+    t.className = 'typing'; t.textContent = '기억 친구가 말하는 중…'; t.setAttribute('aria-hidden', 'true');
+    log.append(t);
+    await sleep(800);
+    t.remove();
+    lastAi = text;
+    bubble('ai', text);
+    speak(text, done);
+  }
+  function clearIdle() { clearTimeout(idleTimer); idleTimer = 0; }
+  function startIdle() {
+    clearIdle();
+    if (idleShown || busy) return;
+    idleTimer = setTimeout(() => { idleShown = true; ai(IDLE_TEXT); }, IDLE_MS);
+  }
+  function setReplies(list) {
+    replies.replaceChildren();
+    list.forEach((a, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'reply'; b.textContent = a.t;
+      b.addEventListener('click', () => answer(i));
+      replies.append(b);
+    });
+  }
+  async function ask() {
+    const turn = turns[idx];
+    idleShown = false; busy = false;
+    setReplies(turn.a);
+    await ai(turn.q, startIdle);
+  }
+  async function answer(i, heard) {
+    if (busy) return;
+    busy = true; clearIdle();
+    if (tts) tts.cancel();
+    replies.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    const a = turns[idx].a[i];
+    bubble('me', heard || a.t);
+    await ai(a.r);
+    idx++;
+    if (idx < turns.length) { await sleep(600); ask(); } else finish();
+  }
+  async function finish() {
+    replies.replaceChildren();
+    await sleep(600);
+    await ai(END_TEXT);
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'reply'; b.textContent = '처음부터 다시 대화하기';
+    b.addEventListener('click', start);
+    replies.append(b);
+  }
+  function start() {
+    clearIdle();
+    if (tts) tts.cancel();
+    log.replaceChildren(); idx = 0;
+    ask();
+  }
+  // Speech: pick the first option whose keyword appears; otherwise the last, gentlest option.
+  function match(text) {
+    const opts = turns[idx].a;
+    const i = opts.findIndex(a => a.k.some(k => text.includes(k)));
+    return i < 0 ? opts.length - 1 : i;
+  }
+
+  soundBtn.addEventListener('click', () => {
+    soundOn = !soundOn;
+    if (!soundOn && tts) tts.cancel();
+    try { localStorage.setItem('saerok-voice-sound', soundOn ? 'on' : 'off'); } catch (_) {}
+    renderSound();
+  });
+  $('again').addEventListener('click', () => {
+    if (!lastAi) return;
+    clearIdle();
+    const wasOn = soundOn; soundOn = !!tts;
+    speak(lastAi, () => { if (!busy && idx < turns.length) startIdle(); });
+    soundOn = wasOn;
+  });
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR) {
+    micBtn.hidden = false;
+    let rec = null;
+    micBtn.addEventListener('click', () => {
+      if (busy || idx >= turns.length) return;
+      if (rec) { rec.abort(); return; }
+      if (tts) tts.cancel();
+      clearIdle();
+      rec = new SR();
+      rec.lang = 'ko-KR'; rec.interimResults = false; rec.maxAlternatives = 1;
+      micBtn.textContent = '🎙️ 듣는 중… (누르면 멈춤)';
+      rec.onresult = e => { const said = e.results[0][0].transcript.trim(); if (said) answer(match(said), said); };
+      rec.onend = () => { rec = null; micBtn.textContent = '🎤 말하기'; if (!busy) startIdle(); };
+      rec.onerror = () => {};
+      try { rec.start(); } catch (_) { rec = null; micBtn.textContent = '🎤 말하기'; }
+    });
+  }
+  renderSound();
+  start();
+})();
+</script>
+</body>
+</html>
