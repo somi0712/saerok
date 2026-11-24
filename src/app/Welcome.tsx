@@ -21,7 +21,7 @@ export function Welcome() {
       <main className="welcome-container welcome-main" id="main-content">
         <section className="welcome-hero" aria-labelledby="welcome-title">
           <div className="welcome-intro">
-            <h1 id="welcome-title">기억하는 방법을 배우고<br />내 생활에 써 봐요</h1>
+            <h1 id="welcome-title">기억하는 방법을 배우고 내 생활에 써 봐요</h1>
             <p className="sub">장 볼 물건과 약속을 떠올리는 연습을 해요. 기억 친구 몽글과 내 속도로 시작할 수 있어요.</p>
             <div className="welcome-actions">
               <Button to={P.fontSize}>기억 연습 시작하기</Button>

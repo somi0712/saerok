@@ -42,6 +42,7 @@ body {
   font: 400 var(--fs) / var(--lh) var(--font);
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 button, input, textarea, select { font: inherit; color: inherit; }
 button { cursor: pointer; }

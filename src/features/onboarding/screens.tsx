@@ -27,7 +27,7 @@ export function StartScreen() {
       </>}>
       <span className="chip ob-chip">새록 · 데모 체험</span>
       <div className="ob-hero"><PetArt size={200} /></div>
-      <h2 className="title">나만의 기억 방법,<br />친구와 함께 찾아요.</h2>
+      <h2 className="title">나만의 기억 방법, 친구와 함께 찾아요.</h2>
     </Screen>
   );
 }
@@ -45,7 +45,7 @@ export function FontSizeScreen() {
     <Screen title="나의 기억 연습" back help={false}>
       {!fromSettings(q) && <Steps now={1} total={3} />}
       <span className="chip ob-chip">처음 설정</span>
-      <h2 className="title">편안하게 읽히는<br />글자 크기를 골라요.</h2>
+      <h2 className="title">편안하게 읽히는 글자 크기를 골라요.</h2>
       <p className="sub">누르면 바로 적용돼요.</p>
       <div className="stack ob-web-options" role="radiogroup" aria-label="글자 크기">
         {([20, 22, 24] as FontSize[]).map((size) => (
@@ -121,7 +121,7 @@ export function MethodScreen() {
     <Screen title="나의 기억 연습" back help={false}>
       <Steps now={3} total={3} />
       <span className="chip ob-chip">나를 얼마나 알고 있나요?</span>
-      <h2 className="title">나에게 맞는 기억 방법을<br />얼마나 알고 계신가요?</h2>
+      <h2 className="title">나에게 맞는 기억 방법을 얼마나 알고 계신가요?</h2>
       <p className="sub">지금 느끼는 그대로 골라 주세요.</p>
       <div className="stack ob-web-options" role="radiogroup" aria-label="기억 방법을 아는 정도">
         {FAMILIARITY.map((f) => (
@@ -271,7 +271,7 @@ export function TourFinishScreen() {
       </>}>
       <span className="chip ob-chip">체험 마치기</span>
       <div className="ob-hero"><PetArt size={180} /></div>
-      <h2 className="title">둘러본 기록을<br />내 것으로 이어갈까요?</h2>
+      <h2 className="title">둘러본 기록을 내 것으로 이어갈까요?</h2>
       <p className="sub">지금까지 본 기록은 예제 데이터예요. 가입하면 오늘부터 나의 연습이 쌓여요.</p>
       <Card>
         <ul className="ob-checks">
@@ -302,7 +302,7 @@ export function SignedUpScreen() {
       <p className="ob-note">계정이 만들어지지 않는 데모 화면이에요.</p>
       <span className="chip ob-chip">가입 완료</span>
       <Card tone="pet"><div className="ob-hero"><PetArt size={180} /></div></Card>
-      <h2 className="title">환영해요!<br />오늘부터 내 기록이 쌓여요.</h2>
+      <h2 className="title">환영해요! 오늘부터 내 기록이 쌓여요.</h2>
       <p className="sub">{via} 계정으로 가입했어요.</p>
       <Card>
         <strong>체험에서 고른 설정을 그대로 이어가요</strong>

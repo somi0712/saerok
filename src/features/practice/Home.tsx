@@ -49,7 +49,7 @@ export function Home() {
         <Link to={s.pet.kind ? P.petCare : P.petPick} className="card card-pet pr-pet">
           <div className="stack">
             <span className="pr-name">{s.pet.kind ? s.pet.name || PET_NAMES[s.pet.kind] : '기억 친구'}</span>
-            <strong>{s.pet.kind ? `${s.pet.name || PET_NAMES[s.pet.kind]}${josa(s.pet.name || PET_NAMES[s.pet.kind])}\n함께해요.` : '기억 친구를\n골라 보세요.'}</strong>
+            <strong>{s.pet.kind ? `${s.pet.name || PET_NAMES[s.pet.kind]}${josa(s.pet.name || PET_NAMES[s.pet.kind])} 함께해요.` : '기억 친구를 골라 보세요.'}</strong>
             <span>씨앗 {s.pet.seeds}개</span>
           </div>
           <PetArt kind={s.pet.kind} size={120} />
