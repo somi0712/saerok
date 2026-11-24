@@ -91,25 +91,29 @@ export function Prepare() {
       <h2 className="title">글자와 소리를<br />함께 확인해요.</h2>
       <p className="sub">진행자와 천천히 따라 해 보세요.</p>
 
-      <Card>
-        <span className="pr-tag">1 글자 확인</span>
-        <p style={{ fontSize: 'calc(var(--fs) + 14px)', fontWeight: 800 }}>사과 · 우유 · 빵</p>
-        <p className="sub">편하게 읽을 수 있나요?</p>
-        <div className="pr-two">
-          <button className="chip" aria-pressed={readOk} onClick={() => setReadOk(true)}>잘 보여요</button>
-          <button className="chip" onClick={bigger}>글자 키우기</button>
-        </div>
-      </Card>
+      <div className="web-columns pr-web-prep">
+        <Card>
+          <span className="pr-tag">1 글자 확인</span>
+          <p style={{ fontSize: 'calc(var(--fs) + 14px)', fontWeight: 800 }}>사과 · 우유 · 빵</p>
+          <p className="sub">편하게 읽을 수 있나요?</p>
+          <div className="pr-two">
+            <button className="chip" aria-pressed={readOk} onClick={() => setReadOk(true)}>잘 보여요</button>
+            <button className="chip" onClick={bigger}>글자 키우기</button>
+          </div>
+        </Card>
 
-      <button className="pr-big" data-done={tapped} onClick={tap}>
-        <strong><Icon name="speaker" /> {tapped ? '잘 눌렀어요.' : '큰 버튼을 눌러 보세요.'}</strong>
-        <span className="sub">연습 점수에는 들어가지 않아요.</span>
-      </button>
+        <button className="pr-big" data-done={tapped} onClick={tap}>
+          <strong><Icon name="speaker" /> {tapped ? '잘 눌렀어요.' : '큰 버튼을 눌러 보세요.'}</strong>
+          <span className="sub">연습 점수에는 들어가지 않아요.</span>
+        </button>
+      </div>
 
-      <Button variant="secondary" to={P.settings}>글자·소리 조정하기</Button>
-      <Button onClick={go}>{learned ? '준비 확인 후 연습하기' : '준비 확인 후 배우기'}</Button>
+      <div className="web-actions">
+        <Button variant="secondary" to={P.settings}>글자·소리 조정하기</Button>
+        <Button onClick={go}>{learned ? '준비 확인 후 연습하기' : '준비 확인 후 배우기'}</Button>
+      </div>
 
-      <div className="stack">
+      <div className="stack pr-web-extras">
         <strong>다른 연습</strong>
         <Link to={P.check} className="card pr-link">
           <span className="pr-ico" aria-hidden="true">A–E</span>
@@ -152,33 +156,38 @@ export function Learn() {
       <h2 className="title pr-title">{st.title}</h2>
       <p className="sub">{st.sub}</p>
 
-      <div className="pr-demo">
-        {st.demo.map((d) => (
-          <div className="pr-demo-row" key={d.label}><span className="em" aria-hidden="true">{d.icons}</span>{d.label}</div>
-        ))}
-        <p>{demo ? st.say : st.tip}</p>
+      <div className="web-columns pr-web-learn">
+        <div className="stack">
+          <div className="pr-demo">
+            {st.demo.map((d) => (
+              <div className="pr-demo-row" key={d.label}><span className="em" aria-hidden="true">{d.icons}</span>{d.label}</div>
+            ))}
+            <p>{demo ? st.say : st.tip}</p>
+          </div>
+
+          <div className="pr-two">
+            <Button variant="secondary" onClick={() => setDemo((v) => !v)}>{demo ? '요약 보기' : '시범 보기'}</Button>
+            <Button variant="secondary" onClick={() => { if (!speak(st.say)) toast('소리가 꺼져 있어요. 설정에서 켤 수 있어요.'); }}>
+              <Icon name="speaker" /> 다시 듣기
+            </Button>
+          </div>
+        </div>
+        <div className="stack">
+          <label className="stack">
+            <span className="sub">어떻게 할지 내 말로 이야기해 보세요. (적지 않아도 돼요)</span>
+            <textarea className="pr-input" rows={3} value={explanation} placeholder="예: 과일은 과일끼리 묶을래요"
+              onChange={(e) => run.set((r) => ({ ...r, explanation: e.target.value }))} />
+          </label>
+
+          <div className="pr-chips" role="group" aria-label="다른 방법 보기">
+            {STRATEGIES.map((s) => (
+              <button key={s.id} className="chip" aria-pressed={s.id === id} onClick={() => setId(s.id)}>{s.name}</button>
+            ))}
+          </div>
+
+          <Button onClick={practice}>이 방법으로 연습하기</Button>
+        </div>
       </div>
-
-      <div className="pr-two">
-        <Button variant="secondary" onClick={() => setDemo((v) => !v)}>{demo ? '요약 보기' : '시범 보기'}</Button>
-        <Button variant="secondary" onClick={() => { if (!speak(st.say)) toast('소리가 꺼져 있어요. 설정에서 켤 수 있어요.'); }}>
-          <Icon name="speaker" /> 다시 듣기
-        </Button>
-      </div>
-
-      <label className="stack">
-        <span className="sub">어떻게 할지 내 말로 이야기해 보세요. (적지 않아도 돼요)</span>
-        <textarea className="pr-input" rows={3} value={explanation} placeholder="예: 과일은 과일끼리 묶을래요"
-          onChange={(e) => run.set((r) => ({ ...r, explanation: e.target.value }))} />
-      </label>
-
-      <div className="pr-chips" role="group" aria-label="다른 방법 보기">
-        {STRATEGIES.map((s) => (
-          <button key={s.id} className="chip" aria-pressed={s.id === id} onClick={() => setId(s.id)}>{s.name}</button>
-        ))}
-      </div>
-
-      <Button onClick={practice}>이 방법으로 연습하기</Button>
     </Screen>
   );
 }

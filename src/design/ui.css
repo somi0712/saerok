@@ -79,8 +79,13 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
 .demo-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #f08a5d; }
 
 .site-header { display: none; }
+.web-columns, .web-actions { display: grid; gap: 20px; }
 
-@media (min-width: 900px) {
+@media (min-width: 600px) and (max-width: 767px) {
+  .screen { max-width: none; padding-inline: 24px; }
+}
+
+@media (min-width: 768px) {
   body { background: #fcfbf9; }
   .site-header {
     display: block;
@@ -88,7 +93,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
     border-bottom: 1px solid var(--line);
   }
   .site-header-inner {
-    max-width: 1280px;
+    max-width: 1440px;
     min-height: 76px;
     margin-inline: auto;
     padding-inline: 32px;
@@ -123,14 +128,19 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
   .site-skip:focus { transform: none; }
 
   .screen {
-    max-width: 880px;
+    width: 100%;
+    max-width: 1440px;
     min-height: calc(100% - 77px);
     background: transparent;
     padding: 20px 32px 0;
   }
-  .screen-wide { max-width: 1280px; padding-top: 36px; }
+  .screen-wide { padding-top: 36px; }
   .screen-wide > .screen-top, .screen > .tabbar { display: none; }
-  .screen-top h1 { font-size: calc(var(--fs) + 6px); }
+  .screen-top h1 { font-size: calc(var(--fs) + 10px); }
+  .screen-body { flex: 0 1 auto; gap: 24px; padding-block: 16px 32px; }
+  .web-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .web-actions { display: flex; flex-wrap: wrap; }
+  .web-actions > .btn { width: auto; }
   .screen-foot {
     position: static;
     display: flex;

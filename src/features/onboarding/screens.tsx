@@ -47,7 +47,7 @@ export function FontSizeScreen() {
       <span className="chip ob-chip">처음 설정</span>
       <h2 className="title">편안하게 읽히는<br />글자 크기를 골라요.</h2>
       <p className="sub">누르면 바로 적용돼요.</p>
-      <div className="stack" role="radiogroup" aria-label="글자 크기">
+      <div className="stack ob-web-options" role="radiogroup" aria-label="글자 크기">
         {([20, 22, 24] as FontSize[]).map((size) => (
           <button key={size} type="button" role="radio" aria-checked={current === size} className="choice ob-font" onClick={() => pick(size)}>
             <b className="eyebrow">{FONT_LABEL[size]}</b>
@@ -101,8 +101,10 @@ export function ProfileScreen() {
         </div>
         <p id="ob-name-hint" className="small">부르기 편한 이름을 적어 주세요. 나중에 바꿀 수 있어요.</p>
       </div>
-      <PillGroup label="연령대" options={AGE_BANDS} value={ageBand} onChange={setAge} />
-      <PillGroup label="성별" options={GENDERS} value={gender} onChange={setGender} />
+      <div className="web-columns">
+        <PillGroup label="연령대" options={AGE_BANDS} value={ageBand} onChange={setAge} />
+        <PillGroup label="성별" options={GENDERS} value={gender} onChange={setGender} />
+      </div>
     </Screen>
   );
 }
@@ -121,7 +123,7 @@ export function MethodScreen() {
       <span className="chip ob-chip">나를 얼마나 알고 있나요?</span>
       <h2 className="title">나에게 맞는 기억 방법을<br />얼마나 알고 계신가요?</h2>
       <p className="sub">지금 느끼는 그대로 골라 주세요.</p>
-      <div className="stack" role="radiogroup" aria-label="기억 방법을 아는 정도">
+      <div className="stack ob-web-options" role="radiogroup" aria-label="기억 방법을 아는 정도">
         {FAMILIARITY.map((f) => (
           <Choice key={f.value} checked={current === f.value} onSelect={() => pick(f.value)} title={f.value} desc={f.desc} />
         ))}
