@@ -1,22 +1,23 @@
 // 연습 기능의 순수 로직: 순서 채점(F01-W), 규칙 추천(R01), 이번 주 함께한 날.
 import { WEEKDAYS, isThisWeek, type PracticeSession } from '@/store/state';
+import type { IconName } from '@/design/ui';
 
 export interface Item {
   id: string;
   label: string;
-  emoji: string;
+  icon: IconName;
   group: string;
 }
 
 export const ITEMS: Item[] = [
-  { id: 'apple', label: '사과', emoji: '🍎', group: '과일' },
-  { id: 'milk', label: '우유', emoji: '🥛', group: '유제품' },
-  { id: 'bread', label: '빵', emoji: '🍞', group: '빵' },
-  { id: 'carrot', label: '당근', emoji: '🥕', group: '채소' },
-  { id: 'fish', label: '생선', emoji: '🐟', group: '생선' },
-  { id: 'tea', label: '찻잔', emoji: '☕', group: '그릇' },
-  { id: 'pill', label: '약', emoji: '💊', group: '약' },
-  { id: 'glasses', label: '안경', emoji: '👓', group: '물건' },
+  { id: 'apple', label: '사과', icon: 'apple', group: '과일' },
+  { id: 'milk', label: '우유', icon: 'milk', group: '유제품' },
+  { id: 'bread', label: '빵', icon: 'bread', group: '빵' },
+  { id: 'carrot', label: '당근', icon: 'carrot', group: '채소' },
+  { id: 'fish', label: '생선', icon: 'fish', group: '생선' },
+  { id: 'tea', label: '찻잔', icon: 'cup', group: '그릇' },
+  { id: 'pill', label: '약', icon: 'pill', group: '약' },
+  { id: 'glasses', label: '안경', icon: 'glasses', group: '물건' },
 ];
 
 export const itemById = (id: string) => ITEMS.find((i) => i.id === id)!;
@@ -65,8 +66,8 @@ export const STRATEGIES = [
     sub: '여러 개를 작은 묶음으로 나눠요.',
     say: '사과 두 개는 과일, 우유 두 개는 유제품. 과일 둘, 유제품 둘처럼 묶음에 이름을 붙여 보세요.',
     demo: [
-      { icons: '🍎 🍎', label: '과일' },
-      { icons: '🥛 🥛', label: '유제품' },
+      { icons: ['apple', 'apple'], label: '과일' },
+      { icons: ['milk', 'milk'], label: '유제품' },
     ],
     tip: '“과일 둘, 유제품 둘”\n묶음의 이름을 붙여 보세요.',
   },
@@ -78,8 +79,8 @@ export const STRATEGIES = [
     sub: '물건이 놓인 장면을 하나로 떠올려요.',
     say: '식탁 위에 사과가 있고, 그 옆에 우유가 서 있어요. 하나의 장면으로 그려 보세요.',
     demo: [
-      { icons: '🍎 → 🥛', label: '식탁 위 장면' },
-      { icons: '👓 → 💊', label: '서랍 안 장면' },
+      { icons: ['apple', 'milk'], label: '식탁 위 장면' },
+      { icons: ['glasses', 'pill'], label: '서랍 안 장면' },
     ],
     tip: '“식탁 위 사과 옆에 우유”\n장면 하나로 기억해요.',
   },
@@ -91,8 +92,8 @@ export const STRATEGIES = [
     sub: '내 생활과 연결하면 오래 남아요.',
     say: '아침에 우유를 마시고, 약을 먹고, 안경을 써요. 내 하루의 순서로 이어 보세요.',
     demo: [
-      { icons: '🥛 💊', label: '아침 식사 후' },
-      { icons: '👓 📰', label: '신문 읽을 때' },
+      { icons: ['milk', 'pill'], label: '아침 식사 후' },
+      { icons: ['glasses', 'newspaper'], label: '신문 읽을 때' },
     ],
     tip: '“아침 우유, 그다음 약”\n내 하루 순서로 이어요.',
   },

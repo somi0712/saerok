@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
-import { Button, Card, Screen, toast } from '@/design/ui';
+import { Button, Card, Icon, Screen, toast, type IconName } from '@/design/ui';
 import { app, useApp, WEEKDAYS } from '@/store/state';
 import './practice.css';
 
-const GOALS = [
-  { key: '장보기', goal: '장 볼 물건 묶어 기억하기', desc: '장을 보기 전 살 물건을 종류별로 묶어 볼게요.', icon: '🍎' },
-  { key: '약속', goal: '약속 시간 기억하기', desc: '약속 시간과 장소를 한 장면으로 떠올려 볼게요.', icon: '🗓️' },
-  { key: '물건', goal: '물건 둔 곳 기억하기', desc: '안경·열쇠를 둔 곳을 말로 한 번 짚어 볼게요.', icon: '🔑' },
+const GOALS: { key: string; goal: string; desc: string; icon: IconName }[] = [
+  { key: '장보기', goal: '장 볼 물건 묶어 기억하기', desc: '장을 보기 전 살 물건을 종류별로 묶어 볼게요.', icon: 'apple' },
+  { key: '약속', goal: '약속 시간 기억하기', desc: '약속 시간과 장소를 한 장면으로 떠올려 볼게요.', icon: 'calendar' },
+  { key: '물건', goal: '물건 둔 곳 기억하기', desc: '안경·열쇠를 둔 곳을 말로 한 번 짚어 볼게요.', icon: 'key' },
 ];
 
 // 09 생활 목표와 주간 계획 (F03) — 본인이 확인·수정, 미이행에 비난 없음
@@ -40,12 +40,12 @@ export function Plan() {
       </>
     }>
       <span className="pr-tag">생활에 써먹기</span>
-      <h2 className="title">배운 방법을 어디에 써 볼까요?</h2>
+      <h2 className="title">배운 방법을<br />어디에 써 볼까요?</h2>
       <p className="sub">내가 고른 목표로 이어가요.</p>
 
       {shown && (
         <div className="pr-demo">
-          <strong style={{ fontSize: 'calc(var(--fs) + 4px)' }}><span aria-hidden="true">{shown.icon}</span> {shown.goal}</strong>
+          <strong className="pr-goal"><Icon name={shown.icon} size={32} /> {shown.goal}</strong>
           <p>{shown.desc}</p>
         </div>
       )}

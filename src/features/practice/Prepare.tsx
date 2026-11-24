@@ -7,6 +7,8 @@ import { STRATEGIES, strategyOfToday, type StrategyId } from './logic';
 import { run, speak, startRun, useRun } from './store';
 import './practice.css';
 
+const TITLE = '오늘의 기억 연습';
+
 // 02 이용 안내와 동의 (C01: 목적별 동의 + 이해 확인)
 export function Consent() {
   const nav = useNavigate();
@@ -26,23 +28,30 @@ export function Consent() {
   };
 
   return (
-    <Screen title="오늘의 기억 연습" back footer={<Button onClick={save} disabled={!use || (share && !check)}>확인했어요</Button>}>
-      <span className="pr-tag">이용 안내</span>
-      <h2 className="title">시작하기 전에 함께 확인해요.</h2>
-      <p className="sub">새록은 기억 연습을 돕는 앱이에요. 진단이나 치료를 하지 않아요.</p>
+    <Screen title={TITLE} back footer={<Button onClick={save} disabled={!use || (share && !check)}>내용을 확인하고 시작하기</Button>}>
+      <span className="pr-tag">처음 오셨나요?</span>
+      <h2 className="title">내가 선택하고,<br />편하게 시작해요.</h2>
+      <p className="sub">언제든 멈추거나 바꿀 수 있어요.</p>
 
-      <label className="pr-toggle">
-        <input type="checkbox" checked={use} onChange={(e) => setUse(e.target.checked)} />
-        <div><strong>연습 기록 저장 (필수)</strong><span>연습 결과를 이 브라우저에 저장해 다음 연습에 써요.</span></div>
-      </label>
-      <label className="pr-toggle">
-        <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} />
-        <div><strong>가족과 공유 (선택)</strong><span>가족 공유 설정을 체험해요. 실제로 전송되는 기록은 없어요.</span></div>
-      </label>
-      <label className="pr-toggle">
-        <input type="checkbox" checked={research} onChange={(e) => setResearch(e.target.checked)} />
-        <div><strong>서비스 개선에 활용 (선택)</strong><span>개선 연구에 참여하는 설정을 체험해요. 이 버전에서는 기록을 수집하지 않아요.</span></div>
-      </label>
+      <div className="pr-note">
+        <strong>기억하는 방법을 배우는 연습이에요.</strong>
+        <span className="sub">질병을 판단하는 검사가 아니에요.</span>
+      </div>
+
+      <Card>
+        <label className="pr-toggle">
+          <input type="checkbox" checked={use} onChange={(e) => setUse(e.target.checked)} />
+          <span><strong>이용에 필요한 기록에 동의 (필수)</strong><span>연습 내용과 이용 조건을 이 브라우저에 기록해요.</span></span>
+        </label>
+        <label className="pr-toggle">
+          <input type="checkbox" checked={share} onChange={(e) => setShare(e.target.checked)} />
+          <span><strong>가족과 공유 (선택)</strong><span>선택하지 않아도 이용할 수 있어요. 실제로 전송되는 기록은 없어요.</span></span>
+        </label>
+        <label className="pr-toggle">
+          <input type="checkbox" checked={research} onChange={(e) => setResearch(e.target.checked)} />
+          <span><strong>서비스 개선에 활용 (선택)</strong><span>이 버전에서는 기록을 수집하지 않아요.</span></span>
+        </label>
+      </Card>
 
       {share && (
         <Card tone="lavender">
@@ -86,15 +95,15 @@ export function Prepare() {
   };
 
   return (
-    <Screen title="오늘의 기억 연습" tabs>
+    <Screen title={TITLE} tabs>
       <span className="pr-tag">시작 전 준비</span>
-      <h2 className="title">글자와 소리를 함께 확인해요.</h2>
+      <h2 className="title">글자와 소리를<br />함께 확인해요.</h2>
       <p className="sub">진행자와 천천히 따라 해 보세요.</p>
 
       <div className="web-columns pr-web-prep">
         <Card>
           <span className="pr-tag">1 글자 확인</span>
-          <p style={{ fontSize: 'calc(var(--fs) + 14px)', fontWeight: 800 }}>사과 · 우유 · 빵</p>
+          <p className="pr-words">사과 · 우유 · 빵</p>
           <p className="sub">편하게 읽을 수 있나요?</p>
           <div className="pr-two">
             <button className="chip" aria-pressed={readOk} onClick={() => setReadOk(true)}>잘 보여요</button>
@@ -103,7 +112,7 @@ export function Prepare() {
         </Card>
 
         <button className="pr-big" data-done={tapped} onClick={tap}>
-          <strong><Icon name="speaker" /> {tapped ? '잘 눌렀어요.' : '큰 버튼을 눌러 보세요.'}</strong>
+          <strong><Icon name={tapped ? 'check' : 'speaker'} /> {tapped ? '잘 눌렀어요.' : '큰 버튼을 눌러 보세요.'}</strong>
           <span className="sub">연습 점수에는 들어가지 않아요.</span>
         </button>
       </div>
@@ -118,12 +127,12 @@ export function Prepare() {
         <Link to={P.check} className="card pr-link">
           <span className="pr-ico" aria-hidden="true">A–E</span>
           <span><strong>정밀 기억력 테스트</strong><span>다섯 영역을 살펴봐요</span></span>
-          <span className="pr-go"><Icon name="back" /></span>
+          <span className="pr-chev"><Icon name="next" /></span>
         </Link>
         <Link to={P.training} className="card pr-link">
-          <span className="pr-ico" aria-hidden="true">🌱</span>
+          <span className="pr-ico" aria-hidden="true"><Icon name="sprout" /></span>
           <span><strong>단계별 훈련</strong><span>나의 단계에 맞춘 연습</span></span>
-          <span className="pr-go"><Icon name="back" /></span>
+          <span className="pr-chev"><Icon name="next" /></span>
         </Link>
       </div>
     </Screen>
@@ -144,6 +153,11 @@ export function Learn() {
 
   useEffect(() => setDemo(false), [id]);
 
+  // 설명 다시 듣기: 읽어 주고, 시범 문장을 카드에 함께 보여 준다
+  const listen = () => {
+    setDemo(true);
+    if (!speak(st.say)) toast('소리가 꺼져 있어요. 설명을 글로 보여 드릴게요.');
+  };
   const practice = () => {
     run.set((r) => ({ ...r, learned: true, strategy: id }));
     if (!run.get().startedAt || run.get().saved) startRun();
@@ -151,7 +165,7 @@ export function Learn() {
   };
 
   return (
-    <Screen title="오늘의 기억 연습" tabs>
+    <Screen title={TITLE} tabs>
       <span className="pr-tag">배우기 {idx + 1} / {STRATEGIES.length}{id === today ? ' · 오늘의 추천' : ''}</span>
       <h2 className="title pr-title">{st.title}</h2>
       <p className="sub">{st.sub}</p>
@@ -160,21 +174,21 @@ export function Learn() {
         <div className="stack">
           <div className="pr-demo">
             {st.demo.map((d) => (
-              <div className="pr-demo-row" key={d.label}><span className="em" aria-hidden="true">{d.icons}</span>{d.label}</div>
+              <div className="pr-demo-row" key={d.label}>
+                <span className="pr-icons" aria-hidden="true">{d.icons.map((n, i) => <Icon key={i} name={n} size={40} />)}</span>
+                {d.label}
+              </div>
             ))}
             <p>{demo ? st.say : st.tip}</p>
           </div>
 
-          <div className="pr-two">
-            <Button variant="secondary" onClick={() => setDemo((v) => !v)}>{demo ? '요약 보기' : '시범 보기'}</Button>
-            <Button variant="secondary" onClick={() => { if (!speak(st.say)) toast('소리가 꺼져 있어요. 설정에서 켤 수 있어요.'); }}>
-              <Icon name="speaker" /> 다시 듣기
-            </Button>
-          </div>
+          <button className="pr-row-btn" onClick={listen}>
+            <Icon name="speaker" /> 설명 다시 듣기
+          </button>
         </div>
         <div className="stack">
           <label className="stack">
-            <span className="sub">어떻게 할지 내 말로 이야기해 보세요. (적지 않아도 돼요)</span>
+            <span className="sub">어떻게 할지 진행자에게 내 말로 이야기해 보세요. 적지 않아도 괜찮아요.</span>
             <textarea className="pr-input" rows={3} value={explanation} placeholder="예: 과일은 과일끼리 묶을래요"
               onChange={(e) => run.set((r) => ({ ...r, explanation: e.target.value }))} />
           </label>
