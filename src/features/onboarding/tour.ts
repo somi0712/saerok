@@ -2,7 +2,7 @@ import type { FontSize } from '@/store/state';
 
 export const FONT_LABEL: Record<FontSize, string> = { 20: '보통', 22: '크게', 24: '아주 크게' };
 
-export const AGE_BANDS = ['50대', '60대', '70대', '80대 이상', '기타'];
+export const AGE_BANDS = ['10대', '20대', '30대', '40대', '50대', '60대', '70대', '80대', '90대', '100세 이상', '선택 안 함'];
 export const GENDERS = ['여성', '남성', '비공개'];
 export const FAMILIARITY = [
   { value: '잘 알고 있어요', desc: '나에게 맞는 방법이 있어요.' },
