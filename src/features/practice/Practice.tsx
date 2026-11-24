@@ -45,7 +45,7 @@ export function Order() {
       </>
     }>
       <span className="pr-tag">연습하기 1 / 2</span>
-      <h2 className="title">순서를 천천히<br />기억해 보세요.</h2>
+      <h2 className="title">순서를 천천히 기억해 보세요.</h2>
       <p className="sub">시간 제한은 없어요. {r.target.length}개를 하나씩 보여 드려요.</p>
       {r.strategy && <p className="eyebrow">오늘의 방법 · {strategyName(r.strategy)}</p>}
 
@@ -85,7 +85,7 @@ export function OrderPick() {
   return (
     <Screen title={TITLE} back footer={<Button onClick={() => nav(P.recall)} disabled={!full}>{full ? '다 골랐어요' : `${r.picks.length} / ${r.target.length} 골랐어요`}</Button>}>
       <span className="pr-tag">연습하기 1 / 2</span>
-      <h2 className="title">기억한 순서대로<br />그림을 눌러 주세요.</h2>
+      <h2 className="title">기억한 순서대로 그림을 눌러 주세요.</h2>
       <p className="sub">시간 제한은 없어요.</p>
 
       <div className="pr-slots" aria-label="고른 순서">
@@ -163,7 +163,7 @@ export function Recall() {
       </>
     }>
       <span className="pr-tag">연습하기 2 / 2</span>
-      <h2 className="title">조금 전에 본 내용을<br />떠올려 보세요.</h2>
+      <h2 className="title">조금 전에 본 내용을 떠올려 보세요.</h2>
       <p className="sub">순서는 몰라도 괜찮아요. 생각나는 만큼이면 돼요.</p>
 
       <div className="stack" role="radiogroup" aria-label="떠올리는 방법">

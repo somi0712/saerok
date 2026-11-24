@@ -35,6 +35,7 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   border-radius: 999px; border: 2px solid transparent;
   font-weight: 800; font-size: calc(var(--fs) + 2px); text-decoration: none; text-align: center;
+  min-width: 0;
 }
 .btn-primary { background: var(--primary); color: var(--on-primary); box-shadow: 0 8px 20px rgba(93, 85, 190, 0.28); }
 .btn-primary:active { background: var(--primary-press); }

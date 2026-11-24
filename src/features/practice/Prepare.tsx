@@ -28,7 +28,7 @@ export function Consent() {
   return (
     <Screen title="오늘의 기억 연습" back footer={<Button onClick={save} disabled={!use || (share && !check)}>확인했어요</Button>}>
       <span className="pr-tag">이용 안내</span>
-      <h2 className="title">시작하기 전에<br />함께 확인해요.</h2>
+      <h2 className="title">시작하기 전에 함께 확인해요.</h2>
       <p className="sub">새록은 기억 연습을 돕는 앱이에요. 진단이나 치료를 하지 않아요.</p>
 
       <label className="pr-toggle">
@@ -88,7 +88,7 @@ export function Prepare() {
   return (
     <Screen title="오늘의 기억 연습" tabs>
       <span className="pr-tag">시작 전 준비</span>
-      <h2 className="title">글자와 소리를<br />함께 확인해요.</h2>
+      <h2 className="title">글자와 소리를 함께 확인해요.</h2>
       <p className="sub">진행자와 천천히 따라 해 보세요.</p>
 
       <div className="web-columns pr-web-prep">

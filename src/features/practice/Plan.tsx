@@ -40,7 +40,7 @@ export function Plan() {
       </>
     }>
       <span className="pr-tag">생활에 써먹기</span>
-      <h2 className="title">배운 방법을<br />어디에 써 볼까요?</h2>
+      <h2 className="title">배운 방법을 어디에 써 볼까요?</h2>
       <p className="sub">내가 고른 목표로 이어가요.</p>
 
       {shown && (
@@ -70,7 +70,7 @@ export function Plan() {
         <span className="sub">{WEEKDAYS.filter((d) => days.includes(d)).join(' · ') || '요일을 골라 주세요'}</span>
       </Card>
 
-      <p className="sub">못 한 날이 있어도 괜찮아요.<br />계획은 언제든 바꿀 수 있어요.</p>
+      <p className="sub">못 한 날이 있어도 괜찮아요. 계획은 언제든 바꿀 수 있어요.</p>
     </Screen>
   );
 }
