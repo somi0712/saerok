@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Navigate, useLocation, useRoutes, type RouteObject } from 'react-router-dom';
 import { P } from './paths';
+import { Welcome } from './Welcome';
 import { useApp } from '@/store/state';
 import { Button, Screen, ToastHost } from '@/design/ui';
 
@@ -28,6 +29,7 @@ function Routes() {
     document.documentElement.dataset.font = String(fontSize);
   }, [fontSize]);
   const element = useRoutes([...featureRoutes, { path: '*', element: <NotReady /> }]);
+  if (!onboarded && pathname === P.home) return <Welcome />;
   if (!onboarded && !OPEN_BEFORE_ONBOARDING.some((p) => pathname.startsWith(p)) && featureRoutes.some((r) => r.path === P.start)) {
     return <Navigate to={P.start} replace />;
   }
