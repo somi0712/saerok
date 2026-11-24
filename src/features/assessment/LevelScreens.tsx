@@ -15,7 +15,7 @@ function Ladder({ level }: { level: number }) {
   return (
     <ol className="as-ladder" aria-label={`10단계 중 ${level}단계`}>
       {LEVELS.map((_, i) => (
-        <li key={i} className={i + 1 === level ? 'on' : i + 1 < level ? 'past' : ''} aria-current={i + 1 === level ? 'step' : undefined}>{i + 1}</li>
+        <li key={i} className={i + 1 === level ? 'on' : undefined} aria-current={i + 1 === level ? 'step' : undefined}>{i + 1}</li>
       ))}
     </ol>
   );
@@ -87,7 +87,7 @@ export function ResultScreen() {
         <Card tone="mint">
           <h3>가족에게 알릴지 본인이 정해요</h3>
           <p className="small">원하시면 연습 소식을 가족에게 전할 수 있어요. 가족이 제안해도, 바꾸는 건 언제나 본인이 정해요.</p>
-          <Button variant="secondary" to={P.family}>가족 공유 설정 보기</Button>
+          <Button variant="ghost" to={P.family}>가족 공유 설정 보기</Button>
         </Card>
       )}
       <p className="small">점수는 연습 방법을 고르는 데만 써요. 건강 상태를 판단하지 않아요.</p>
