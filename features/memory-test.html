@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>새록 · 기억력 테스트</title>
+<style>
+:root{--bg:#f3f1f8;--panel:#fff;--ink:#2c283d;--muted:#6b6880;--line:#e4e0ee;--brand:#5d55be;--brand-soft:#efebfa;--on-brand:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#17151f;--panel:#221f2d;--ink:#f1eff8;--muted:#a9a5bd;--line:#34304a;--brand:#9c95f0;--brand-soft:#2c2840;--on-brand:#17151f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/29px system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;word-break:keep-all}
+main{max-width:420px;margin:0 auto;padding:16px 16px 40px}
+a{color:var(--brand)}
+.back{display:inline-flex;align-items:center;min-height:56px;font-weight:600;text-decoration:none}
+.tag{display:inline-block;margin:4px 0 12px;padding:4px 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:16px;line-height:24px;font-weight:700}
+h1{font-size:30px;line-height:43px;margin:0 0 12px}
+h1:focus{outline:none}
+p{margin:0 0 16px}
+.muted{color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:24px 20px;margin-bottom:16px}
+.progress{display:flex;justify-content:space-between;font-size:16px;line-height:24px;color:var(--muted);margin-bottom:8px}
+.bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin-bottom:16px}
+.bar>i{display:block;height:100%;background:var(--brand)}
+.visual{font-size:40px;line-height:56px;text-align:center;margin:8px 0 16px;letter-spacing:4px}
+.compass{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px);justify-content:center;gap:4px;margin:8px 0 16px;font-size:34px;text-align:center}
+.compass span{display:flex;align-items:center;justify-content:center;border-radius:14px;background:var(--brand-soft)}
+.compass small{font-size:14px;line-height:18px;color:var(--muted);display:block}
+.options{display:grid;gap:12px}
+button{font:inherit;cursor:pointer;min-height:56px;border-radius:18px;padding:12px 18px;border:2px solid var(--line);background:var(--panel);color:var(--ink);text-align:left;font-weight:600}
+button:hover{border-color:var(--brand)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
+.primary{width:100%;background:var(--brand);border-color:var(--brand);color:var(--on-brand);text-align:center}
+a.primary{display:flex;align-items:center;justify-content:center;min-height:56px;border-radius:18px;text-decoration:none;font-weight:700}
+.ghost{width:100%;text-align:center;background:var(--brand-soft);border-color:transparent;color:var(--brand)}
+.hint{margin-top:16px;padding:14px 16px;border-radius:16px;background:var(--brand-soft)}
+.hint[hidden]{display:none}
+.words{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0 16px}
+.words span{padding:10px 16px;border-radius:16px;background:var(--brand-soft);font-weight:700;font-size:24px;line-height:32px}
+.score{font-size:64px;line-height:72px;font-weight:800;color:var(--brand);text-align:center;margin:8px 0}
+.mod{margin-bottom:14px}
+.mod div{display:flex;justify-content:space-between;font-size:18px;line-height:26px}
+.mod .bar{margin:6px 0 0}
+.toast{min-height:29px;text-align:center;color:var(--brand);font-weight:600;margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../index.html">← 새록 데모</a>
+  <div id="app"></div>
+</main>
+<script>
+(() => {
+  'use strict';
+  const app = document.getElementById('app');
+  const MODULES = {A: '지남력·상식', B: '에피소드 기억·회상', C: '작업 기억·정보 조작', D: '시공간·세부 인지', E: '언어 유창성'};
+  const HINT_DELAY = 10000; // Notion: 10초간 무응답 시 힌트 제공
+
+  const today = new Date();
+  const fmt = d => `${d.getMonth() + 1}월 ${d.getDate()}일 ${'일월화수목금토'[d.getDay()]}요일`;
+  const shift = n => new Date(today.getFullYear(), today.getMonth(), today.getDate() + n);
+
+  // q: 질문, a: 정답, o: 오답 보기, h: 힌트, v: 보조 그림(선택)
+  const QUESTIONS = [
+    {m: 'A', q: '오늘은 몇 월 며칠, 무슨 요일인가요?', a: fmt(today), o: [fmt(shift(-1)), fmt(shift(1)), fmt(shift(7))], h: '휴대전화나 달력의 오늘 날짜를 떠올려 보세요.'},
+    {m: 'A', q: '우편을 보낼 때 이용하는 곳은 어디인가요?', a: '우체국', o: ['약국', '은행', '시장'], h: '편지와 소포를 보내는 곳이에요.'},
+    {m: 'A', q: '추석에 주로 먹는 반달 모양의 떡은 무엇인가요?', a: '송편', o: ['절편', '인절미', '가래떡'], h: '솔잎을 깔고 쪄서 만들어요.'},
+    {m: 'B', q: '장바구니에 사과 2개, 두부 1모를 담았습니다. 물건은 모두 몇 개인가요?', a: '3개', o: ['2개', '4개', '1개'], h: '사과 개수와 두부 개수를 더해 보세요.'},
+    {m: 'B', q: '열쇠는 식탁 위, 돋보기는 서랍 안에 두었습니다. 돋보기는 어디에 있나요?', a: '서랍 안', o: ['식탁 위', '가방 속', '현관'], h: '열쇠와 다른 곳에 있어요.'},
+    {m: 'B', q: '오늘 아침 세수하고, 아침 식사하고, 약을 드셨어요. 아침 식사 바로 전에는 무엇을 하셨나요?', a: '세수', o: ['약 복용', '산책', '신문 읽기'], h: '가장 먼저 한 일이에요.'},
+    {m: 'C', q: '3 - 8 - 5 를 거꾸로 하면 어떻게 될까요?', a: '5 - 8 - 3', o: ['3 - 8 - 5', '8 - 5 - 3', '5 - 3 - 8'], h: '마지막 숫자 5부터 시작해요.'},
+    {m: 'C', q: '5000원을 내고 3200원짜리 빵을 샀습니다. 거스름돈은 얼마일까요?', a: '1800원', o: ['2800원', '1200원', '2200원'], h: '5000에서 3000을 빼고, 다시 200을 빼 보세요.'},
+    {m: 'C', q: '오후 2시 약속이 1시간 뒤로 바뀌었어요. 바뀐 약속 시간은 몇 시인가요?', a: '오후 3시', o: ['오후 1시', '오후 4시', '오후 2시'], h: '2시에 한 시간을 더해요.'},
+    {m: 'D', q: '손잡이가 왼쪽에 있는 컵을 거울에 비추면, 손잡이는 어느 쪽에 보일까요?', v: '☕', a: '오른쪽', o: ['왼쪽', '위쪽', '보이지 않아요'], h: '거울에서는 왼쪽과 오른쪽이 바뀌어 보여요.'},
+    {m: 'D', q: '동그라미 · 네모 · 동그라미 · 네모 · ? 빈칸에 들어갈 모양은 무엇일까요?', v: '● ■ ● ■ ?', a: '●', o: ['■', '▲', '★'], h: '두 모양이 번갈아 나와요.'},
+    {m: 'D', q: '집을 가운데에 두고 동서남북에 물건이 있어요. 집의 위쪽(북쪽)에 있는 것은 무엇인가요?', compass: true, a: '나무', o: ['우체통', '자동차', '의자'], h: '그림에서 집 바로 위 칸을 보세요.'},
+    {m: 'E', q: '‘기쁘다’의 반대말은 무엇일까요?', a: '슬프다', o: ['즐겁다', '신나다', '고맙다'], h: '눈물이 날 때의 기분이에요.'},
+    {m: 'E', q: '사과, 바나나, 포도를 하나로 묶어 부르는 말은 무엇일까요?', a: '과일', o: ['채소', '곡식', '반찬'], h: '나무나 덩굴에 열리는 달콤한 먹거리예요.'},
+    {m: 'E', q: '비가 와서 우산을 [  ]. 빈칸에 알맞은 말은 무엇일까요?', a: '썼다', o: ['먹었다', '읽었다', '잤다'], h: '우산을 머리 위로 펼칠 때 하는 말이에요.'},
+    // 지연 회상: 시작할 때 보여 준 세 가지
+    {m: 'B', recall: true, q: '처음에 기억해 달라고 부탁드린 세 가지는 무엇이었나요?', a: '안경 · 빨간 우산 · 3시', o: ['안경 · 파란 우산 · 3시', '시계 · 빨간 우산 · 3시', '안경 · 빨간 우산 · 5시'], h: '비 올 때 쓰는 물건은 빨간색이었어요.'},
+  ];
+
+  // 점수(100점) = 문항마다 (100 / 문항 수) × [정답이면 0.7(정확도) + 0.2 × 속도 + 0.1 × 힌트 미사용, 오답이면 0]
+  // 속도 = 5초 이내 1, 30초 이상 0, 그 사이는 직선으로 줄어듦.
+  function scoreOf(results) {
+    const per = 100 / results.length;
+    const total = results.reduce((sum, r) => {
+      if (!r.correct) return sum;
+      const speed = Math.min(1, Math.max(0, (30 - r.seconds) / 25));
+      return sum + per * (0.7 + 0.2 * speed + 0.1 * (r.hint ? 0 : 1));
+    }, 0);
+    return Math.round(total);
+  }
+
+  const shuffle = list => list.map(x => [Math.random(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  let results = [], hintTimer = 0;
+
+  function render(html) {
+    clearTimeout(hintTimer);
+    app.innerHTML = html;
+    const h = app.querySelector('h1');
+    if (h) { h.tabIndex = -1; h.focus(); }
+  }
+
+  function intro() {
+    render(`<span class="tag">데모 · 진단 도구가 아니에요</span>
+      <h1>오늘의 기억력 살펴보기</h1>
+      <div class="card">
+        <p>다섯 가지 영역에서 짧은 질문 16개를 드릴게요. 한 화면에 질문 하나씩이에요.</p>
+        <p class="muted">정답보다 편안하게 푸는 것이 더 중요해요. 10초가 지나면 힌트를 볼 수 있어요.</p>
+      </div>
+      <button class="primary" id="go">시작할게요</button>`);
+    app.querySelector('#go').onclick = memorize;
+  }
+
+  function memorize() {
+    render(`<span class="tag">먼저 기억해 주세요</span>
+      <h1>나중에 여쭤볼게요</h1>
+      <div class="card">
+        <p>아래 세 가지를 천천히 읽고 기억해 주세요.</p>
+        <div class="words"><span>👓 안경</span><span>☂️ 빨간 우산</span><span>🕒 3시</span></div>
+        <p class="muted">테스트 마지막에 다시 여쭤볼게요.</p>
+      </div>
+      <button class="primary" id="go">기억했어요</button>`);
+    app.querySelector('#go').onclick = () => ask(0);
+  }
+
+  function ask(i) {
+    if (i >= QUESTIONS.length) return finish();
+    const q = QUESTIONS[i];
+    const pct = Math.round((i / QUESTIONS.length) * 100);
+    const visual = q.compass
+      ? `<div class="compass" aria-label="가운데 집, 위쪽 나무, 오른쪽 우체통, 아래쪽 자동차, 왼쪽 의자">
+          <i></i><span>🌳<small>북</small></span><i></i>
+          <span>🪑<small>서</small></span><span>🏠</span><span>📮<small>동</small></span>
+          <i></i><span>🚗<small>남</small></span><i></i></div>`
+      : q.v ? `<div class="visual" aria-hidden="true">${esc(q.v)}</div>` : '';
+    render(`<div class="progress"><span>${q.m} · ${MODULES[q.m]}</span><span>${i + 1} / ${QUESTIONS.length}</span></div>
+      <div class="bar" aria-hidden="true"><i style="width:${pct}%"></i></div>
+      <h1>${esc(q.q)}</h1>
+      ${visual}
+      <div class="options">${shuffle([q.a, ...q.o]).map(t => `<button data-v="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+      <div id="hintZone" aria-live="polite"></div>
+      <div class="toast" id="toast" aria-live="polite"></div>`);
+    const started = performance.now();
+    let hint = false, done = false;
+    hintTimer = setTimeout(() => {
+      const zone = app.querySelector('#hintZone');
+      zone.innerHTML = `<div class="hint"><p>천천히 생각하셔도 괜찮아요.</p><button class="ghost" id="hintBtn">힌트 보기</button><p id="hintText" hidden></p></div>`;
+      zone.querySelector('#hintBtn').onclick = e => {
+        hint = true;
+        e.target.remove();
+        const t = zone.querySelector('#hintText');
+        t.textContent = '💡 ' + q.h;
+        t.hidden = false;
+      };
+    }, HINT_DELAY);
+    app.querySelectorAll('.options button').forEach(b => b.onclick = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(hintTimer);
+      results.push({m: q.m, correct: b.dataset.v === q.a, seconds: (performance.now() - started) / 1000, hint});
+      b.style.borderColor = 'var(--brand)';
+      app.querySelector('#toast').textContent = i + 1 < QUESTIONS.length ? '고마워요, 다음 질문으로 갈게요.' : '마지막까지 함께해 주셨어요!';
+      setTimeout(() => ask(i + 1), 700);
+    });
+  }
+
+  function finish() {
+    const score = scoreOf(results);
+    const mods = Object.keys(MODULES).map(m => {
+      const rs = results.filter(r => r.m === m);
+      const acc = rs.filter(r => r.correct).length / rs.length;
+      const secs = rs.reduce((s, r) => s + r.seconds, 0) / rs.length;
+      return {m, acc, secs, hints: rs.filter(r => r.hint).length};
+    });
+    const weak = mods.filter(x => x.acc < 0.6).map(x => x.m).join(',');
+    const next = `level-training.html?score=${score}&weak=${weak}`;
+    render(`<span class="tag">데모 · 진단 도구가 아니에요</span>
+      <h1>끝까지 함께해 주셔서 고마워요</h1>
+      <div class="card">
+        <p class="muted" style="text-align:center;margin:0">오늘의 연습 점수</p>
+        <div class="score">${score}<span style="font-size:24px">점</span></div>
+        <p class="muted" style="text-align:center">맞힌 문항, 푸는 속도, 힌트 사용을 함께 반영했어요.</p>
+      </div>
+      <div class="card">
+        ${mods.map(x => `<div class="mod"><div><span>${x.m} · ${MODULES[x.m]}</span><span>${Math.round(x.acc * 100)}%</span></div>
+          <div class="muted" style="font-size:16px;line-height:22px">평균 ${x.secs.toFixed(1)}초 · 힌트 ${x.hints}번</div>
+          <div class="bar" aria-hidden="true"><i style="width:${Math.round(x.acc * 100)}%"></i></div></div>`).join('')}
+        <p class="muted" style="margin:0">${weak ? '조금 더 연습하면 좋을 영역에 맞춰 훈련을 골라 드릴게요.' : '모든 영역을 고르게 잘 해내셨어요.'}</p>
+      </div>
+      <a class="primary" href="${next}">나에게 맞는 훈련 보기</a>
+      <p style="margin-top:12px"><button class="ghost" id="again">처음부터 다시 하기</button></p>`);
+    app.querySelector('#again').onclick = () => { results = []; intro(); };
+  }
+
+  intro();
+})();
+</script>
+</body>
+</html>
