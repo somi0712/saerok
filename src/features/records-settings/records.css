@@ -1,0 +1,57 @@
+.rs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rs-tag {justify-self: start; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px;
+  border-radius: 999px; background: var(--lavender-soft); font-size: var(--fs-small); font-weight: 700; }
+.rs-tag-white { background: var(--surface); }
+.card-peach { background: var(--peach); box-shadow: none; }
+.rs-big { font-size: calc(var(--fs) * 2); font-weight: 800; line-height: 1.1; }
+.rs-h { font-size: calc(var(--fs) + 2px); font-weight: 800; }
+
+/* 이번 주 요일 동그라미 */
+.rs-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; list-style: none; margin: 0; padding: 0; }
+.rs-days li { display: grid; justify-items: center; gap: 6px; font-size: var(--fs-small); }
+.rs-dot { width: 100%; max-width: 48px; aspect-ratio: 1; border-radius: 50%; background: var(--surface);
+  display: grid; place-items: center; color: #fff; }
+.rs-dot.on { background: var(--ink); }
+
+/* 주별 막대 */
+.rs-bars { display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); gap: 12px; align-items: end; min-height: 180px;
+  list-style: none; margin: 0; padding: 0; }
+.rs-bars li { display: grid; justify-items: center; gap: 6px; font-size: var(--fs-small); text-align: center; }
+.rs-bars b { font-weight: 800; color: var(--ink); }
+.rs-bar { width: 100%; min-height: 8px; border-radius: 16px; background: var(--lavender); }
+.rs-bars li.now .rs-bar { background: var(--primary); }
+.rs-bars li.now { color: var(--primary); font-weight: 700; }
+
+.rs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.rs-list li { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: baseline; }
+.rs-list .when { color: var(--muted); font-size: var(--fs-small); }
+.rs-list .what { font-weight: 700; min-width: 0; }
+.rs-list .res { color: var(--primary); font-weight: 700; font-size: var(--fs-small); }
+.rs-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.rs-chips .chip { background: var(--surface); color: var(--ink); }
+
+/* 선택 버튼 줄 (글자 크기, 속도) */
+.rs-seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.rs-seg button { min-height: var(--tap); border-radius: 18px; border: 2px solid var(--line); background: var(--surface); font-weight: 700; }
+.rs-seg button[aria-pressed='true'] { border-color: var(--primary); background: var(--lavender-soft); color: var(--primary); }
+.rs-divider { border: 0; border-top: 1px solid var(--line); margin: 4px 0; width: 100%; }
+.rs-check { display: flex; align-items: center; gap: 14px; min-height: var(--tap); }
+.rs-check input { width: 28px; height: 28px; accent-color: var(--primary); flex: none; }
+.rs-phone { font-size: calc(var(--fs) + 6px); font-weight: 800; user-select: all; }
+.rs-confirm { border: 2px solid var(--danger); }
+
+/* 일기 */
+.rs-entry img { border-radius: 18px; max-height: 260px; object-fit: cover; width: 100%; }
+.rs-entry audio { width: 100%; }
+.rs-text { width: 100%; min-height: 140px; padding: 16px; border-radius: 20px; border: 2px solid var(--line); background: var(--surface); resize: vertical; line-height: 1.5; }
+.rs-text:focus { border-color: var(--primary); outline: none; }
+.rs-file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.rs-label { font-weight: 700; }
+
+/* 가족 화면 */
+.rs-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--lavender-soft); padding: 6px; border-radius: 999px; }
+.rs-switch button { min-height: var(--tap); border: 0; border-radius: 999px; background: transparent; font-weight: 700; color: var(--muted); }
+.rs-switch button[aria-pressed='true'] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.rs-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; min-height: 140px; list-style: none; margin: 0; padding: 0; }
+.rs-week li { display: grid; justify-items: center; gap: 4px; font-size: calc(var(--fs-small) - 2px); text-align: center; }
+.rs-alert { border: 2px solid #f0b37e; background: #fff6ec; box-shadow: none; }
