@@ -163,8 +163,8 @@ export function Ring({ value, total, size = 96 }: { value: number; total: number
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label={`${total}번 중 ${value}번`}>
       <circle cx="50" cy="50" r={r} fill="none" stroke="var(--lavender)" strokeWidth="10" />
-      <circle cx="50" cy="50" r={r} fill="none" stroke="var(--primary)" strokeWidth="10" strokeLinecap="round"
-        strokeDasharray={`${c * pct} ${c}`} transform="rotate(-90 50 50)" />
+      {pct > 0 && <circle cx="50" cy="50" r={r} fill="none" stroke="var(--primary)" strokeWidth="10" strokeLinecap="round"
+        strokeDasharray={`${c * pct} ${c}`} transform="rotate(-90 50 50)" />}
       <text x="50" y="57" textAnchor="middle" fontSize="22" fontWeight="800" fill="var(--ink)">{value}/{total}</text>
     </svg>
   );

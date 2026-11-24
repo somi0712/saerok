@@ -76,10 +76,20 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
   }
+  .pr-home-grid .card {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: none;
+  }
   .pr-home-grid .pr-pet {
+    background: var(--lavender-soft);
     grid-template-columns: minmax(0, 1fr) auto;
     padding: 24px;
   }
   .pr-home-grid .pr-pet img { position: static; width: 120px; height: 120px; }
-  .pr-home-grid .pr-week { display: grid; }
+  .pr-home-grid .pr-week { display: grid; font-variant-numeric: tabular-nums; }
+  .pr-home-grid .pr-link .pr-ico { border-radius: 12px; background: var(--bg); }
+  .pr-home-grid .pr-link strong { color: var(--ink); font-weight: 600; }
+  .pr-home-grid .pr-link:hover, .pr-home-grid .pr-pet:hover { border-color: var(--primary); }
+  .pr-home-actions .btn { border-radius: 16px; font-weight: 600; box-shadow: none; }
 }

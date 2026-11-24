@@ -81,6 +81,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
 .site-header { display: none; }
 
 @media (min-width: 900px) {
+  body { background: #fcfbf9; }
   .site-header {
     display: block;
     background: var(--surface);

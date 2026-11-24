@@ -13,7 +13,7 @@ const SIX_DAYS = 6 * 86_400_000;
 export function Home() {
   const s = useApp();
   const reviewedAt = useRun((r) => r.reviewedAt);
-  const hello = s.profile.name ? `${s.profile.name}님, 반가워요.` : '반가워요.';
+  const heading = s.profile.name ? `${s.profile.name}님의 기억 연습` : '오늘의 기억 연습';
   const days = s.plan.days.length ? s.plan.days : DEFAULT_DAYS;
   const done = practicedWeekdays(s.sessions);
   // 계획한 요일 + 계획 밖에 연습한 요일도 함께 보여 준다
@@ -30,7 +30,7 @@ export function Home() {
   return (
     <Screen brand tabs>
       <div className="stack" style={{ gap: 4 }}>
-        <h1 className="title">{hello}</h1>
+        <h1 className="title">{heading}</h1>
         {!s.member && <p className="sub">로그인 없이 체험 중</p>}
       </div>
 
@@ -75,9 +75,9 @@ export function Home() {
         </div>
 
         <Link to={P.talk} className="card pr-link">
-          <span className="pr-ico" aria-hidden="true">💬</span>
+          <span className="pr-ico" aria-hidden="true"><Icon name="mic" size={22} /></span>
           <span><strong>기억 친구와 이야기하기</strong><span>천천히 말하는 대화로 오늘을 떠올려요</span></span>
-          <Icon name="mic" />
+          <span className="pr-go"><Icon name="back" /></span>
         </Link>
 
         {last ? (
