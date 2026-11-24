@@ -63,3 +63,40 @@
 .pr-pet .stack { min-width: 0; }
 :root[data-font='22'] .pr-pet, :root[data-font='24'] .pr-pet { grid-template-columns: 1fr; padding-bottom: 28px; }
 :root[data-font='22'] .pr-pet img, :root[data-font='24'] .pr-pet img { position: absolute; right: 16px; bottom: 12px; width: 88px; height: 88px; }
+
+.pr-home-grid, .pr-home-actions { display: grid; gap: 20px; }
+
+@media (min-width: 768px) {
+  .pr-home-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .pr-home-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .pr-home-grid .card {
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: none;
+  }
+  .pr-home-grid .pr-pet {
+    background: var(--lavender-soft);
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 24px;
+  }
+  .pr-home-grid .pr-pet img { position: static; width: 120px; height: 120px; }
+  .pr-home-grid .pr-week { display: grid; font-variant-numeric: tabular-nums; }
+  .pr-home-grid .pr-link .pr-ico { border-radius: 12px; background: var(--bg); }
+  .pr-home-grid .pr-link strong { color: var(--ink); font-weight: 600; }
+  .pr-home-grid .pr-link:hover, .pr-home-grid .pr-pet:hover { border-color: var(--primary); }
+  .pr-home-actions .btn { border-radius: 16px; font-weight: 600; box-shadow: none; }
+}
+
+@media (min-width: 768px) {
+  .pr-web-extras { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .pr-web-extras > strong { grid-column: 1 / -1; }
+  .pr-web-prep > .pr-big { align-content: center; }
+  .pr-web-learn { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+}

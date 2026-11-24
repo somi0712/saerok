@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { P, TABS } from '@/app/paths';
-import type { PetKind } from '@/store/state';
+import { useApp, type PetKind } from '@/store/state';
 import './ui.css';
 
 type IconName = 'home' | 'book' | 'grid' | 'chart' | 'gear' | 'help' | 'back' | 'check' | 'calendar' | 'mic' | 'speaker' | 'close';
@@ -53,7 +53,7 @@ export function Screen({ title, back, brand, tabs, help = true, footer, children
     window.scrollTo(0, 0);
   }, [title]);
   return (
-    <div className="screen">
+    <div className={brand ? "screen screen-wide" : "screen"}>
       <header className="screen-top">
         {back && (
           <button className="icon-btn" aria-label="뒤로" onClick={() => (typeof back === 'string' ? nav(back) : nav(-1))}>
@@ -72,7 +72,7 @@ export function Screen({ title, back, brand, tabs, help = true, footer, children
           </Link>
         )}
       </header>
-      <main className="screen-body">{children}</main>
+      <main className="screen-body" id="main-content" tabIndex={-1}>{children}</main>
       {footer && <div className="screen-foot">{footer}</div>}
       {tabs && <TabBar />}
     </div>
@@ -81,12 +81,37 @@ export function Screen({ title, back, brand, tabs, help = true, footer, children
 
 const TAB_ICON = { home: 'home', book: 'book', grid: 'grid', chart: 'chart' } as const;
 
-export function TabBar() {
+export function SiteHeader() {
+  const onboarded = useApp((state) => state.onboarded);
+
   return (
-    <nav className="tabbar" aria-label="주요 메뉴">
+    <header className="site-header">
+      <div className="site-header-inner">
+        <a className="site-skip" href="#main-content">본문으로 건너뛰기</a>
+        <Link className="site-brand" to={P.home}>
+          <img src="/icon.svg" alt="" width="34" height="34" />
+          새록
+        </Link>
+        {onboarded && (
+          <>
+            <TabBar desktop />
+            <div className="site-account">
+              <Link to={P.settings}>설정</Link>
+              <Link to={P.help}>도움</Link>
+            </div>
+          </>
+        )}
+      </div>
+    </header>
+  );
+}
+
+export function TabBar({ desktop = false }: { desktop?: boolean }) {
+  return (
+    <nav className={desktop ? "site-nav" : "tabbar"} aria-label="주요 메뉴">
       {TABS.map((t) => (
         <NavLink key={t.to} to={t.to} end={t.to === P.home} className={({ isActive }) => (isActive ? 'active' : undefined)}>
-          <Icon name={TAB_ICON[t.icon]} />
+          {!desktop && <Icon name={TAB_ICON[t.icon]} />}
           {t.label}
         </NavLink>
       ))}
@@ -138,8 +163,8 @@ export function Ring({ value, total, size = 96 }: { value: number; total: number
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label={`${total}번 중 ${value}번`}>
       <circle cx="50" cy="50" r={r} fill="none" stroke="var(--lavender)" strokeWidth="10" />
-      <circle cx="50" cy="50" r={r} fill="none" stroke="var(--primary)" strokeWidth="10" strokeLinecap="round"
-        strokeDasharray={`${c * pct} ${c}`} transform="rotate(-90 50 50)" />
+      {pct > 0 && <circle cx="50" cy="50" r={r} fill="none" stroke="var(--primary)" strokeWidth="10" strokeLinecap="round"
+        strokeDasharray={`${c * pct} ${c}`} transform="rotate(-90 50 50)" />}
       <text x="50" y="57" textAnchor="middle" fontSize="22" fontWeight="800" fill="var(--ink)">{value}/{total}</text>
     </svg>
   );

@@ -77,3 +77,79 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
   font-size: var(--fs-small); z-index: 50; box-shadow: var(--shadow); }
 .demo-badge { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-small); color: var(--primary); font-weight: 700; }
 .demo-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #f08a5d; }
+
+.site-header { display: none; }
+.web-columns, .web-actions { display: grid; gap: 20px; }
+
+@media (min-width: 600px) and (max-width: 767px) {
+  .screen { max-width: none; padding-inline: 24px; }
+}
+
+@media (min-width: 768px) {
+  body { background: #fcfbf9; }
+  .site-header {
+    display: block;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header-inner {
+    max-width: 1440px;
+    min-height: 76px;
+    margin-inline: auto;
+    padding-inline: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 40px;
+  }
+  .site-brand, .site-nav a, .site-account a {
+    display: inline-flex;
+    align-items: center;
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+    min-height: var(--tap);
+  }
+  .site-brand { gap: 10px; font-size: calc(var(--fs) + 4px); }
+  .site-nav, .site-account { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+  .site-nav a { border-bottom: 3px solid transparent; padding: 3px 10px 0; }
+  .site-nav a.active { border-color: var(--primary); color: var(--primary); }
+  .site-nav a:hover, .site-account a:hover { color: var(--primary); }
+  .site-account { margin-inline-start: auto; }
+  .site-skip {
+    position: absolute;
+    z-index: 5;
+    top: 8px;
+    left: 8px;
+    padding: 8px 16px;
+    background: var(--surface);
+    transform: translateY(-150%);
+  }
+  .site-skip:focus { transform: none; }
+
+  .screen {
+    width: 100%;
+    max-width: 1440px;
+    min-height: calc(100% - 77px);
+    background: transparent;
+    padding: 20px 32px 0;
+  }
+  .screen-wide { padding-top: 36px; }
+  .screen-wide > .screen-top, .screen > .tabbar { display: none; }
+  .screen-top h1 { font-size: calc(var(--fs) + 10px); }
+  .screen-body { flex: 0 1 auto; gap: 24px; padding-block: 16px 32px; }
+  .web-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .web-actions { display: flex; flex-wrap: wrap; }
+  .web-actions > .btn { width: auto; }
+  .screen-foot {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-bottom: 32px;
+    background: transparent;
+  }
+  .screen-foot > .btn { width: auto; }
+  .screen-foot > .small { flex-basis: 100%; }
+  .toast { bottom: 32px; }
+}
