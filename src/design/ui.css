@@ -79,7 +79,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
 .demo-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #f08a5d; }
 
 .site-header { display: none; }
-.web-columns, .web-actions { display: grid; gap: 20px; }
+.web-columns, .web-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
 
 @media (min-width: 600px) and (max-width: 767px) {
   .screen { max-width: none; padding-inline: 24px; }
