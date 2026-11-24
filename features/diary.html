@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>새록 기억 일기장</title>
+<style>
+:root{--bg:#f3f1f8;--panel:#fff;--ink:#2c283d;--muted:#6b6880;--line:#e4e0ee;--brand:#5d55be;--brand-soft:#efebfa;--on-brand:#fff;--danger:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#17151f;--panel:#221f2d;--ink:#f1eff8;--muted:#a9a5bd;--line:#34304a;--brand:#9c95f0;--brand-soft:#2c2840;--on-brand:#17151f;--danger:#ffb4ab}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/29px system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+main{max-width:420px;margin:0 auto;padding:16px 16px 48px}
+a{color:var(--brand)}
+.back{display:inline-flex;align-items:center;min-height:56px;font-weight:600;text-decoration:none}
+h1{font-size:30px;line-height:43px;margin:8px 0 4px}
+h2{font-size:24px;line-height:34px;margin:0 0 12px}
+.note{color:var(--muted);font-size:17px;line-height:25px;margin:0 0 20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:16px}
+fieldset{border:0;padding:0;margin:0 0 16px}
+legend,label.lbl{display:block;font-weight:700;margin-bottom:8px;padding:0}
+.moods{display:flex;flex-wrap:wrap;gap:8px}
+button,.filebtn{font:inherit;min-height:56px;border-radius:16px;border:2px solid var(--line);background:var(--panel);color:var(--ink);padding:0 18px;cursor:pointer}
+.moods button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand);font-weight:700}
+.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand);font-weight:700;width:100%}
+.ghost{background:var(--brand-soft);border-color:var(--brand-soft)}
+button:focus-visible,textarea:focus-visible,.filebtn:focus-within{outline:3px solid var(--brand);outline-offset:3px}
+textarea{width:100%;min-height:140px;font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:16px;padding:14px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.filebtn{display:inline-flex;align-items:center;background:var(--brand-soft);border-color:var(--brand-soft)}
+.filebtn input{position:absolute;opacity:0;width:1px;height:1px}
+.preview{margin:0 0 16px}
+.preview img,.entry img{display:block;max-width:100%;border-radius:14px;margin-top:8px}
+audio{width:100%;margin-top:8px}
+.rec{color:var(--danger);font-weight:700}
+.entry header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.date{color:var(--muted);font-size:17px}
+.chip{display:inline-block;background:var(--brand-soft);color:var(--ink);border-radius:999px;padding:2px 14px;font-size:17px;font-weight:700}
+.entry p{margin:10px 0 0;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
+.del{margin-top:12px;color:var(--danger);border-color:var(--line)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:388px;width:calc(100% - 32px);background:var(--ink);color:var(--bg);border-radius:16px;padding:14px 18px;font-size:18px;line-height:26px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="../index.html">← 새록 데모</a>
+<h1>기억 일기장</h1>
+<p class="note">데모 · 기록은 이 브라우저에만 저장돼요</p>
+
+<form class="card" id="form" novalidate>
+  <h2>오늘 기록하기</h2>
+  <fieldset>
+    <legend>오늘 기분은 어떠세요?</legend>
+    <div class="moods" id="moods"></div>
+  </fieldset>
+  <label class="lbl" for="text">오늘 가장 기억에 남는 일은 무엇이었나요?</label>
+  <textarea id="text" placeholder="천천히 떠오르는 대로 적어 주세요."></textarea>
+  <div class="row" style="margin-top:16px">
+    <label class="filebtn">사진 넣기<input type="file" id="photo" accept="image/*" capture></label>
+    <button type="button" class="ghost" id="recBtn" hidden>음성 메모 녹음</button>
+  </div>
+  <div class="preview" id="preview" aria-live="polite"></div>
+  <button type="submit" class="primary">기록 저장하기</button>
+</form>
+
+<h2>지난 기록</h2>
+<div id="list"></div>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  'use strict';
+  // ponytail: localStorage (~5MB per origin) is the ceiling for photos and voice memos; move entries to a real backend + file storage when this becomes more than a demo.
+  const KEY = 'saerok-diary';
+  const MOODS = ['상쾌해요', '편안해요', '그저 그래요', '피곤해요', '속상해요'];
+  const $ = id => document.getElementById(id);
+  const day = n => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString(); };
+  const SEED = [
+    {id: 's2', date: day(1), mood: '편안해요', text: '오후 3시에 복지관에서 친구 영자를 만났다. 같이 국화차를 마시며 옛날 시장 이야기를 했다.'},
+    {id: 's1', date: day(3), mood: '상쾌해요', text: '시장에서 가을 사과를 두 개 샀다. 아삭하고 달아서 손주 생각이 났다.'}
+  ];
+  let entries, draft = {mood: '', photo: '', voice: ''}, toastTimer;
+
+  try { entries = JSON.parse(localStorage.getItem(KEY)); } catch (_) { entries = null; }
+  if (!Array.isArray(entries)) entries = SEED.slice();
+
+  function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('on');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 4500);
+  }
+  function persist() {
+    try { localStorage.setItem(KEY, JSON.stringify(entries)); return true; }
+    catch (e) { return false; }
+  }
+
+  // Mood chips
+  MOODS.forEach(m => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = m; b.setAttribute('aria-pressed', 'false');
+    b.onclick = () => {
+      draft.mood = draft.mood === m ? '' : m;
+      $('moods').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.textContent === draft.mood)));
+    };
+    $('moods').append(b);
+  });
+
+  function renderPreview() {
+    const p = $('preview'); p.replaceChildren();
+    if (draft.photo) {
+      const img = new Image(); img.src = draft.photo; img.alt = '넣은 사진 미리보기';
+      const rm = document.createElement('button'); rm.type = 'button'; rm.textContent = '사진 빼기';
+      rm.onclick = () => { draft.photo = ''; $('photo').value = ''; renderPreview(); };
+      p.append(img, rm);
+    }
+    if (draft.voice) {
+      const a = document.createElement('audio'); a.controls = true; a.src = draft.voice;
+      const rm = document.createElement('button'); rm.type = 'button'; rm.textContent = '음성 메모 빼기';
+      rm.onclick = () => { draft.voice = ''; renderPreview(); };
+      p.append(a, rm);
+    }
+  }
+
+  // Photo: downscale to max 480px JPEG
+  $('photo').onchange = e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, 480 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      draft.photo = c.toDataURL('image/jpeg', 0.8);
+      URL.revokeObjectURL(url); renderPreview();
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); toast('사진을 열지 못했어요. 다른 사진으로 해 볼까요?'); };
+    img.src = url;
+  };
+
+  // Voice memo: up to 60s
+  const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  const recBtn = $('recBtn');
+  if (canRecord) recBtn.hidden = false;
+  let rec = null, tick = null;
+  recBtn.onclick = async () => {
+    if (rec) { rec.stop(); return; }
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({audio: true}); }
+    catch (_) { toast('마이크를 쓸 수 없어요. 글로 남겨 주셔도 괜찮아요.'); return; }
+    const chunks = []; let left = 60;
+    rec = new MediaRecorder(stream);
+    rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+    rec.onstop = () => {
+      clearInterval(tick); stream.getTracks().forEach(t => t.stop());
+      recBtn.textContent = '음성 메모 녹음'; recBtn.classList.remove('rec'); rec = null;
+      const r = new FileReader();
+      r.onload = () => { draft.voice = r.result; renderPreview(); };
+      r.readAsDataURL(new Blob(chunks, {type: chunks[0] ? chunks[0].type : 'audio/webm'}));
+    };
+    rec.start();
+    recBtn.classList.add('rec'); recBtn.textContent = '녹음 멈추기 · 60초';
+    tick = setInterval(() => {
+      left -= 1; recBtn.textContent = '녹음 멈추기 · ' + left + '초';
+      if (left <= 0 && rec) rec.stop();
+    }, 1000);
+  };
+
+  function render() {
+    const list = $('list'); list.replaceChildren();
+    if (!entries.length) {
+      const p = document.createElement('p'); p.className = 'note'; p.textContent = '아직 기록이 없어요. 오늘 하루를 한 줄만 남겨 볼까요?';
+      list.append(p); return;
+    }
+    entries.slice().sort((a, b) => b.date.localeCompare(a.date)).forEach(en => {
+      const art = document.createElement('article'); art.className = 'card entry';
+      const head = document.createElement('header');
+      const d = document.createElement('time'); d.className = 'date'; d.dateTime = en.date;
+      d.textContent = new Date(en.date).toLocaleDateString('ko-KR', {month: 'long', day: 'numeric', weekday: 'long'});
+      head.append(d);
+      if (en.mood) { const c = document.createElement('span'); c.className = 'chip'; c.textContent = en.mood; head.append(c); }
+      art.append(head);
+      if (en.text) { const p = document.createElement('p'); p.textContent = en.text; art.append(p); }
+      if (en.photo) { const img = new Image(); img.src = en.photo; img.alt = '기록에 넣은 사진'; img.loading = 'lazy'; art.append(img); }
+      if (en.voice) { const a = document.createElement('audio'); a.controls = true; a.src = en.voice; a.setAttribute('aria-label', '음성 메모'); art.append(a); }
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = '이 기록 지우기';
+      del.onclick = () => {
+        if (!confirm('이 기록을 지울까요? 지운 기록은 다시 볼 수 없어요.')) return;
+        const before = entries;
+        entries = entries.filter(x => x.id !== en.id);
+        if (!persist()) { entries = before; toast('지우지 못했어요. 잠시 뒤 다시 해 주세요.'); return; }
+        render(); toast('기록을 지웠어요.');
+      };
+      art.append(del); list.append(art);
+    });
+  }
+
+  $('form').onsubmit = e => {
+    e.preventDefault();
+    const text = $('text').value.trim();
+    if (!text && !draft.mood && !draft.photo && !draft.voice) { toast('기분을 고르거나 한 줄만 적어 주세요.'); return; }
+    const entry = {id: String(Date.now()), date: new Date().toISOString(), mood: draft.mood, text, photo: draft.photo, voice: draft.voice};
+    entries.push(entry);
+    if (!persist()) {
+      // Keep the form as typed so nothing is lost.
+      entries.pop();
+      toast('저장 공간이 가득 차서 저장하지 못했어요. 사진이나 음성 메모를 빼고 다시 저장해 보세요. 적으신 글은 그대로 있어요.');
+      return;
+    }
+    draft = {mood: '', photo: '', voice: ''};
+    $('text').value = ''; $('photo').value = '';
+    $('moods').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+    renderPreview(); render(); toast('오늘의 기록을 남겼어요. 잘하셨어요!');
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
