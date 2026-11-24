@@ -46,3 +46,9 @@ design/         Figma 시안·유저 플로우·정보 구조·와이어프레�
 - `main` 은 PR 로만 바뀌고, 저장소 소유자(@somi0712) 승인 후 머지돼요.
 - 브랜치 → PR → CI(타입 검사·테스트·빌드) 통과 → 승인 → 머지 → 자동 배포.
 - 시안 화면 번호와 노션 근거를 PR 에 적어 주세요.
+
+### Codex 코드 리뷰
+
+[Codex 코드 리뷰 설정](https://chatgpt.com/codex/cloud/settings/code-review)에서
+`somi0712/saerok`을 선택해 자동 리뷰를 설정할 수 있어요. 수동으로 요청하려면
+GitHub PR 댓글에 `@codex review`를 남겨요. 저장소의 리뷰 기준은 [AGENTS.md](AGENTS.md)에 있어요.
