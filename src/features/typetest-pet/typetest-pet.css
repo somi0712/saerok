@@ -38,3 +38,8 @@
 .tp-pill { min-height: 44px; padding: 0 24px; display: inline-flex; align-items: center; border-radius: 999px;
   background: var(--surface); font-weight: 700; }
 .tp-seeds { font-size: calc(var(--fs) + 6px); font-weight: 800; }
+
+@media (min-width: 768px) {
+  .tp-pets { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tp-pets .tp-pet { grid-template-columns: 1fr; }
+}

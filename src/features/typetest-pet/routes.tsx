@@ -9,6 +9,7 @@ export const routes: RouteObject[] = [
   { path: P.typePrepView, element: <TypePrepView /> },
   { path: P.typePrepFind, element: <TypePrepFind /> },
   { path: P.typeResult, element: <TypeResult /> },
+  { path: P.startPet, element: <PetPick firstVisit /> },
   { path: P.petPick, element: <PetPick /> },
   { path: P.petCare, element: <PetCare /> },
   { path: P.petGrowth, element: <PetGrowth /> },

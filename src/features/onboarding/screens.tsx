@@ -13,7 +13,6 @@ import './onboarding.css';
 // 이 화면들에서는 상단 도움 버튼을 숨긴다 (help={false}).
 
 const fromSettings = (q: URLSearchParams) => q.get('from') === 'settings';
-const start = () => app.set((s) => ({ ...s, onboarded: true }));
 
 /** 13 로그인과 데모 시작 */
 export function StartScreen() {
@@ -143,13 +142,12 @@ function Summary({ rows }: { rows: [string, string][] }) {
 
 /** 28 준비 완료 · 예제 데이터 */
 export function ReadyScreen() {
-  const nav = useNavigate();
   const { profile, settings } = useApp();
   return (
     <Screen title="나의 기억 연습" back help={false}
       footer={<>
         <Button to={P.tourHome}>예제 데이터로 둘러보기</Button>
-        <Button variant="secondary" onClick={() => { start(); nav(P.home); }}>바로 시작하기</Button>
+        <Button variant="secondary" to={P.startPet}>기억 친구 고르고 시작하기</Button>
         <Button variant="ghost" to={P.start}>처음부터 다시 고르기</Button>
       </>}>
       <span className="chip ob-chip">준비 완료</span>
@@ -179,14 +177,13 @@ export function ReadyScreen() {
 
 /** 29 예제 홈 · 한눈에 보기 */
 export function TourHomeScreen() {
-  const nav = useNavigate();
   const name = useApp((s) => s.profile.name) || '정희';
   const now = new Date();
   const today = todayIndex(now);
   return (
     <Screen title="예제 둘러보기" back help={false}
       footer={<>
-        <Button onClick={() => { start(); nav(P.practice); }}>오늘의 연습 시작하기</Button>
+        <Button to={P.startPet + '?next=practice'}>오늘의 연습 시작하기</Button>
         <Button variant="secondary" to={P.tourRecord}>4주 기록 살펴보기</Button>
       </>}>
       <span className="ob-badge">체험 모드 · 예제 데이터로 둘러보는 중</span>

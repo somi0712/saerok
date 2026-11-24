@@ -6,6 +6,7 @@ export const P = {
   fontSize: '/start/font', //       14 글자 크기 선택
   profile: '/start/profile', //     15 이름·연령대·성별
   method: '/start/method', //       16 나를 아는 정도 (기억 방법 친숙도)
+  startPet: '/start/pet',
   ready: '/start/ready', //         28 준비 완료 · 예제 데이터
   tourHome: '/tour', //             29 예제 홈 · 한눈에 보기
   tourRecord: '/tour/record', //    30 예제 기록 · 4주 흐름
