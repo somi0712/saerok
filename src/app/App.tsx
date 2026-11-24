@@ -18,7 +18,7 @@ function NotReady() {
   );
 }
 
-const OPEN_BEFORE_ONBOARDING = [P.start, '/tour'];
+const OPEN_BEFORE_ONBOARDING = [P.start, '/tour', P.help];
 
 function Routes() {
   const onboarded = useApp((s) => s.onboarded);

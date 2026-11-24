@@ -49,7 +49,7 @@ interface ScreenProps {
 export function Screen({ title, back, brand, tabs, help = true, footer, children }: ScreenProps) {
   const nav = useNavigate();
   useEffect(() => {
-    document.title = title ? `${title} · 새록` : '새록';
+    document.title = title && title !== '새록' ? `${title} · 새록` : '새록';
     window.scrollTo(0, 0);
   }, [title]);
   return (
