@@ -4,7 +4,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, #f1ecfc 0%, #fbfbff 55%);
+  background: var(--bg);
   padding: env(safe-area-inset-top, 0px) max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px));
 }
 .screen-top {
@@ -46,7 +46,7 @@
 .card { background: var(--surface); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); display: grid; gap: 12px; }
 .card-lavender { background: var(--lavender-soft); box-shadow: none; }
 .card-mint { background: var(--mint); box-shadow: none; }
-.card-pet { background: linear-gradient(135deg, #e3dcf9 0%, #f4dce7 55%, #fde6d2 100%); }
+.card-pet { background: var(--pet-panel); }
 
 .choice {
   width: 100%; min-height: 72px; padding: 16px 20px; text-align: left;
@@ -87,7 +87,7 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
 }
 
 @media (min-width: 768px) {
-  body { background: #fcfbf9; }
+  body { background: var(--web-bg); }
   .site-header {
     display: block;
     background: var(--surface);

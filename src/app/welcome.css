@@ -1,4 +1,4 @@
-.welcome { min-height: 100%; background: #fcfbf9; }
+.welcome { min-height: 100%; background: var(--web-bg); }
 .welcome-container { max-width: 1280px; margin-inline: auto; padding-inline: clamp(20px, 4vw, 56px); }
 .welcome-header { border-bottom: 1px solid var(--line); background: var(--surface); }
 .welcome-header .welcome-container {

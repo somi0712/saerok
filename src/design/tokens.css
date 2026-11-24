@@ -15,6 +15,8 @@
   --line: #dcd7ea;
   --surface: #ffffff;
   --bg: #f6f4fc;
+  --web-bg: #fcfbf9;
+  --pet-panel: #f0ebfa;
   --danger: #b3405a;
   --ok: #2f7d5b;
 
@@ -33,6 +35,31 @@
 :root[data-font='22'] { --fs: 18px; }
 :root[data-font='24'] { --fs: 20px; }
 
+:root[data-pet='saebom'] {
+  --primary: #2d6b52;
+  --primary-press: #1f523e;
+  --lavender: #d9ebdf;
+  --lavender-soft: #eaf4ed;
+  --ink: #23352d;
+  --muted: #51695b;
+  --line: #d2e2d7;
+  --bg: #f2f7f3;
+  --web-bg: #f7faf7;
+  --pet-panel: #e3f2e7;
+}
+:root[data-pet='banjjak'] {
+  --primary: #8b4d24;
+  --primary-press: #6c3717;
+  --lavender: #f5e4d1;
+  --lavender-soft: #fbf0e3;
+  --ink: #382a24;
+  --muted: #6f5b4d;
+  --line: #ebdccb;
+  --bg: #faf5ee;
+  --web-bg: #fcf9f3;
+  --pet-panel: #f8ead7;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 html, body, #root { height: 100%; }
 body {
@@ -50,5 +77,30 @@ button { cursor: pointer; }
 img { max-width: 100%; }
 h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  :root[data-pet='saebom'] {
+  --primary: #2d6b52;
+  --primary-press: #1f523e;
+  --lavender: #d9ebdf;
+  --lavender-soft: #eaf4ed;
+  --ink: #23352d;
+  --muted: #51695b;
+  --line: #d2e2d7;
+  --bg: #f2f7f3;
+  --web-bg: #f7faf7;
+  --pet-panel: #e3f2e7;
+}
+:root[data-pet='banjjak'] {
+  --primary: #8b4d24;
+  --primary-press: #6c3717;
+  --lavender: #f5e4d1;
+  --lavender-soft: #fbf0e3;
+  --ink: #382a24;
+  --muted: #6f5b4d;
+  --line: #ebdccb;
+  --bg: #faf5ee;
+  --web-bg: #fcf9f3;
+  --pet-panel: #f8ead7;
+}
+
+*, *::before, *::after { animation: none !important; transition: none !important; }
 }

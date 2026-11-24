@@ -24,10 +24,16 @@ const OPEN_BEFORE_ONBOARDING = [P.start, '/tour', P.help];
 function Routes() {
   const onboarded = useApp((s) => s.onboarded);
   const fontSize = useApp((s) => s.settings.fontSize);
+  const pet = useApp((s) => s.pet.kind);
   const { pathname } = useLocation();
   useEffect(() => {
     document.documentElement.dataset.font = String(fontSize);
   }, [fontSize]);
+  useEffect(() => {
+    document.documentElement.dataset.pet = pet ?? 'mongle';
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
+  }, [pet]);
   const element = useRoutes([...featureRoutes, { path: '*', element: <NotReady /> }]);
   if (!onboarded && pathname === P.home) return <Welcome />;
   if (!onboarded && !OPEN_BEFORE_ONBOARDING.some((p) => pathname.startsWith(p)) && featureRoutes.some((r) => r.path === P.start)) {
