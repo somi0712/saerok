@@ -30,7 +30,6 @@ export function Order() {
   }, [r.saved, r.target.length]);
 
   if (r.target.length === 0) return null;
-  const item = itemById(r.target[idx]);
   const last = idx === r.target.length - 1;
   const replay = () => {
     run.set((p) => ({ ...p, views: p.views + 1 }));
@@ -40,28 +39,33 @@ export function Order() {
   return (
     <Screen title={TITLE} back footer={
       <>
-        {last ? <Button onClick={() => nav(P.orderPick)}>다 봤어요 · 순서대로 고르기</Button>
+        {last ? <Button onClick={() => nav(P.orderPick)}>기억했어요 · 다음으로</Button>
           : <Button onClick={() => setIdx(idx + 1)}>다음 물건 보기</Button>}
         <Button variant="secondary" to={P.help}>잠시 쉬기</Button>
       </>
     }>
       <span className="pr-tag">연습하기 1 / 2</span>
-      <h2 className="title">순서를 천천히 기억해 보세요.</h2>
+      <h2 className="title">순서를 천천히<br />기억해 보세요.</h2>
       <p className="sub">시간 제한은 없어요. {r.target.length}개를 하나씩 보여 드려요.</p>
       {r.strategy && <p className="eyebrow">오늘의 방법 · {strategyName(r.strategy)}</p>}
 
-      <div className="pr-show" aria-live="polite">
-        <span className="small">{idx + 1}번째</span>
-        <span className="em" aria-hidden="true">{item.emoji}</span>
-        <strong>{item.label}</strong>
+      <div className="pr-panel" aria-live="polite">
+        <span className="pr-tag pr-tag-on">순서 기억하기 · {idx + 1} / {r.target.length}</span>
+        <ol className="pr-seq">
+          {r.target.slice(0, idx + 1).map((id, i) => {
+            const it = itemById(id);
+            return (
+              <li key={id} data-now={i === idx}>
+                <span className="pr-num">{i + 1}</span>
+                <Icon name={it.icon} size={i === idx ? 48 : 32} />
+                <strong>{it.label}</strong>
+              </li>
+            );
+          })}
+        </ol>
+        {idx > 0 && <button className="pr-link-btn" onClick={replay}>처음부터 다시 보기</button>}
       </div>
-
-      <div className="pr-slots" aria-label="지금까지 본 순서">
-        {r.target.slice(0, idx + 1).map((id, i) => (
-          <span className="pr-slot" key={id}>{i + 1} {itemById(id).label}</span>
-        ))}
-      </div>
-      {idx > 0 && <Button variant="ghost" onClick={replay}>처음부터 다시 보기</Button>}
+      <p className="sub">다음에 같은 순서로 골라요.</p>
     </Screen>
   );
 }
@@ -86,13 +90,16 @@ export function OrderPick() {
   return (
     <Screen title={TITLE} back footer={<Button onClick={() => nav(P.recall)} disabled={!full}>{full ? '다 골랐어요' : `${r.picks.length} / ${r.target.length} 골랐어요`}</Button>}>
       <span className="pr-tag">연습하기 1 / 2</span>
-      <h2 className="title">기억한 순서대로 그림을 눌러 주세요.</h2>
+      <h2 className="title">기억한 순서대로<br />그림을 눌러 주세요.</h2>
       <p className="sub">시간 제한은 없어요.</p>
 
-      <div className="pr-slots" aria-label="고른 순서">
-        {r.target.map((_, i) => (
-          <span className="pr-slot" key={i}>{i + 1} {r.picks[i] ? itemById(r.picks[i]).label : '—'}</span>
-        ))}
+      <div className="pr-panel">
+        <span className="small">고른 순서</span>
+        <div className="pr-slots" aria-label="고른 순서">
+          {r.target.map((_, i) => (
+            <span className="pr-slot" key={i}><span className="pr-num">{i + 1}</span>{r.picks[i] ? itemById(r.picks[i]).label : '—'}</span>
+          ))}
+        </div>
       </div>
 
       <div className="pr-grid">
@@ -100,7 +107,7 @@ export function OrderPick() {
           const it = itemById(id);
           return (
             <button key={id} className="pr-item" aria-pressed={r.picks.includes(id)} onClick={() => pick(id)}>
-              <span className="em" aria-hidden="true">{it.emoji}</span>{it.label}
+              <Icon name={it.icon} size={40} />{it.label}
             </button>
           );
         })}
@@ -164,8 +171,8 @@ export function Recall() {
       </>
     }>
       <span className="pr-tag">연습하기 2 / 2</span>
-      <h2 className="title">조금 전에 본 내용을 떠올려 보세요.</h2>
-      <p className="sub">순서는 몰라도 괜찮아요. 생각나는 만큼이면 돼요.</p>
+      <h2 className="title">조금 전에 본 내용을<br />떠올려 보세요.</h2>
+      <p className="sub">순서는 몰라도 괜찮아요. 생각나는 만큼 편하게 말해 주세요.</p>
 
       <div className="stack" role="radiogroup" aria-label="떠올리는 방법">
         <Choice checked={mode === 'self'} onSelect={() => setMode('self')} title="혼자 떠올리기" desc="생각난 물건을 눌러요" />
@@ -177,7 +184,7 @@ export function Recall() {
           <div className="pr-grid">
             {ITEMS.map((it) => (
               <button key={it.id} className="pr-item" aria-pressed={chosen.includes(it.id)} onClick={() => toggle(it.id)}>
-                <span className="em" aria-hidden="true">{it.emoji}</span>{it.label}
+                <Icon name={it.icon} size={40} />{it.label}
               </button>
             ))}
           </div>
@@ -187,9 +194,10 @@ export function Recall() {
       ) : (
         <>
           <Card tone="mint">
-            <span className="pr-tag" style={{ background: '#fff' }}>진행자와 함께</span>
-            <button className="icon-btn" style={{ justifySelf: 'start' }} onClick={() => speak(ask)} aria-label="질문 듣기"><Icon name="speaker" /></button>
-            <strong style={{ fontSize: 'calc(var(--fs) + 8px)' }}>{ask}</strong>
+            <span className="pr-tag pr-tag-on">진행자와 함께</span>
+            <button className="icon-btn pr-speak" onClick={() => speak(ask)} aria-label="질문 듣기"><Icon name="speaker" size={32} /></button>
+            <strong className="pr-ask">어떤 물건들이 있었나요?</strong>
+            <span>생각나는 만큼 말해 주세요.</span>
           </Card>
           <Card>
             <strong>진행자 기록 · 떠올린 물건 수</strong>
@@ -259,14 +267,15 @@ export function Result() {
     <Screen title={TITLE} back footer={userId ? <Button onClick={save}>생활에서 써 볼 목표 정하기</Button> : <Button to={P.login}>로그인하고 다음 연습 저장하기</Button>}>
       <span className="pr-tag">돌아보기</span>
       <h2 className="title">오늘의 연습 기록</h2>
+      <p className="sub">오늘 해 본 연습을 함께 돌아봐요.</p>
 
       <div className="pr-two">
-        <div className="pr-score lav">
+        <div className="pr-score pr-score-a">
           <strong>순서 기억</strong>
           <b>{order.correct} / {order.total}</b>
           <span className="small">순서대로 골랐어요</span>
         </div>
-        <div className="pr-score peach">
+        <div className="pr-score pr-score-b">
           <strong>조금 뒤 회상</strong>
           <b>{recall.correct} / {recall.total}</b>
           <span className="small">물건을 떠올렸어요</span>
@@ -277,14 +286,20 @@ export function Result() {
         <strong>어떤 방법을 써 보셨나요?</strong>
         <div className="pr-chips">
           {STRATEGIES.map((s) => (
-            <button key={s.id} className="chip" aria-pressed={r.strategy === s.id} onClick={() => run.set((p) => ({ ...p, strategy: s.id }))}>{s.name}</button>
+            <button key={s.id} className="chip" aria-pressed={r.strategy === s.id} onClick={() => run.set((p) => ({ ...p, strategy: s.id }))}>
+              {r.strategy === s.id && <Icon name="check" size={20} />}{s.name}
+            </button>
           ))}
-          <button className="chip" aria-pressed={!r.strategy} onClick={() => run.set((p) => ({ ...p, strategy: '' }))}>따로 없었어요</button>
+          <button className="chip" aria-pressed={!r.strategy} onClick={() => run.set((p) => ({ ...p, strategy: '' }))}>
+            {!r.strategy && <Icon name="check" size={20} />}따로 없었어요
+          </button>
         </div>
         <strong>연습은 어땠나요?</strong>
         <div className="pr-chips">
           {BURDENS.map((b) => (
-            <button key={b.id} className="chip" aria-pressed={r.burden === b.id} onClick={() => run.set((p) => ({ ...p, burden: b.id }))}>{b.label}</button>
+            <button key={b.id} className="chip" aria-pressed={r.burden === b.id} onClick={() => run.set((p) => ({ ...p, burden: b.id }))}>
+              {r.burden === b.id && <Icon name="check" size={20} />}{b.label}
+            </button>
           ))}
         </div>
         <span className="small">
