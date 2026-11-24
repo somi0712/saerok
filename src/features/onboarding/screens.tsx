@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, Choice, Icon, PetArt, Screen, Steps } from '@/design/ui';
 import { app, useApp, WEEKDAYS, type FontSize } from '@/store/state';
@@ -130,6 +130,15 @@ export function MethodScreen() {
   );
 }
 
+/** 체크 표시 목록 — 표시는 선 아이콘으로 */
+function Checks({ items }: { items: string[] }) {
+  return (
+    <ul className="ob-checks">
+      {items.map((t) => <li key={t}><span className="ob-tick" aria-hidden="true"><Icon name="check" size={20} /></span>{t}</li>)}
+    </ul>
+  );
+}
+
 function Summary({ rows }: { rows: [string, string][] }) {
   return (
     <dl className="ob-kv">
@@ -146,7 +155,6 @@ export function ReadyScreen() {
       footer={<>
         <Button to={P.tourHome}>예제 데이터로 둘러보기</Button>
         <Button variant="secondary" to={P.startPet}>기억 친구 고르고 시작하기</Button>
-        <Button variant="ghost" to={P.start}>처음부터 다시 고르기</Button>
       </>}>
       <span className="chip ob-chip">준비 완료</span>
       <h2 className="title">{profile.name || '새록 사용자'}님, 반가워요.</h2>
@@ -159,15 +167,11 @@ export function ReadyScreen() {
           ['성별', profile.gender],
           ['나를 아는 정도', profile.methodFamiliarity],
         ]} />
+        <Link className="ob-again" to={P.start}>처음부터 다시 고르기</Link>
       </Card>
       <Card tone="pet">
         <strong>함께 불러온 예제 데이터</strong>
-        <ul className="ob-checks">
-          <li>지난 4주 연습 기록 12회</li>
-          <li>익힌 전략 · 묶어 기억하기</li>
-          <li>생활 목표 · 장 볼 물건 기억하기</li>
-          <li>기억 친구 몽글 · Lv.1</li>
-        </ul>
+        <Checks items={['지난 4주 연습 기록 12회', '익힌 전략 · 묶어 기억하기', '생활 목표 · 장 볼 물건 기억하기', '기억 친구 몽글 · 1단계']} />
       </Card>
     </Screen>
   );
@@ -200,7 +204,7 @@ export function TourHomeScreen() {
             return (
               <li key={d} className={[done && 'done', i === today && 'today'].filter(Boolean).join(' ')}
                 aria-label={`${d}요일 ${done ? '연습함' : i === today ? '오늘' : '쉬는 날'}`}>
-                <i aria-hidden="true">{done ? '✓' : ''}</i>{d}
+                <i aria-hidden="true">{done && <Icon name="check" size={20} />}</i>{d}
               </li>
             );
           })}
@@ -268,11 +272,7 @@ export function TourFinishScreen() {
       <h2 className="title">둘러본 기록을 내 것으로 이어갈까요?</h2>
       <p className="sub">지금까지 본 기록은 예제 데이터예요. 가입하면 오늘부터 나의 연습이 쌓여요.</p>
       <Card>
-        <ul className="ob-checks">
-          <li>고른 글자 크기·정보 이어가기</li>
-          <li>가족과 연습 기록 함께 보기</li>
-          <li>몽글이와 처음부터 함께 자라기</li>
-        </ul>
+        <Checks items={['고른 글자 크기·정보 이어가기', '가족과 연습 기록 함께 보기', '몽글이와 처음부터 함께 자라기']} />
       </Card>
     </Screen>
   );

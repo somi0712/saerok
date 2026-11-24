@@ -1,88 +1,101 @@
-.ob-hero { display: grid; justify-items: center; padding: 8px 0; }
+/* 체험 시작 · 예제 둘러보기 (시안 13–16, 28–31). 간격은 --sp-*, 색은 토큰만 쓴다. */
+.ob-hero { display: grid; justify-items: center; padding: var(--sp-2) 0; }
 .ob-chip, .ob-badge { align-self: flex-start; }
 
-.ob-pills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ob-pills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); }
 .ob-pill {
-  min-height: var(--btn-h); padding: 0 8px; border-radius: 999px;
-  background: var(--surface); border: 2px solid var(--line); font-weight: 700;
+  min-height: var(--btn-h); padding: 0 var(--sp-2); border-radius: 999px;
+  background: var(--surface); border: 2px solid var(--line); font-weight: var(--w-medium);
 }
-.ob-pill[aria-checked='true'] { border-color: var(--primary); background: var(--lavender-soft); }
-.ob-field-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: 800; }
+.ob-pill[aria-checked='true'] { border-color: var(--primary); background: var(--lavender-soft); font-weight: var(--w-bold); }
+.ob-field-head { display: flex; justify-content: space-between; align-items: baseline; font-weight: var(--w-bold); }
 .ob-field-head em { font-style: normal; color: var(--primary); }
 
 .ob-input { position: relative; }
 .ob-input input {
-  width: 100%; min-height: var(--btn-h); padding: 0 64px 0 22px;
-  border-radius: 22px; border: 2px solid var(--primary); background: var(--surface); font-weight: 700;
+  width: 100%; min-height: var(--btn-h); padding: 0 64px 0 var(--sp-5);
+  border-radius: var(--radius); border: 2px solid var(--primary); background: var(--surface); font-weight: var(--w-medium);
 }
 .ob-input button {
-  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: var(--sp-2); top: 50%; transform: translateY(-50%);
   width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--lavender); color: var(--muted);
   display: grid; place-items: center;
 }
 
 .ob-font .eyebrow { display: block; }
-.ob-font .sample { color: var(--ink); font-weight: 800; line-height: 1.4; }
+.ob-font .sample { color: var(--ink); font-weight: var(--w-bold); line-height: 1.4; }
 
-.ob-kv { display: grid; gap: 10px; }
-.ob-kv div { display: flex; justify-content: space-between; gap: 12px; }
+.ob-kv { display: grid; gap: var(--sp-3); margin: 0; }
+.ob-kv div { display: flex; justify-content: space-between; gap: var(--sp-3); }
 .ob-kv dt { color: var(--muted); }
-.ob-kv dd { margin: 0; color: var(--primary); font-weight: 800; text-align: right; }
-
-.ob-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.ob-checks li { display: flex; gap: 12px; align-items: center; }
-.ob-checks li::before {
-  content: '✓'; flex: none; width: 36px; height: 36px; border-radius: 50%;
-  display: grid; place-items: center; background: var(--surface); color: var(--primary); font-weight: 800;
+.ob-kv dd { margin: 0; color: var(--primary); font-weight: var(--w-bold); text-align: right; }
+.ob-again {
+  justify-self: start; color: var(--primary); font-weight: var(--w-medium);
+  text-decoration-thickness: 2px; text-underline-offset: 4px;
 }
-.card-lavender .ob-checks li::before, .card .ob-checks li::before { background: var(--lavender); }
-.card-pet .ob-checks li::before { background: var(--surface); }
+
+/* 체크 목록: 표시는 Icon(check) 로 그린다 */
+.ob-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.ob-checks li { display: flex; gap: var(--sp-3); align-items: center; }
+.ob-checks .ob-tick {
+  flex: none; width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--lavender); color: var(--primary);
+}
+.card-pet .ob-checks .ob-tick { background: var(--surface); }
 
 .ob-badge {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 8px 18px; border-radius: 999px; background: var(--peach); font-weight: 700; font-size: var(--fs-small);
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4); border-radius: 999px; background: var(--peach);
+  font-weight: var(--w-medium); font-size: var(--fs-small);
 }
-.ob-badge::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #f08a5d; }
-.ob-note { padding: 14px 18px; border-radius: 18px; background: var(--lavender-soft); color: var(--muted); font-size: var(--fs-small); }
+.ob-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+.ob-note { padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-sm); background: var(--lavender-soft); color: var(--muted); font-size: var(--fs-small); }
 
-.ob-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.ob-stat { border-radius: var(--radius-lg); padding: 18px; display: grid; gap: 2px; min-width: 0; background: var(--surface); box-shadow: var(--shadow); }
-.ob-stat b { font-size: calc(var(--fs) + 16px); line-height: 1.2; font-weight: 800; }
-.ob-stat.lav { background: linear-gradient(135deg, #e3dcf9, #f6e2ea); box-shadow: none; }
+/* 29 예제 홈: 네 칸 숫자 카드 (시안의 보라 그라디언트 · 살구 · 민트 · 흰색) */
+.ob-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.ob-stat {
+  border-radius: var(--radius-lg); padding: var(--sp-4); display: grid; gap: var(--sp-1); min-width: 0;
+  background: var(--surface); box-shadow: var(--shadow); font-variant-numeric: tabular-nums;
+}
+.ob-stat > span:first-child { font-size: var(--fs-small); }
+.ob-stat b { font-size: calc(var(--fs) + 16px); line-height: 1.2; font-weight: var(--w-bold); }
+.ob-stat.lav { background: var(--pet-grad); box-shadow: none; }
 .ob-stat.peach { background: var(--peach); box-shadow: none; }
 .ob-stat.mint { background: var(--mint); box-shadow: none; }
 
-.ob-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; list-style: none; margin: 0; padding: 0; }
-.ob-week li { display: grid; justify-items: center; gap: 6px; font-size: var(--fs-small); }
+.ob-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--sp-1); list-style: none; margin: 0; padding: 0; }
+.ob-week li { display: grid; justify-items: center; gap: var(--sp-2); font-size: var(--fs-small); }
 .ob-week i {
-  width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line);
-  display: grid; place-items: center; font-style: normal; font-weight: 800; color: #fff;
+  width: 100%; max-width: 40px; aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--line);
+  display: grid; place-items: center; font-style: normal; color: var(--surface);
 }
 .ob-week .done i { background: var(--ink); border-color: var(--ink); }
-.ob-week .today { color: var(--primary); font-weight: 800; }
+.ob-week .today { color: var(--primary); font-weight: var(--w-bold); }
 .ob-week .today i { border-color: var(--primary); border-width: 3px; }
 
-.ob-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-weight: 800; }
-.ob-head em { font-style: normal; color: var(--primary); }
-.ob-bars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; height: 240px; }
-.ob-bar { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%; min-width: 0; font-size: var(--fs-small); }
-.ob-bar span { overflow-wrap: anywhere; font-size: var(--fs-small); }
-.ob-bar b { font-weight: 800; color: var(--ink); }
-.ob-bar i { width: 100%; border-radius: 16px; background: var(--lavender); }
-.ob-bar.now b, .ob-bar.now span { color: var(--primary); font-weight: 800; }
+/* 30 예제 기록: 주별 막대 — 이번 주만 강조색 */
+.ob-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-3); font-weight: var(--w-bold); }
+.ob-head em { font-style: normal; color: var(--primary); font-variant-numeric: tabular-nums; }
+.ob-bars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); height: 240px; }
+.ob-bar {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: var(--sp-2);
+  height: 100%; min-width: 0; font-size: var(--fs-small); font-variant-numeric: tabular-nums;
+}
+.ob-bar span { overflow-wrap: anywhere; color: var(--muted); }
+.ob-bar b { font-weight: var(--w-bold); color: var(--ink); }
+.ob-bar i { width: 100%; border-radius: var(--radius-sm); background: var(--lavender); }
+.ob-bar.now b, .ob-bar.now span { color: var(--primary); }
 .ob-bar.now i { background: var(--primary); }
 
-.ob-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-.ob-tags span { padding: 8px 16px; border-radius: 999px; background: var(--surface); font-weight: 700; }
-.ob-recent { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.ob-recent li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.ob-tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.ob-tags span { padding: var(--sp-2) var(--sp-4); border-radius: 999px; background: var(--surface); font-weight: var(--w-medium); font-variant-numeric: tabular-nums; }
+.ob-recent { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
+.ob-recent li { display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); align-items: baseline; font-variant-numeric: tabular-nums; }
 .ob-recent time { color: var(--muted); }
-.ob-recent strong { flex: 1; min-width: 8em; }
-.ob-recent em { font-style: normal; color: var(--primary); font-weight: 800; }
-
-.btn-kakao { background: #fee500; color: #191600; }
+.ob-recent strong { flex: 1; min-width: 8em; font-weight: var(--w-medium); }
+.ob-recent em { font-style: normal; color: var(--primary); font-weight: var(--w-bold); }
 
 @media (min-width: 768px) {
-  .ob-web-options { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .ob-web-options { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5); }
   .ob-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
