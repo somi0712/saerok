@@ -1,0 +1,27 @@
+.as-modules { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.as-modules b { display: inline-grid; place-items: center; width: 36px; height: 36px; margin-right: 8px; border-radius: 12px; background: var(--lavender); color: var(--primary); }
+.as-words { display: grid; gap: 10px; }
+.as-words span { padding: 16px 20px; border-radius: var(--radius); background: var(--surface); font-size: calc(var(--fs) + 4px); font-weight: 800; }
+.as-visual { font-size: calc(var(--fs) * 2.2); text-align: center; letter-spacing: 0.1em; }
+.as-compass { display: grid; grid-template-columns: repeat(3, minmax(0, 76px)); gap: 6px; justify-content: center; }
+.as-compass > * { aspect-ratio: 1; display: grid; place-items: center; align-content: center; border-radius: 18px; font-size: calc(var(--fs) + 10px); }
+.as-compass > span { background: var(--surface); box-shadow: var(--shadow); }
+.as-compass small { font-size: var(--fs-small); color: var(--muted); }
+
+.as-level { display: flex; align-items: baseline; gap: 8px; font-weight: 800; }
+.as-level b { font-size: calc(var(--fs) * 3); line-height: 1; color: var(--primary); }
+.as-level small { font-weight: 400; color: var(--muted); }
+.as-ladder { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.as-ladder li { height: 36px; display: grid; place-items: center; border-radius: 10px; background: var(--surface); color: var(--muted); font-size: var(--fs-small); font-weight: 700; }
+.as-ladder li.past { background: var(--lavender); color: var(--primary); }
+.as-ladder li.on { background: var(--primary); color: var(--on-primary); }
+.as-list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+
+.as-talk-head { display: flex; align-items: center; gap: 16px; }
+.as-log { display: grid; gap: 10px; align-content: start; min-height: 200px; }
+.as-msg { max-width: 88%; padding: 14px 18px; border-radius: 22px; }
+.as-msg.ai { justify-self: start; background: var(--surface); box-shadow: var(--shadow); border-top-left-radius: 6px; }
+.as-msg.ai b { display: block; font-size: var(--fs-small); color: var(--primary); }
+.as-msg.me { justify-self: end; background: var(--primary); color: var(--on-primary); border-top-right-radius: 6px; }
+.as-typing { color: var(--muted); font-size: var(--fs-small); }
+.choice[disabled] { opacity: 0.5; }
