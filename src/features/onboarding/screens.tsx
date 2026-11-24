@@ -51,7 +51,7 @@ export function FontSizeScreen() {
         {([20, 22, 24] as FontSize[]).map((size) => (
           <button key={size} type="button" role="radio" aria-checked={current === size} className="choice ob-font" onClick={() => pick(size)}>
             <b className="eyebrow">{FONT_LABEL[size]}</b>
-            <span className="sample" style={{ fontSize: size + 4 }}>기억은 천천히 자라요.</span>
+            <span className="sample" style={{ fontSize: size - 4 }}>기억은 천천히 자라요.</span>
           </button>
         ))}
       </div>

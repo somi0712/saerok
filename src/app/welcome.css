@@ -24,7 +24,7 @@
 }
 .welcome-intro { display: grid; align-content: center; gap: 16px; }
 .welcome-intro h1 {
-  font-size: clamp(calc(var(--fs) + 10px), calc(var(--fs) + 3vw), calc(var(--fs) + 34px));
+  font-size: clamp(calc(var(--fs) + 10px), calc(var(--fs) + 2.7vw), calc(var(--fs) + 30px));
   line-height: 1.22;
   font-weight: 600;
   letter-spacing: -.03em;
