@@ -174,8 +174,7 @@ export default function Diary() {
           <span id="mood-l" className="rs-label">오늘 기분은 어떠세요?</span>
           <div className="rs-chips" role="group" aria-labelledby="mood-l">
             {MOODS.map((m) => (
-              <button key={m} type="button" className="chip" aria-pressed={mood === m} onClick={() => setMood(m)}
-                style={{ minHeight: 'var(--tap)', fontSize: 'var(--fs)' }}>
+              <button key={m} type="button" className="chip rs-mood" aria-pressed={mood === m} onClick={() => setMood(m)}>
                 {m}
               </button>
             ))}
@@ -188,7 +187,7 @@ export default function Diary() {
         </label>
         <div className="stack">
           <span className="rs-label">사진</span>
-          {photo && <img src={photo} alt="고른 사진 미리보기" style={{ borderRadius: 18 }} />}
+          {photo && <img src={photo} alt="고른 사진 미리보기" className="rs-preview" />}
           <label className="btn btn-secondary" style={{ position: 'relative' }}>
             {photo ? '다른 사진 고르기' : '사진 넣기'}
             <input className="rs-file" type="file" accept="image/*" capture="environment"

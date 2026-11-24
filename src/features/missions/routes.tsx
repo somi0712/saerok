@@ -38,15 +38,27 @@ function Missions() {
 
   return (
     <Screen title="미션" tabs>
+      <span className="mission-tag">미션</span>
+      <div className="mission-head">
+        <h2 className="title">하루 한 번, 출석해요.</h2>
+        <p className="sub">출석한 날은 달력에 표시돼요.</p>
+      </div>
       <div className="web-columns mission-layout">
+        <Card tone="lavender">
+          <p className="mission-h">오늘의 출석</p>
+          <p className="mission-streak">연속 <b>{attendanceStreak(dates, now)}</b>일</p>
+          <p className="sub">하루 한 번 출석을 기록할 수 있어요.</p>
+          <Button disabled={attended} onClick={checkIn}>{attended ? '오늘 출석 완료' : '오늘 출석 체크'}</Button>
+          <p className="small" role="status">{message || '출석은 이 브라우저의 내 계정에 저장돼요.'}</p>
+        </Card>
         <Card>
           <div className="mission-month">
             <button type="button" className="icon-btn" aria-label="이전 달" onClick={() => setOffset((x) => x - 1)}>
               <Icon name="back" size={20} />
             </button>
-            <h2 aria-live="polite">{monthLabel.format(month)}</h2>
-            <button type="button" className="icon-btn mission-next" aria-label="다음 달" disabled={offset === 0}
-              onClick={() => setOffset((x) => x + 1)}><Icon name="back" size={20} /></button>
+            <p className="mission-h" aria-live="polite">{monthLabel.format(month)}</p>
+            <button type="button" className="icon-btn" aria-label="다음 달" disabled={offset === 0}
+              onClick={() => setOffset((x) => x + 1)}><Icon name="next" size={20} /></button>
           </div>
           <div className="mission-calendar" role="group" aria-label="월별 출석 달력">
             {WEEKDAYS.map((day) => <span key={day} className="small" aria-label={day + '요일'}>{day}</span>)}
@@ -61,13 +73,6 @@ function Missions() {
             })}
           </div>
           <p className="small">이 달에 출석한 날 {total}일</p>
-        </Card>
-        <Card tone="lavender">
-          <h2 className="title">오늘의 출석</h2>
-          <p>하루 한 번 출석을 기록할 수 있어요.</p>
-          <strong>현재 연속 출석 {attendanceStreak(dates, now)}일</strong>
-          <Button disabled={attended} onClick={checkIn}>{attended ? '오늘 출석 완료' : '오늘 출석 체크'}</Button>
-          <p className="small" role="status">{message || '출석은 이 브라우저의 내 계정에 저장돼요.'}</p>
         </Card>
       </div>
     </Screen>

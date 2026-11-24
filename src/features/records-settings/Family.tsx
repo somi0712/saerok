@@ -127,7 +127,7 @@ function FamilyView() {
           <ul className="rs-week" aria-label="최근 7일 연습">
             {days.map((d) => (
               <li key={d.label} aria-label={`${d.label} ${d.count ? `${d.minutes}분 연습` : '쉼'}`}>
-                <span className="rs-bar" style={{ height: `${8 + (d.minutes / max) * 80}px`, background: d.count ? 'var(--primary)' : 'var(--lavender)' }} />
+                <span className={`rs-bar${d.count ? ' on' : ''}`} style={{ height: `${8 + (d.minutes / max) * 80}px` }} />
                 <span>{d.label.split(' ')[1]}</span>
               </li>
             ))}

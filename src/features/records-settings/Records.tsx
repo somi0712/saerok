@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Button, Card, Icon, Screen } from '@/design/ui';
 import { P } from '@/app/paths';
 import { useApp, WEEKDAYS } from '@/store/state';
@@ -23,8 +24,10 @@ export default function Records() {
     return (
       <Screen title="내 기록" tabs>
         <span className="rs-tag">내 기록</span>
-        <h2 className="title">첫 연습을 하면 여기에 차곡차곡 쌓여요.</h2>
-        <p className="sub">연습한 날, 써 본 방법, 생활에서 해 본 일을 함께 돌아볼 수 있어요.</p>
+        <div className="rs-head">
+          <h2 className="title">첫 연습을 하면 여기에 차곡차곡 쌓여요.</h2>
+          <p className="sub">연습한 날, 써 본 방법, 생활에서 해 본 일을 함께 돌아볼 수 있어요.</p>
+        </div>
         <div className="web-actions">
           <Button to={P.practice}>첫 연습 시작하기</Button>
           <Button variant="secondary" to={P.diary}>기억 일기장 쓰기</Button>
@@ -45,7 +48,7 @@ export default function Records() {
   return (
     <Screen title="내 기록" tabs>
       <span className="rs-tag">내 기록</span>
-      <div className="stack" style={{ gap: 4 }}>
+      <div className="rs-head">
         <h2 className="title">이번 주의 작은 실천</h2>
         <p className="sub">이번 주 · {range(now)}</p>
       </div>
@@ -57,7 +60,7 @@ export default function Records() {
           <ul className="rs-days">
             {WEEKDAYS.map((d, i) => (
               <li key={d}>
-                <span className={`rs-dot${days[i] ? ' on' : ''}`} aria-hidden="true">{days[i] && <Icon name="check" size={22} />}</span>
+                <span className={`rs-dot${days[i] ? ' on' : ''}`} aria-hidden="true">{days[i] && <Icon name="check" size={20} />}</span>
                 <span>
                   {d}
                   <span className="rs-sr">{days[i] ? ' 연습함' : ' 쉼'}</span>
@@ -78,7 +81,7 @@ export default function Records() {
         <Card>
           <div className="row" style={{ justifyContent: 'space-between' }}>
             <p className="rs-h">주별 연습 횟수</p>
-            <p className="eyebrow" style={{ fontSize: 'var(--fs)' }}>총 {total}회</p>
+            <p className="rs-total">총 {total}회</p>
           </div>
           <ul className="rs-bars" aria-label="최근 4주 연습 횟수">
             {weeks.map((w, i) => (
@@ -135,9 +138,14 @@ export default function Records() {
         )}
       </div>
 
+      <Link to={P.diary} className="card rs-link">
+        <span className="ico" aria-hidden="true"><Icon name="book" /></span>
+        <span><strong>기억 일기장</strong><span>오늘을 글, 사진, 목소리로 남겨요</span></span>
+        <span className="go" aria-hidden="true"><Icon name="next" /></span>
+      </Link>
+
       <div className="web-actions">
         <Button variant="secondary" to={P.plan}>이번 주 계획 바꾸기</Button>
-        <Button variant="secondary" to={P.diary}>기억 일기장</Button>
         <Button to={P.home}>홈으로 돌아가기</Button>
       </div>
     </Screen>

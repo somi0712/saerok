@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Screen, toast } from '@/design/ui';
+import { Button, Card, Icon, Screen, toast } from '@/design/ui';
 import { P } from '@/app/paths';
 import { database } from '@/data/announcements';
 import { useAccount } from '@/store/account';
@@ -48,7 +48,7 @@ export default function Settings() {
   return (
     <Screen title="설정" back>
       <span className="rs-tag">내게 맞게</span>
-      <div className="stack" style={{ gap: 4 }}>
+      <div className="rs-head">
         <h2 className="title">내게 맞게 정해요.</h2>
         <p className="sub">설정과 공유를 언제든 바꿔요.</p>
       </div>
@@ -56,7 +56,7 @@ export default function Settings() {
       <Card>
         <p className="rs-h">내 프로필</p>
         {profile.name ? (
-          <div className="stack" style={{ gap: 4 }}>
+          <div className="rs-head">
             <p>{profile.name}</p>
             {profile.ageBand && <p>{profile.ageBand}</p>}
             {profile.gender && <p>{profile.gender}</p>}
@@ -72,14 +72,14 @@ export default function Settings() {
         <p className="rs-h" id="fs-l">글자 크기</p>
         <div className="rs-seg" role="group" aria-labelledby="fs-l">
           {SIZES.map(([v, l]) => (
-            <button key={v} type="button" aria-pressed={settings.fontSize === v} onClick={() => setSettings({ fontSize: v })}>{l}</button>
+            <button key={v} type="button" aria-pressed={settings.fontSize === v} onClick={() => setSettings({ fontSize: v })}>{settings.fontSize === v && <Icon name="check" size={20} />}{l}</button>
           ))}
         </div>
         <hr className="rs-divider" />
         <p className="rs-h" id="rate-l">읽어 주는 속도</p>
         <div className="rs-seg" role="group" aria-labelledby="rate-l">
           {RATES.map(([v, l]) => (
-            <button key={v} type="button" aria-pressed={settings.voiceRate === v} onClick={() => setSettings({ voiceRate: v })}>{l}</button>
+            <button key={v} type="button" aria-pressed={settings.voiceRate === v} onClick={() => setSettings({ voiceRate: v })}>{settings.voiceRate === v && <Icon name="check" size={20} />}{l}</button>
           ))}
         </div>
         <label className="rs-check">
@@ -117,7 +117,7 @@ export default function Settings() {
       <Card>
         <p className="rs-h">기록 지우기</p>
         {wipeAsk ? (
-          <div className="stack rs-confirm card" style={{ boxShadow: 'none' }}>
+          <div className="stack rs-confirm card">
             <p>연습 기록, 일기, 설정을 모두 지울까요? 지우면 되돌릴 수 없어요.</p>
             <Button onClick={wipe}>모두 지우기</Button>
             <Button variant="secondary" onClick={() => setWipeAsk(false)}>그대로 두기</Button>
