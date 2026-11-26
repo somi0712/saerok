@@ -52,7 +52,7 @@ export interface AppState {
   member: boolean; // 32 가입 완료 (데모 가입)
   profile: { name: string; ageBand: string; gender: string; methodFamiliarity: string };
   settings: { fontSize: FontSize; soundOn: boolean; voiceRate: number };
-  consent: { use: boolean; share: boolean; research: boolean; at?: string };
+  consent: { use: boolean; share: boolean; research: boolean; cloud: boolean; at?: string }; // cloud: 내 기록을 서버에 보관
   typeResult?: { code: string; title: string; strategy: string; answers: Record<string, string> };
   pet: { kind?: PetKind; name?: string; seeds: number; snacks: number; grown: boolean };
   sessions: PracticeSession[];
@@ -74,7 +74,7 @@ export const initialState: AppState = {
   member: false,
   profile: { name: '', ageBand: '', gender: '', methodFamiliarity: '' },
   settings: { fontSize: 20, soundOn: true, voiceRate: 0.85 },
-  consent: { use: false, share: false, research: false },
+  consent: { use: false, share: false, research: false, cloud: false },
   pet: { seeds: 2, snacks: 0, grown: false },
   sessions: [],
   plan: { days: [], goals: [], history: [] },

@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, Choice, Icon, Screen, toast } from '@/design/ui';
 import { app, useApp, type FontSize } from '@/store/state';
+import { useAccount } from '@/store/account';
+import { CLOUD_NOTICE } from '@/store/cloudSync';
 import { STRATEGIES, strategyOfToday, type StrategyId } from './logic';
 import { run, speak, startRun, useRun } from './store';
 import './practice.css';
@@ -16,13 +18,15 @@ export function Consent() {
   const [use, setUse] = useState(prev.use);
   const [share, setShare] = useState(prev.share);
   const [research, setResearch] = useState(prev.research);
+  const { userId } = useAccount();
+  const [cloud, setCloud] = useState(false);
   const [check, setCheck] = useState('');
   const understood = check === 'records';
 
   const save = () => {
     // 이해 확인을 맞히지 못하면 가족 공유는 보류하고 나중에 설정에서 켤 수 있게 한다.
     const shareOk = share && understood;
-    app.set((s) => ({ ...s, consent: { use, share: shareOk, research, at: new Date().toISOString() } }));
+    app.set((s) => ({ ...s, consent: { use, share: shareOk, research, cloud: prev.cloud || (Boolean(userId) && cloud), at: new Date().toISOString() } }));
     if (share && !shareOk) toast('가족 공유는 잠시 미뤄 둘게요. 설정에서 언제든 켤 수 있어요.');
     nav(P.practice);
   };
@@ -51,6 +55,12 @@ export function Consent() {
           <input type="checkbox" checked={research} onChange={(e) => setResearch(e.target.checked)} />
           <span><strong>서비스 개선에 활용 (선택)</strong><span>이 버전에서는 기록을 수집하지 않아요.</span></span>
         </label>
+        {userId && !prev.cloud && (
+          <label className="pr-toggle">
+            <input type="checkbox" checked={cloud} onChange={(e) => setCloud(e.target.checked)} />
+            <span><strong>내 기록을 서버에 보관 (선택)</strong><span>{CLOUD_NOTICE}</span></span>
+          </label>
+        )}
       </Card>
 
       {share && (
