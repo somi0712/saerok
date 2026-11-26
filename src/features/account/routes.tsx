@@ -7,6 +7,16 @@ import { Button, Card, Screen } from '@/design/ui';
 import { useAccount } from '@/store/account';
 import './account.css';
 
+// Supabase 오류 코드별 안내. 그 밖의 코드는 기본 문구로 보여 준다.
+const AUTH_ERRORS: Record<string, string> = {
+  email_not_confirmed: '아직 이메일 확인이 끝나지 않았어요. 가입할 때 받은 메일의 확인 링크를 먼저 열어 주세요.',
+  user_already_exists: '이미 가입된 이메일이에요. 로그인해 주세요.',
+  over_email_send_rate_limit: '확인 메일을 너무 자주 보냈어요. 잠시 뒤 다시 시도해 주세요.',
+  email_address_not_authorized: '지금은 이 이메일로 확인 메일을 보낼 수 없어요. 운영자에게 알려 주세요.',
+  weak_password: '비밀번호가 너무 쉬워요. 8자 이상으로 더 길게 만들어 주세요.',
+  signup_disabled: '지금은 새 가입을 받지 않고 있어요.',
+};
+
 export const loginLink = (next: string) => P.login + '?next=' + encodeURIComponent(next);
 
 function Login() {
@@ -35,8 +45,9 @@ function Login() {
         } })
         : await database.auth.signInWithPassword({ email, password });
       if (response.error) {
-        setMessage({ error: true, text: signup ? '가입을 완료하지 못했어요. 이메일과 비밀번호를 확인하거나 잠시 후 다시 시도해 주세요.'
-          : '로그인하지 못했어요. 이메일과 비밀번호를 확인해 주세요.' });
+        setMessage({ error: true, text: AUTH_ERRORS[response.error.code ?? '']
+          ?? (signup ? '가입을 완료하지 못했어요. 이메일과 비밀번호를 확인하거나 잠시 후 다시 시도해 주세요.'
+            : '로그인하지 못했어요. 이메일과 비밀번호를 확인해 주세요.') });
       } else if (signup && !response.data.session) {
         setMessage({ error: false, text: '가입을 마치려면 받은 이메일의 확인 링크를 열어 주세요.' });
       }
