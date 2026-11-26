@@ -5,6 +5,7 @@ import { P } from '@/app/paths';
 import { database } from '@/data/announcements';
 import { useAccount } from '@/store/account';
 import { app, useApp, type FontSize } from '@/store/state';
+import { CLOUD_NOTICE, disableCloud, enableCloud } from '@/store/cloudSync';
 import './records.css';
 
 const SIZES: [FontSize, string][] = [[20, '보통'], [22, '크게'], [24, '더 크게']];
@@ -26,10 +27,20 @@ export function CounselInfo() {
 /** 시안 11 설정과 가족 공유 */
 export default function Settings() {
   const nav = useNavigate();
-  const { profile, settings, family } = useApp();
+  const { profile, settings, family, consent } = useApp();
   const { userId } = useAccount();
   const [stopAsk, setStopAsk] = useState(false);
   const [wipeAsk, setWipeAsk] = useState(false);
+  const [cloudAsk, setCloudAsk] = useState(false);
+  const [cloudBusy, setCloudBusy] = useState(false);
+
+  const turnOffCloud = async () => {
+    setCloudBusy(true);
+    const ok = await disableCloud();
+    setCloudBusy(false);
+    setCloudAsk(false);
+    toast(ok ? '서버에 보관한 기록을 지웠어요. 이 기기의 기록은 그대로예요.' : '서버 기록을 지우지 못했어요. 잠시 후 다시 시도해 주세요.');
+  };
 
   const setSettings = (patch: Partial<typeof settings>) => app.set((s) => ({ ...s, settings: { ...s.settings, ...patch } }));
   const shared = [family.share.access && '접속 여부', family.share.practice && '연습 기록', family.share.diary && '일기'].filter(Boolean);
@@ -104,6 +115,25 @@ export default function Settings() {
             <Button variant="ghost" onClick={() => setStopAsk(true)}>공유 그만하기</Button>
           ))}
       </section>
+
+      {userId && (
+        <Card>
+          <p className="rs-h">내 기록 서버 보관</p>
+          <p className="sub">{CLOUD_NOTICE}</p>
+          <p>{consent.cloud ? '지금 서버에 보관하고 있어요.' : '지금은 이 기기에만 저장해요.'}</p>
+          {!consent.cloud ? (
+            <Button variant="secondary" onClick={() => { enableCloud(); toast('이제 연습·테스트 결과를 서버에 보관해요.'); }}>서버에 보관하기</Button>
+          ) : cloudAsk ? (
+            <div className="stack rs-confirm card">
+              <p>서버 보관을 끌까요? 서버에 보관한 연습·테스트 결과를 지워요. 이 기기의 기록은 남아요.</p>
+              <Button onClick={() => void turnOffCloud()} disabled={cloudBusy}>{cloudBusy ? '지우는 중' : '끄고 서버 기록 지우기'}</Button>
+              <Button variant="secondary" onClick={() => setCloudAsk(false)} disabled={cloudBusy}>계속 보관하기</Button>
+            </div>
+          ) : (
+            <Button variant="ghost" onClick={() => setCloudAsk(true)}>서버 보관 끄기</Button>
+          )}
+        </Card>
+      )}
 
       <CounselInfo />
 
