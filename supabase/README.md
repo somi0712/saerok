@@ -23,3 +23,12 @@ on conflict do nothing;
 
 - 추가할 사람은 먼저 새록에 가입해 있어야 해요.
 - 내 계정은 해제할 수 없어서 관리자가 0명이 되지 않아요.
+
+## 기록 서버 보관과 관리자 웹 (20261127000200)
+
+`migrations/20261127000200_records_admin.sql`을 SQL Editor에서 한 번 실행해요.
+
+- `practice_sessions`, `assessments`: '내 기록을 서버에 보관'에 동의한 로그인 사용자의 연습·테스트 결과. 본인만 읽고 쓸 수 있어요. 일기·사진·음성은 올리지 않아요.
+- `announcements.publish_at`: 예약 게시. 이 시각이 지나야 사용자에게 보여요.
+- `audit_log`: 공지 작성·수정, 관리자 추가·해제, 계정 확인·정지가 자동으로 남아요.
+- 관리자 함수: `admin_overview()`, `admin_users()`, `admin_confirm_user(target)`, `admin_set_user_status(target, active, reason)`, `admin_audit_log(max_rows)`. 관리자가 아니면 `not_admin`으로 거절해요.
