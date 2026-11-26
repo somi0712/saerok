@@ -3,6 +3,7 @@ import type { Session } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { database, listAnnouncements, saveAnnouncement, type Announcement } from '@/data/announcements';
+import { addAdmin, listAdmins, removeAdmin, type AdminMember } from '@/data/admins';
 import './admin.css';
 
 type Client = NonNullable<typeof database>;
@@ -59,7 +60,10 @@ function AdminSession({ client }: { client: Client }) {
   if (session === undefined) return <p className="admin-message" role="status">로그인 상태를 확인하는 중이에요.</p>;
   if (!session) return <AdminLogin client={client} />;
   if (access?.userId !== userId || !access) return <p className="admin-message" role="status">관리자 권한을 확인하는 중이에요.</p>;
-  if (access.state === 'allowed') return <AdminNotices key={userId} client={client} />;
+  if (access.state === 'allowed') return <>
+    <AdminNotices key={userId} client={client} />
+    <AdminMembers key={`members-${access.userId}`} client={client} userId={access.userId} />
+  </>;
   return (
     <section className="admin-login">
       <h1>{access.state === 'error' ? '권한을 확인하지 못했어요' : '관리자 계정이 필요해요'}</h1>
@@ -193,6 +197,90 @@ function AdminNotices({ client }: { client: Client }) {
           <div className="admin-form-actions">
             <button type="submit" className="admin-primary" disabled={!notices || saving}>{saving ? '저장 중' : '저장'}</button>
             {draft.id && <button type="button" disabled={saving} onClick={() => setDraft(emptyDraft)}>새 공지 작성</button>}
+          </div>
+          {feedback && <p role={feedback.error ? 'alert' : 'status'} className={feedback.error ? 'admin-error' : 'admin-muted'}>{feedback.text}</p>}
+        </form>
+      </div>
+    </div>
+  );
+}
+
+const MEMBER_ERRORS: Record<string, string> = {
+  user_not_found: '이 이메일로 가입한 계정이 없어요. 먼저 새록에 가입해 달라고 알려 주세요.',
+  cannot_remove_self: '내 계정은 해제할 수 없어요. 다른 관리자에게 부탁해 주세요.',
+  not_admin: '관리자 권한이 없어요. 다시 로그인해 주세요.',
+};
+const memberError = (error: unknown, fallback: string) =>
+  MEMBER_ERRORS[(error as { message?: string })?.message ?? ''] ?? fallback;
+
+function AdminMembers({ client, userId }: { client: Client; userId: string }) {
+  const [members, setMembers] = useState<AdminMember[]>();
+  const [email, setEmail] = useState('');
+  const [working, setWorking] = useState(false);
+  const [feedback, setFeedback] = useState<{ error: boolean; text: string }>();
+
+  async function load() {
+    try {
+      setMembers(await listAdmins(client));
+    } catch (error) {
+      setFeedback({ error: true, text: memberError(error, '관리자 목록을 불러오지 못했어요.') });
+    }
+  }
+  useEffect(() => { void load(); }, [client]);
+
+  async function run(task: () => Promise<void>, done: string, fallback: string) {
+    setWorking(true);
+    setFeedback(undefined);
+    try {
+      await task();
+      await load();
+      setFeedback({ error: false, text: done });
+      return true;
+    } catch (error) {
+      setFeedback({ error: true, text: memberError(error, fallback) });
+      return false;
+    } finally {
+      setWorking(false);
+    }
+  }
+
+  async function add(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!email.trim() || working) return;
+    if (await run(() => addAdmin(client, email), `${email.trim()} 계정을 관리자로 추가했어요.`, '관리자를 추가하지 못했어요.')) setEmail('');
+  }
+
+  function remove(member: AdminMember) {
+    if (!window.confirm(`${member.email} 계정의 관리자 권한을 해제할까요?`)) return;
+    void run(() => removeAdmin(client, member.user_id), `${member.email} 계정의 관리자 권한을 해제했어요.`, '관리자를 해제하지 못했어요.');
+  }
+
+  return (
+    <div className="admin-content admin-members">
+      <div className="admin-grid">
+        <section className="admin-panel">
+          <h2>관리자 목록</h2>
+          {!members && !feedback && <p role="status">관리자 목록을 불러오는 중이에요.</p>}
+          {members && (
+            <ul className="admin-list">
+              {members.map((member) => (
+                <li key={member.user_id}>
+                  <span><strong>{member.email}</strong>{member.user_id === userId && <small>내 계정</small>}</span>
+                  {member.user_id !== userId && (
+                    <button type="button" disabled={working} aria-label={`${member.email} 관리자 해제`} onClick={() => remove(member)}>해제</button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <form className="admin-panel admin-form" onSubmit={add}>
+          <h2>관리자 추가</h2>
+          <p className="admin-muted">새록에 가입한 계정의 이메일을 넣으면 공지를 관리할 수 있어요.</p>
+          <label>이메일<input type="email" required value={email} disabled={working}
+            onChange={(e) => setEmail(e.target.value)} /></label>
+          <div className="admin-form-actions">
+            <button type="submit" className="admin-primary" disabled={working}>{working ? '처리 중' : '관리자로 추가'}</button>
           </div>
           {feedback && <p role={feedback.error ? 'alert' : 'status'} className={feedback.error ? 'admin-error' : 'admin-muted'}>{feedback.text}</p>}
         </form>
