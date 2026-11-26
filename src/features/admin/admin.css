@@ -1,33 +1,91 @@
-
+/* 새록 관리자 웹. 조용한 무채색 바탕에 강조색(--primary)은 선택·주요 버튼·막대에만 쓴다. */
 .site-header:has(+ .saerok-admin) { display: none; }
-.saerok-admin { min-height: 100%; background: #f8f7f5; font-size: 17px; }
-.admin-header { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; padding: 20px clamp(20px, 5vw, 64px); background: white; border-bottom: 1px solid var(--line); }
+.saerok-admin { min-height: 100%; background: var(--web-bg); font-size: 16px; font-variant-numeric: tabular-nums; }
+.admin-header { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;
+  padding: 16px clamp(20px, 4vw, 40px); background: var(--surface); border-bottom: 1px solid var(--line); }
 .admin-header strong { display: flex; gap: 12px; align-items: center; }
 .admin-header a { color: var(--primary); }
-.admin-login, .admin-panel { border: 1px solid var(--line); background: white; border-radius: 16px; padding: 24px; }
+
+/* 셸: 왼쪽 메뉴 + 본문. 좁은 화면에서는 메뉴가 위쪽 한 줄로 */
+.admin-shell { display: grid; grid-template-columns: minmax(0, 1fr); }
+.admin-nav { background: var(--surface); border-bottom: 1px solid var(--line); padding: 8px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.admin-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; flex: 1; min-width: 0; }
+.admin-nav a { display: flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 8px; color: var(--muted);
+  text-decoration: none; white-space: nowrap; font-weight: var(--w-medium); }
+.admin-nav a:hover { color: var(--ink); background: var(--bg); }
+.admin-nav a.active { color: var(--primary); background: var(--lavender-soft); }
+.admin-account { display: flex; align-items: center; gap: 8px; }
+.admin-account small { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-main { min-width: 0; }
+@media (max-width: 899px) { .admin-account small { display: none; } }
+@media (min-width: 900px) {
+  .admin-shell { grid-template-columns: 220px minmax(0, 1fr); min-height: calc(100vh - 73px); }
+  .admin-nav { flex-direction: column; align-items: stretch; justify-content: space-between; border-bottom: 0;
+    border-right: 1px solid var(--line); padding: 20px 12px; position: sticky; top: 0; height: calc(100vh - 73px); }
+  .admin-nav ul { flex-direction: column; flex: 0 0 auto; overflow: visible; }
+  .admin-account { flex-direction: column; align-items: flex-start; padding: 0 12px; }
+}
+
+.admin-login, .admin-panel { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 20px; }
 .admin-login { display: grid; gap: 16px; width: min(440px, calc(100% - 40px)); margin: clamp(32px, 10vw, 100px) auto; }
-.admin-content { max-width: 1120px; margin-inline: auto; padding: 32px 20px 56px; }
-.admin-content + .admin-members { padding-top: 0; }
-.admin-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 24px; }
+.admin-content { max-width: 1200px; padding: 28px clamp(16px, 3vw, 32px) 56px; display: grid; gap: 20px; align-content: start; }
+.admin-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px; }
+.admin-heading h1 { font-size: 26px; }
 .admin-grid { display: grid; gap: 20px; align-items: start; }
 .admin-panel { min-width: 0; }
-.admin-panel h2 { margin-bottom: 12px; font-size: 22px; }
+.admin-panel h2 { margin-bottom: 12px; font-size: 18px; }
+.admin-stack { display: grid; gap: 8px; justify-items: start; }
 .admin-form, .admin-form label { display: grid; gap: 8px; }
 .admin-form { gap: 16px; }
-.admin-form input:not([type=checkbox]), .admin-form textarea, .saerok-admin button { border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink); padding: 10px 12px; }
+.admin-form input:not([type=checkbox]), .admin-form textarea, .admin-search input, .saerok-admin button {
+  border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); padding: 8px 12px; }
 .admin-form input, .admin-form textarea { min-width: 0; }
 .admin-form textarea { resize: vertical; }
 .admin-form label.admin-check { display: flex; align-items: center; gap: 8px; }
-.admin-form-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.saerok-admin button { min-height: 44px; }
+.admin-form-actions, .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.saerok-admin button { min-height: 40px; }
+.saerok-admin button:hover:not(:disabled) { border-color: var(--muted); }
 .saerok-admin .admin-primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
 .saerok-admin button:disabled { opacity: .55; cursor: default; }
+.admin-search { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.admin-search input { width: min(280px, 60vw); }
+
 .admin-list { padding: 0; margin: 0; list-style: none; }
 .admin-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding: 12px 0; }
-.admin-list li span { min-width: 0; overflow-wrap: anywhere; }
+.admin-list li > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .admin-list li button { flex-shrink: 0; }
 .admin-list small { display: block; color: var(--muted); }
+
+/* 개요: 숫자 카드 */
+.admin-stats { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.admin-stats li { display: grid; gap: 4px; }
+.admin-stats strong { font-size: 28px; line-height: 1.2; }
+
+/* 막대그래프: 막대는 강조색 한 가지, 값과 날짜는 작은 회색 글씨 */
+.admin-bars { list-style: none; margin: 0; padding: 0; height: 180px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; }
+.admin-bars li { display: grid; grid-template-rows: auto 1fr auto; align-items: end; justify-items: center; min-width: 0; }
+.admin-bar { width: min(100%, 24px); min-height: 2px; background: var(--primary); border-radius: 4px 4px 0 0; align-self: end; }
+.admin-bar-value, .admin-bar-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.admin-bar-label { padding-top: 4px; border-top: 1px solid var(--line); width: 100%; text-align: center; }
+
+/* 표: 좁은 화면에서는 가로로 밀어 본다 */
+.admin-table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.admin-table th, .admin-table td { text-align: left; padding: 10px 8px; border-top: 1px solid var(--line); white-space: nowrap; vertical-align: middle; }
+.admin-table th { color: var(--muted); font-weight: var(--w-medium); border-top: 0; }
+.admin-table .num { text-align: right; }
+.admin-table td.admin-actions { display: table-cell; white-space: normal; min-width: 96px; }
+.admin-table td:first-child { white-space: normal; overflow-wrap: anywhere; min-width: 160px; }
+.admin-table td.admin-actions button { margin: 2px 4px 2px 0; }
+
+/* 상태 표시: 글자색만 바꾸는 조용한 칩 */
+.admin-chip { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.admin-chip-live, .admin-chip-active { color: var(--ok); }
+.admin-chip-scheduled, .admin-chip-pending { color: var(--primary); }
+.admin-chip-suspended { color: var(--danger); }
+
 .admin-error { color: var(--danger); }
 .admin-muted, .admin-message { color: var(--muted); }
 .admin-message { padding: 32px; }
-@media (min-width: 800px) { .admin-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (min-width: 800px) { .admin-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
