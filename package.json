@@ -2,7 +2,7 @@
   "name": "saerok",
   "private": true,
   "version": "0.1.0",
-  "description": "새록 — 나만의 기억 방법을 배우고 생활로 이어가는 시니어 기억 연습 앱",
+  "description": "새록 — 나만의 기억 방법을 배우고 생활로 이어가는 모든 연령을 위한 기억 연습 앱",
   "type": "module",
   "scripts": {
     "dev": "vite",
