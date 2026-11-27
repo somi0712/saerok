@@ -1,0 +1,49 @@
+/* 훈련하기 — 레퍼런스: 영역 카드(파스텔·Lv), 레벨 길과 큰 보기 타일(듀오링고·Numo 결) */
+.tr-areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--sp-3); }
+.tr-area { display: grid; gap: var(--sp-1); padding: var(--sp-5); border-radius: var(--radius); color: var(--ink); text-decoration: none; min-height: 132px; align-content: start; }
+.tr-area:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.tr-area-top { display: flex; justify-content: space-between; align-items: center; color: var(--primary); margin-bottom: var(--sp-2); }
+.tr-area-top small { font-size: var(--fs-small); color: var(--muted); font-weight: var(--w-medium); }
+.tr-area strong { font-size: calc(var(--fs) + 2px); }
+.tr-area > span:last-child { color: var(--muted); font-size: var(--fs-small); }
+.tr-area.tone-0 { background: var(--mint); }
+.tr-area.tone-1 { background: var(--peach); }
+.tr-area.tone-2 { background: #e2ecf8; }
+.tr-area.tone-3 { background: var(--lavender); }
+.tr-area.tone-4 { background: var(--rose); }
+
+.tr-path { list-style: none; margin: var(--sp-4) 0; padding: 0; display: grid; gap: var(--sp-4); justify-items: center; }
+.tr-node { display: grid; justify-items: center; gap: var(--sp-1); transform: translateX(var(--x)); }
+.tr-node > a, .tr-node > span { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-weight: var(--w-bold);
+  font-size: calc(var(--fs) + 6px); text-decoration: none; }
+.tr-node.done > a { background: var(--primary); color: var(--on-primary); }
+.tr-node.now > a { background: var(--surface); color: var(--primary); border: 4px solid var(--primary); box-shadow: 0 0 0 8px var(--lavender-soft); }
+.tr-node.locked > span { background: var(--line); color: var(--muted); }
+.tr-node small { color: var(--muted); font-size: var(--fs-small); }
+
+.tr-progress { height: 12px; border-radius: 999px; background: var(--lavender-soft); overflow: hidden; }
+.tr-progress i { display: block; height: 100%; background: var(--primary); border-radius: inherit; transition: width .3s ease; }
+.tr-timer { height: 6px; border-radius: 999px; background: var(--lavender-soft); overflow: hidden; }
+.tr-timer i { display: block; height: 100%; background: var(--muted); animation: tr-time 15s linear forwards; }
+.tr-timer.over i { background: var(--line); }
+@keyframes tr-time { from { width: 100%; } to { width: 0; } }
+@media (prefers-reduced-motion: reduce) { .tr-timer i { animation: none; width: 100%; } .tr-progress i { transition: none; } }
+
+.tr-memo { white-space: pre-line; font-size: calc(var(--fs) + 4px); font-weight: var(--w-medium); line-height: 1.6; }
+.tr-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.tr-options.wide { grid-template-columns: 1fr; }
+.tr-option { min-height: 72px; padding: var(--sp-3) var(--sp-4); border-radius: var(--radius); border: 2px solid var(--line); background: var(--surface);
+  font: inherit; font-size: calc(var(--fs) + 2px); font-weight: var(--w-bold); color: var(--ink); cursor: pointer; text-align: center; }
+.tr-option:hover:not(:disabled) { border-color: var(--primary); }
+.tr-option:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.tr-option:disabled { cursor: default; }
+.tr-option.no { opacity: .45; text-decoration: line-through; }
+.tr-option.yes { border-color: var(--ok); background: var(--mint); }
+.tr-hint { display: flex; gap: var(--sp-2); align-items: flex-start; }
+
+.tr-sheet { display: grid; gap: var(--sp-3); padding: var(--sp-5); border-radius: var(--radius-lg); background: var(--lavender-soft); }
+.tr-sheet.perfect, .tr-sheet.assisted { background: var(--mint); }
+.tr-sheet strong { font-size: calc(var(--fs) + 2px); }
+.tr-two { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.tr-done { display: grid; justify-items: center; gap: var(--sp-2); text-align: center; }
+@media (max-width: 380px) { .tr-options { grid-template-columns: 1fr; } .tr-two { grid-template-columns: 1fr; } }
