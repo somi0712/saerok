@@ -36,6 +36,15 @@ export interface DiaryEntry {
   audio?: string; // data URL
 }
 
+/** 미래의 나에게 보내는 편지 — 이 기기에만 저장 */
+export interface Letter {
+  id: string;
+  at: string; // 쓴 때
+  sendAt: string; // 받을 때 (ISO)
+  text: string;
+  openedAt?: string;
+}
+
 export interface FamilyProposal {
   id: string;
   at: string;
@@ -61,6 +70,7 @@ export interface AppState {
   attendance: string[];
   training?: { level: number; accepted: boolean; at: string; areas?: Partial<Record<ModuleId, number>> }; // areas: 영역별 훈련 레벨
   diary: DiaryEntry[];
+  letters: Letter[];
   family: {
     linked: boolean;
     share: { access: boolean; practice: boolean; diary: boolean };
@@ -81,6 +91,7 @@ export const initialState: AppState = {
   assessments: [],
   attendance: [],
   diary: [],
+  letters: [],
   family: { linked: true, share: { access: true, practice: true, diary: false }, proposals: [] },
 };
 

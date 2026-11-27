@@ -40,6 +40,7 @@ export const P = {
   checkResult: '/check/result', //  10단계 결과
   training: '/check/training', //   훈련하기: 맞춤 훈련 · 영역 선택
   trainingArea: '/check/training/area', // 영역별 레벨 1–10 (/check/training/area/B)
+  diaryLesson: '/check/training/diary', // 내 일기로 훈련하기 (/check/training/diary/<일기 id>)
   lesson: '/check/training/lesson', //   훈련 문항 (/check/training/lesson/mix, /check/training/lesson/B?level=3)
   talk: '/talk', //                 AI 음성 대화 친구
 

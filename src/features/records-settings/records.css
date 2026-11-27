@@ -76,3 +76,15 @@
 .rs-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--sp-2); align-items: end; min-height: 140px; list-style: none; margin: 0; padding: 0; }
 .rs-week li { display: grid; justify-items: center; gap: var(--sp-1); font-size: var(--fs-small); text-align: center; color: var(--muted); }
 .rs-alert { background: var(--peach); box-shadow: none; }
+
+/* 기분: 이모지 + 글 */
+.rs-emoji { font-size: 1.4em; line-height: 1; }
+.rs-mood { gap: var(--sp-2); }
+/* 미래의 나에게 */
+.rs-when { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.rs-input { min-height: var(--tap); padding: 0 var(--sp-3); border-radius: var(--radius-sm); border: 2px solid var(--line); background: var(--surface); font: inherit; color: var(--ink); }
+.rs-input:focus { border-color: var(--primary); outline: none; }
+.rs-letters { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.rs-letters li { padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-sm); background: var(--surface); }
+.rs-letter { white-space: pre-wrap; font-size: calc(var(--fs) + 2px); line-height: 1.7; }
+@media (max-width: 380px) { .rs-when { grid-template-columns: 1fr; } }
