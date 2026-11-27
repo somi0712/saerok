@@ -51,6 +51,7 @@ export const weakAreas = (areas: Record<ModuleId, number>): ModuleId[] =>
 
 export interface Course {
   questions: number; // 1회 문항 수
+  perWeek: number; // 권장 주간 훈련 일수
   freq: string;
   minutes: string;
   difficulty: string;
@@ -58,9 +59,9 @@ export interface Course {
 
 /** 종합 레벨 → 훈련 강도·주기 (A안 훈련 메커니즘 매핑) */
 export function courseOf(level: number): Course {
-  if (level <= 2) return { questions: 3, freq: '매일 가볍게', minutes: '5분 안쪽', difficulty: '쉬움' };
-  if (level <= 4) return { questions: 5, freq: '주 3회', minutes: '10분', difficulty: '쉬움' };
-  if (level <= 6) return { questions: 6, freq: '주 4회', minutes: '12~15분', difficulty: '중간' };
-  if (level <= 8) return { questions: 8, freq: '주 5회', minutes: '15~20분', difficulty: '중간' };
-  return { questions: 10, freq: '원하는 만큼 매일', minutes: '20분', difficulty: '어려움' };
+  if (level <= 2) return { questions: 3, perWeek: 7, freq: '매일 가볍게', minutes: '5분 안쪽', difficulty: '쉬움' };
+  if (level <= 4) return { questions: 5, perWeek: 3, freq: '주 3회', minutes: '10분', difficulty: '쉬움' };
+  if (level <= 6) return { questions: 6, perWeek: 4, freq: '주 4회', minutes: '12~15분', difficulty: '중간' };
+  if (level <= 8) return { questions: 8, perWeek: 5, freq: '주 5회', minutes: '15~20분', difficulty: '중간' };
+  return { questions: 10, perWeek: 7, freq: '원하는 만큼 매일', minutes: '20분', difficulty: '어려움' };
 }

@@ -52,12 +52,15 @@ export const P = {
   admin: '/admin', // 관리자 공지 운영
   help: '/help', //                 12 도움과 쉬어가기
   rest: '/rest', //                 잠깐 쉬어가기 (밤하늘 · 오늘 해볼 쉼)
+  analysis: '/analysis', //         분석: 5개 영역 점수 · 종합 점수 · 추천 레벨 (하단 탭)
+  quick: '/quick', //               간단 테스트: 빠른 체험 → 기초 테스트 (하단 탭)
 } as const;
 
 export const TABS = [
+  // 노션 「유저 플로우와 정보 구조」 하단 메뉴 배치안: 홈 · 기록 · 펫 관리 · 분석 · 간단 테스트
   { to: P.home, label: '홈', icon: 'home' },
-  { to: P.learn, label: '배우기', icon: 'book' },
-  { to: P.practice, label: '연습', icon: 'grid' },
-  { to: P.missions, label: '미션', icon: 'calendar' },
-  { to: P.records, label: '내 기록', icon: 'chart' },
+  { to: P.records, label: '기록', icon: 'book' },
+  { to: P.petCare, label: '펫 관리', icon: 'heart' },
+  { to: P.analysis, label: '분석', icon: 'chart' },
+  { to: P.quick, label: '간단 테스트', icon: 'grid' },
 ] as const;
