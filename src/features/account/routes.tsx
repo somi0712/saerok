@@ -5,6 +5,7 @@ import { P } from '@/app/paths';
 import { database } from '@/data/announcements';
 import { Button, Card, Screen } from '@/design/ui';
 import { useAccount } from '@/store/account';
+import { isPhone, onlyDigits } from '@/features/records-settings/logic';
 import './account.css';
 
 // Supabase 오류 코드별 안내. 그 밖의 코드는 기본 문구로 보여 준다.
@@ -36,12 +37,21 @@ function Login() {
     const values = new FormData(event.currentTarget);
     const email = String(values.get('email')).trim();
     const password = String(values.get('password'));
+    // 회원가입: 본인 이름 · 본인 전화번호 · 보호자 전화번호(선택)
+    const name = String(values.get('name') ?? '').trim().slice(0, 20);
+    const phone = String(values.get('phone') ?? '');
+    const guardian = String(values.get('guardian') ?? '');
+    if (signup && (!name || !isPhone(phone) || (guardian.trim() && !isPhone(guardian)))) {
+      setMessage({ error: true, text: !name ? '이름을 적어 주세요.' : '전화번호는 숫자 9–11자리로 적어 주세요. 예: 010-1234-5678' });
+      return;
+    }
     setBusy(true);
     setMessage(undefined);
     try {
       const response = signup
         ? await database.auth.signUp({ email, password, options: {
           emailRedirectTo: new URL(loginLink(next), window.location.origin).href,
+          data: { name, phone: onlyDigits(phone), guardian_phone: guardian.trim() ? onlyDigits(guardian) : null },
         } })
         : await database.auth.signInWithPassword({ email, password });
       if (response.error) {
@@ -67,6 +77,12 @@ function Login() {
         </div>
         <Card>
           {database ? <form className="stack account-form" onSubmit={submit}>
+            {signup && <>
+              <label>이름<input name="name" type="text" autoComplete="name" maxLength={20} required /></label>
+              <label>내 전화번호<input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="010-1234-5678" required /></label>
+              <label>보호자 전화번호 (선택)<input name="guardian" type="tel" inputMode="tel" placeholder="010-1234-5678" /></label>
+              <p className="small">로그인하면 홈에서 이 이름으로 불러 드려요. 이름과 전화번호는 새록 계정에 저장되고, 새록이 보호자에게 대신 연락하지는 않아요.</p>
+            </>}
             <label>이메일<input name="email" type="email" autoComplete="username" required /></label>
             <label>비밀번호<input name="password" type="password" autoComplete={signup ? 'new-password' : 'current-password'}
               minLength={signup ? 8 : undefined} required /></label>

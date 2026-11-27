@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { P } from '@/app/paths';
-import { useAccount } from '@/store/account';
+import { greeting, useAccount } from '@/store/account';
 import { AnnouncementFeed } from '@/features/announcements/AnnouncementFeed';
 import { Button, Card, Icon, PET_NAMES, PetArt, Ring, Screen, toast } from '@/design/ui';
 import { useApp, WEEKDAYS } from '@/store/state';
@@ -15,9 +15,10 @@ const SIX_DAYS = 6 * 86_400_000;
 // 01 오늘의 연습 (하단 탭: 홈)
 export function Home() {
   const s = useApp();
-  const { userId } = useAccount();
+  const account = useAccount();
+  const { userId } = account;
   const reviewedAt = useRun((r) => r.reviewedAt);
-  const heading = `${s.profile.name || '새록 사용자'}님, 반가워요.`;
+  const heading = greeting(account);
   const days = s.plan.days.length ? s.plan.days : DEFAULT_DAYS;
   const done = practicedWeekdays(s.sessions);
   // 계획한 요일 + 계획 밖에 연습한 요일도 함께 보여 준다

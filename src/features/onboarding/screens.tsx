@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, Choice, Icon, PetArt, Screen, Steps } from '@/design/ui';
 import { app, useApp, WEEKDAYS, type FontSize } from '@/store/state';
+import { greeting, useAccount } from '@/store/account';
 import {
   AGE_BANDS, EXAMPLE_DONE_DAYS, EXAMPLE_METHODS, EXAMPLE_WEEKS, FAMILIARITY, FONT_LABEL, GENDERS,
   fourWeekLabels, todayIndex, weekRangeLabel,
@@ -70,34 +71,24 @@ function PillGroup({ label, options, value, onChange }: { label: string; options
   );
 }
 
-/** 15 이름 · 연령대 · 성별 */
+/** 15 연령대 · 성별 (부르는 이름은 로그인 계정의 닉네임으로만 쓴다) */
 export function ProfileScreen() {
   const nav = useNavigate();
   const [q] = useSearchParams();
   const saved = useApp((s) => s.profile);
-  const [name, setName] = useState(saved.name || '');
   const [ageBand, setAge] = useState(saved.ageBand);
   const [gender, setGender] = useState(saved.gender);
   const save = () => {
-    app.set((s) => ({ ...s, profile: { ...s.profile, name: name.trim(), ageBand, gender } }));
+    app.set((s) => ({ ...s, profile: { ...s.profile, ageBand, gender } }));
     nav(fromSettings(q) ? P.settings : P.method);
   };
   return (
     <Screen title="나의 기억 연습" back help={false}
-      footer={<Button onClick={save} disabled={!name.trim()}>{fromSettings(q) ? '저장하기' : '다음으로'}</Button>}>
+      footer={<Button onClick={save}>{fromSettings(q) ? '저장하기' : '다음으로'}</Button>}>
       {!fromSettings(q) && <Steps now={2} total={3} />}
       <span className="chip ob-chip">기본 정보</span>
-      <h2 className="title">어떻게 불러 드릴까요?</h2>
-      <p className="sub">이름은 직접 적고, 나머지는 골라 주세요.</p>
-      <div className="stack">
-        <label htmlFor="ob-name" className="ob-field-head">이름 또는 별명</label>
-        <div className="ob-input">
-          <input id="ob-name" type="text" value={name} maxLength={20} autoComplete="nickname"
-            onChange={(e) => setName(e.target.value)} aria-describedby="ob-name-hint" />
-          {name && <button type="button" aria-label="이름 지우기" onClick={() => setName('')}><Icon name="close" size={22} /></button>}
-        </div>
-        <p id="ob-name-hint" className="small">부르기 편한 이름을 적어 주세요. 나중에 바꿀 수 있어요.</p>
-      </div>
+      <h2 className="title">나에 대해 조금 알려 주세요.</h2>
+      <p className="sub">연습을 고르는 데만 써요. 이름은 회원가입할 때 적으면 로그인한 뒤 불러 드려요.</p>
       <div className="web-columns">
         <PillGroup label="연령대" options={AGE_BANDS} value={ageBand} onChange={setAge} />
         <PillGroup label="성별" options={GENDERS} value={gender} onChange={setGender} />
@@ -150,6 +141,7 @@ function Summary({ rows }: { rows: [string, string][] }) {
 /** 28 준비 완료 · 예제 데이터 */
 export function ReadyScreen() {
   const { profile, settings } = useApp();
+  const account = useAccount();
   return (
     <Screen title="나의 기억 연습" back help={false}
       footer={<>
@@ -157,7 +149,7 @@ export function ReadyScreen() {
         <Button variant="secondary" to={P.startPet}>기억 친구 고르고 시작하기</Button>
       </>}>
       <span className="chip ob-chip">준비 완료</span>
-      <h2 className="title">{profile.name || '새록 사용자'}님, 반가워요.</h2>
+      <h2 className="title">{greeting(account)}</h2>
       <p className="sub">고른 정보에 맞춰 예제 데이터를 준비했어요.</p>
       <Card>
         <strong>내가 고른 정보</strong>
@@ -179,7 +171,7 @@ export function ReadyScreen() {
 
 /** 29 예제 홈 · 한눈에 보기 */
 export function TourHomeScreen() {
-  const name = useApp((s) => s.profile.name) || '새록 사용자';
+  const account = useAccount();
   const now = new Date();
   const today = todayIndex(now);
   return (
@@ -189,7 +181,7 @@ export function TourHomeScreen() {
         <Button variant="secondary" to={P.tourRecord}>4주 기록 살펴보기</Button>
       </>}>
       <span className="ob-badge">체험 모드 · 예제 데이터로 둘러보는 중</span>
-      <h2 className="title">{name}님, 반가워요.</h2>
+      <h2 className="title">{greeting(account)}</h2>
       <div className="ob-stats">
         <div className="ob-stat lav"><span>이번 주 연습</span><b>3회</b><span className="small">목표 5회 중</span></div>
         <div className="ob-stat peach"><span>연속으로 한 날</span><b>4일</b><span className="small">지난주보다 하루 더</span></div>
