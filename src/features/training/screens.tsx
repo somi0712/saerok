@@ -219,7 +219,8 @@ function LessonRun({ area, level, current, weak, onRestart }: { area: ModuleId |
         {up && level < 10
           ? <Button to={levelPath(area, level + 1)}>{level + 1}단계 하기</Button>
           : <Button onClick={onRestart}>같은 단계 새 문항으로 다시 하기</Button>}
-        <Button variant="secondary" to={P.training}>훈련 목록으로</Button>
+        <Button variant="secondary" to={`${P.rest}?next=${encodeURIComponent(P.training)}`}>잠깐 쉬어가기</Button>
+        <Button variant="ghost" to={P.training}>훈련 목록으로</Button>
       </>}>
         <div className="tr-done">
           <PetArt kind={pet} size={140} />
