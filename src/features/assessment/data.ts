@@ -2,14 +2,15 @@ import type { ModuleId } from '@/store/state';
 import type { IconName } from '@/design/ui';
 
 // 노션 「주차별 계획 & 회의」 2주차: 정밀 테스트 모듈 A–E, 기억력 수준 10단계, 기억력 훈련 메커니즘.
+// 4주차_2(11/26): 영역을 의미기억(=지남력)·일화기억·작업기억·시공간·언어유창성으로 정리. 저장 키 A–E는 그대로 둔다.
 // 문구는 기획안 24-2에 맞춰 진단·질병·개선을 말하지 않도록 다듬었다.
 
 export const MODULES: Record<ModuleId, string> = {
-  A: '지남력·상식',
-  B: '에피소드 기억·회상',
-  C: '작업 기억',
-  D: '시공간·세부 인지',
-  E: '언어 유창성',
+  A: '의미기억(지남력)',
+  B: '일화기억',
+  C: '작업기억',
+  D: '시공간',
+  E: '언어유창성',
 };
 export const MODULE_IDS = Object.keys(MODULES) as ModuleId[];
 
