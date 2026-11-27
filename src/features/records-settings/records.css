@@ -88,3 +88,5 @@
 .rs-letters li { padding: var(--sp-3) var(--sp-4); border-radius: var(--radius-sm); background: var(--surface); }
 .rs-letter { white-space: pre-wrap; font-size: calc(var(--fs) + 2px); line-height: 1.7; }
 @media (max-width: 380px) { .rs-when { grid-template-columns: 1fr; } }
+
+.rs-phone { font-size: calc(var(--fs) + 10px); font-weight: var(--w-bold); font-variant-numeric: tabular-nums; }

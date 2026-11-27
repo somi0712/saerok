@@ -85,6 +85,15 @@ export const TASK_LABEL: Record<PracticeSession['task'], string> = {
   check: '정밀 기억력 테스트',
 };
 
+/** 보호자 전화번호: 숫자만 9–11자리, 0으로 시작 */
+export const onlyDigits = (s: string) => s.replace(/\D/g, '');
+export const isPhone = (s: string) => /^0\d{8,10}$/.test(onlyDigits(s));
+export const formatPhone = (s: string) => {
+  const d = onlyDigits(s);
+  if (d.startsWith('02')) return d.replace(/^(02)(\d{3,4})(\d{4})$/, '$1-$2-$3');
+  return d.replace(/^(\d{3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+};
+
 export const shortDate = (iso: string) => {
   const d = new Date(iso);
   return `${d.getMonth() + 1}.${d.getDate()} ${'일월화수목금토'[d.getDay()]}`;

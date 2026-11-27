@@ -52,3 +52,9 @@ describe('strategyCounts', () => {
     ]);
   });
 });
+
+describe('보호자 전화번호', async () => {
+  const { formatPhone, isPhone } = await import('./logic');
+  it.each([['010-1234-5678', true], ['01012345678', true], ['02 123 4567', true], ['1234', false], ['010-12-34', false]])('%s → %s', (s, ok) => expect(isPhone(s)).toBe(ok));
+  it('보기 좋게 나눔', () => { expect(formatPhone('01012345678')).toBe('010-1234-5678'); expect(formatPhone('021234567')).toBe('02-123-4567'); });
+});

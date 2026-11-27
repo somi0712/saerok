@@ -119,9 +119,9 @@ export function ResultScreen() {
       <Plan plan={plan} />
       {plan.family && (
         <Card tone="mint">
-          <h3>가족에게 알릴지 본인이 정해요</h3>
-          <p className="small">원하시면 연습 소식을 가족에게 전할 수 있어요. 가족이 제안해도, 바꾸는 건 언제나 본인이 정해요.</p>
-          <Button variant="ghost" to={P.family}>가족 공유 설정 보기</Button>
+          <h3>보호자 연락처를 적어 둘 수 있어요</h3>
+          <p className="small">번호만 적어 두면 필요할 때 눌러서 바로 전화할 수 있어요. 새록이 대신 연락하거나 결과를 보내지 않아요.</p>
+          <Button variant="ghost" to={P.family}>보호자 연락처 적기</Button>
         </Card>
       )}
       <p className="small">점수는 연습 방법을 고르는 데만 써요. 건강 상태를 판단하지 않아요.</p>
