@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Card, Screen, toast } from '@/design/ui';
 import { app, useApp } from '@/store/state';
+import { saveAccountInfo, useAccount } from '@/store/account';
 import { formatPhone, isPhone, onlyDigits } from './logic';
 import './records.css';
 
@@ -10,6 +11,7 @@ import './records.css';
  */
 export default function Family() {
   const saved = useApp((s) => s.family.phone ?? '');
+  const { userId } = useAccount();
   const [phone, setPhone] = useState(formatPhone(saved));
   const [editing, setEditing] = useState(!saved);
   const valid = isPhone(phone);
@@ -17,11 +19,13 @@ export default function Family() {
   const save = () => {
     if (!valid) return;
     app.set((s) => ({ ...s, family: { ...s.family, phone: onlyDigits(phone) } }));
+    if (userId) void saveAccountInfo({ guardian_phone: onlyDigits(phone) });
     setEditing(false);
     toast('보호자 전화번호를 저장했어요.');
   };
   const remove = () => {
     app.set((s) => ({ ...s, family: { ...s.family, phone: undefined } }));
+    if (userId) void saveAccountInfo({ guardian_phone: null });
     setPhone('');
     setEditing(true);
     toast('보호자 전화번호를 지웠어요.');
@@ -50,7 +54,7 @@ export default function Family() {
           {saved && <Button variant="ghost" onClick={() => { setPhone(formatPhone(saved)); setEditing(false); }}>그대로 두기</Button>}
         </Card>
       )}
-      <p className="small">번호는 이 기기에만 저장돼요. 새록이 보호자에게 대신 연락하거나 기록을 보내지 않아요. 휴대폰에서 누르면 전화 앱이 열려요.</p>
+      <p className="small">{userId ? '번호는 내 새록 계정과 이 기기에 저장돼요.' : '번호는 이 기기에만 저장돼요.'} 새록이 보호자에게 대신 연락하거나 기록을 보내지 않아요. 휴대폰에서 누르면 전화 앱이 열려요.</p>
     </Screen>
   );
 }

@@ -143,7 +143,8 @@ export function readGuestPreferences() {
   const legacy = readStorage('saerok-app-v1', initialState);
   const guest = readStorage('saerok-guest-v2', legacy);
   const { onboarded, profile, settings, consent, pet } = guest;
-  return { onboarded, profile, settings, consent, pet: { ...initialState.pet, kind: pet.kind, name: pet.name } };
+  // 이름은 계정 닉네임으로만 부른다 — 이 브라우저에서 적은 이름을 로그인한 계정으로 옮기지 않는다
+  return { onboarded, profile: { ...profile, name: '' }, settings, consent, pet: { ...initialState.pet, kind: pet.kind, name: pet.name } };
 }
 
 export const app = createPersisted<AppState>('saerok-guest-v2', { ...initialState, ...readGuestPreferences() });

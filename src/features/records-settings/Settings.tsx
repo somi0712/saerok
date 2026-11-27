@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, Icon, Screen, toast } from '@/design/ui';
 import { P } from '@/app/paths';
 import { database } from '@/data/announcements';
-import { useAccount } from '@/store/account';
+import { saveAccountInfo, useAccount } from '@/store/account';
 import { app, useApp, type FontSize } from '@/store/state';
 import { CLOUD_NOTICE, disableCloud, enableCloud } from '@/store/cloudSync';
 import { formatPhone } from './logic';
@@ -21,6 +21,37 @@ export function CounselInfo() {
       <p>치매상담콜센터</p>
       <p className="rs-phone">1899-9988</p>
       <a className="btn btn-secondary" href="tel:18999988">전화 걸기</a>
+    </Card>
+  );
+}
+
+/** 이름 — 로그인한 계정에만 있고(가입 때 적음), 홈 인사말에서 이 이름으로 부른다 */
+function NameCard() {
+  const { userId, name } = useAccount();
+  const [value, setValue] = useState(name ?? '');
+  const [busy, setBusy] = useState(false);
+  if (!userId) {
+    return (
+      <Card>
+        <p className="rs-h">이름</p>
+        <p className="sub">로그인하지 않으면 이름을 부르지 않아요. 로그인하면 가입할 때 적은 이름으로 불러 드려요.</p>
+        <Button variant="secondary" to={P.login}>로그인하기</Button>
+      </Card>
+    );
+  }
+  const save = async () => {
+    setBusy(true);
+    const ok = await saveAccountInfo({ name: value.trim().slice(0, 20) });
+    setBusy(false);
+    toast(ok ? '이름을 바꿨어요.' : '이름을 저장하지 못했어요. 잠시 후 다시 해 주세요.');
+  };
+  return (
+    <Card>
+      <label className="stack">
+        <span className="rs-h">이름</span>
+        <input className="rs-input" type="text" autoComplete="name" maxLength={20} value={value} onChange={(e) => setValue(e.target.value)} />
+      </label>
+      <Button variant="secondary" onClick={save} disabled={busy || !value.trim() || value.trim() === name}>이름 저장하기</Button>
     </Card>
   );
 }
@@ -57,11 +88,12 @@ export default function Settings() {
         <p className="sub">설정과 공유를 언제든 바꿔요.</p>
       </div>
 
+      <NameCard />
+
       <Card>
         <p className="rs-h">내 프로필</p>
-        {profile.name ? (
+        {profile.ageBand || profile.gender || profile.methodFamiliarity ? (
           <div className="rs-head">
-            <p>{profile.name}</p>
             {profile.ageBand && <p>{profile.ageBand}</p>}
             {profile.gender && <p>{profile.gender}</p>}
             {profile.methodFamiliarity && <p>{profile.methodFamiliarity}</p>}
