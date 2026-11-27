@@ -72,6 +72,7 @@ export interface AppState {
   diary: DiaryEntry[];
   letters: Letter[];
   family: {
+    phone?: string; // 보호자 전화번호 (숫자만, 이 기기에만 저장)
     linked: boolean;
     share: { access: boolean; practice: boolean; diary: boolean };
     proposals: FamilyProposal[];
