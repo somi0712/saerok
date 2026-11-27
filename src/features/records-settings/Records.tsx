@@ -22,8 +22,9 @@ export default function Records() {
 
   if (!sessions.length && !assessments.length) {
     return (
-      <Screen title="내 기록" tabs>
-        <span className="rs-tag">내 기록</span>
+      <Screen title="기록" tabs>
+        <span className="rs-tag">기록 · 마이페이지</span>
+        <div className="row"><Link className="chip" to={P.diary}>기억 일기장</Link><Link className="chip" to={P.missions}>미션 · 출석</Link><Link className="chip" to={P.analysis}>분석</Link></div>
         <div className="rs-head">
           <h2 className="title">첫 연습을 하면 여기에 차곡차곡 쌓여요.</h2>
           <p className="sub">연습한 날, 써 본 방법, 생활에서 해 본 일을 함께 돌아볼 수 있어요.</p>
@@ -46,8 +47,9 @@ export default function Records() {
   const goal = plan.goals[0];
 
   return (
-    <Screen title="내 기록" tabs>
-      <span className="rs-tag">내 기록</span>
+    <Screen title="기록" tabs>
+      <span className="rs-tag">기록 · 마이페이지</span>
+        <div className="row"><Link className="chip" to={P.diary}>기억 일기장</Link><Link className="chip" to={P.missions}>미션 · 출석</Link><Link className="chip" to={P.analysis}>분석</Link></div>
       <div className="rs-head">
         <h2 className="title">이번 주의 작은 실천</h2>
         <p className="sub">이번 주 · {range(now)}</p>
