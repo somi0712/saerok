@@ -7,10 +7,10 @@ import { getAccount, useAccount } from '@/store/account';
 import { clearGuestPreview, finishGuestTest, setGuestAssessment } from '@/store/guestTrial';
 import { loginLink } from '@/features/account/routes';
 import { MODULES, MODULE_IDS, RECALL_WORDS, questionsFor } from './data';
-import { levelOf, scoreOf, type Answer } from './scoring';
+import { T_M, areaScores, levelOf, totalOf, type Answer } from './scoring';
 import './assessment.css';
 
-const HINT_DELAY = 10_000; // 노션: 10초간 무응답 시 힌트 제공
+const HINT_DELAY = T_M * 1000; // 11/26 회의: 답변 제한 15초가 지나면 힌트를 볼 수 있다
 
 const shuffle = <T,>(list: T[]) => list.map((x) => [Math.random(), x] as const).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
 
@@ -24,7 +24,8 @@ export function saveAssessment(assessment: Assessment, session: PracticeSession)
 }
 
 function complete(answers: Answer[]) {
-  const score = scoreOf(answers);
+  const areas = areaScores(answers);
+  const score = totalOf(areas);
   const modules = Object.fromEntries(
     MODULE_IDS.map((m) => {
       const rs = answers.filter((a) => a.m === m);
@@ -33,6 +34,7 @@ function complete(answers: Answer[]) {
         total: rs.length,
         ms: Math.round(rs.reduce((s, a) => s + a.seconds, 0) * 1000),
         hints: rs.filter((a) => a.hint).length,
+        score: areas[m],
       }];
     }),
   ) as Assessment['modules'];
@@ -89,7 +91,7 @@ export function CheckScreen() {
           <ul className="as-modules">
             {MODULE_IDS.map((m) => <li key={m}><b>{m}</b> {MODULES[m]}</li>)}
           </ul>
-          <p className="small">정답보다 편안하게 푸는 게 더 중요해요. 10초가 지나면 힌트를 볼 수 있어요.</p>
+          <p className="small">정답보다 편안하게 푸는 게 더 중요해요. 15초가 지나면 힌트를 볼 수 있어요.</p>
         </Card>
       </Screen>
     );
