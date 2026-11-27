@@ -51,6 +51,7 @@ export const P = {
   family: '/settings/family', //    보호자 연동 (가족 제안 → 본인 승인)
   admin: '/admin', // 관리자 공지 운영
   help: '/help', //                 12 도움과 쉬어가기
+  rest: '/rest', //                 잠깐 쉬어가기 (밤하늘 · 오늘 해볼 쉼)
 } as const;
 
 export const TABS = [

@@ -40,6 +40,7 @@ export default function Help() {
         </div>
       </Card>
       <div className="stack">
+        <Button variant="secondary" to={P.rest}>오늘 해볼 쉼 고르기</Button>
         <Button variant="secondary" to={P.settings}>설정 바꾸기</Button>
         <Button onClick={() => nav(-1)}>계속 연습하기</Button>
         <Button variant="secondary" to={P.home}>오늘은 여기까지</Button>
