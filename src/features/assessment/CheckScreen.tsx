@@ -2,13 +2,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { P } from '@/app/paths';
 import { Button, Card, Icon, Screen, Steps, toast } from '@/design/ui';
-import { app, uid, type Assessment, type ModuleId, type PracticeSession } from '@/store/state';
+import { app, createPersisted, uid, type Assessment, type ModuleId, type PracticeSession } from '@/store/state';
 import { getAccount, useAccount } from '@/store/account';
 import { clearGuestPreview, finishGuestTest, setGuestAssessment } from '@/store/guestTrial';
 import { loginLink } from '@/features/account/routes';
-import { MODULES, MODULE_IDS, RECALL_WORDS, questionsFor } from './data';
+import { MODULES, MODULE_IDS, RECALL_WORDS, pickTest } from './data';
 import { T_M, areaScores, levelOf, totalOf, type Answer } from './scoring';
 import './assessment.css';
+
+// 이 기기에서 이미 본 테스트 문항 — 다음 테스트(2주 뒤 중간 점검 등)는 같은 영역의 새 문항부터 낸다
+const seenTest = createPersisted<{ ids: string[] }>('saerok-check-seen', { ids: [] });
 
 const HINT_DELAY = T_M * 1000; // 11/26 회의: 답변 제한 15초가 지나면 힌트를 볼 수 있다
 
@@ -59,7 +62,7 @@ function complete(answers: Answer[]) {
 export function CheckScreen() {
   const nav = useNavigate();
   const { userId } = useAccount();
-  const questions = useMemo(() => questionsFor().map((q) => ({ ...q, options: shuffle([q.a, ...q.o]) })), []);
+  const questions = useMemo(() => pickTest(seenTest.get().ids).map((q) => ({ ...q, options: shuffle([q.a, ...q.o]) })), []);
   const [phase, setPhase] = useState<'intro' | 'memorize' | 'ask'>('intro');
   const [i, setI] = useState(0);
   const [hintReady, setHintReady] = useState(false);
@@ -119,6 +122,7 @@ export function CheckScreen() {
     toast(last ? '마지막까지 함께해 주셔서 고마워요.' : '고마워요, 다음 질문으로 갈게요.');
     advance.current = setTimeout(() => {
       if (!last) return setI(i + 1);
+      seenTest.set((s) => ({ ids: [...new Set([...s.ids, ...questions.map((x) => x.id)])] }));
       nav(complete(answers.current) ? P.checkResult : loginLink(P.check), { replace: true });
     }, 700);
   };
