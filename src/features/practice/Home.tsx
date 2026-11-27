@@ -5,6 +5,7 @@ import { AnnouncementFeed } from '@/features/announcements/AnnouncementFeed';
 import { Button, Card, Icon, PET_NAMES, PetArt, Ring, Screen, toast } from '@/design/ui';
 import { useApp, WEEKDAYS } from '@/store/state';
 import { practicedWeekdays } from './logic';
+import { arrivedUnread, letterLink } from '@/features/records-settings/letterStore';
 import { run, useRun } from './store';
 import './practice.css';
 
@@ -38,6 +39,14 @@ export function Home() {
       </div>
 
       <AnnouncementFeed />
+
+      {arrivedUnread(s.letters ?? []).map((l) => (
+        <Link key={l.id} to={letterLink(l.id)} className="card card-mint pr-link">
+          <span className="pr-ico" aria-hidden="true"><Icon name="mailbox" size={22} /></span>
+          <span><strong>미래의 나에게서 편지가 도착했어요</strong><span>눌러서 편지를 열어 보세요</span></span>
+          <span className="pr-go"><Icon name="back" /></span>
+        </Link>
+      ))}
 
       {showReview && (
         <Card tone="mint">
