@@ -76,6 +76,7 @@ export function Home() {
 
         <div className="pr-home-actions">
           <Button to={s.consent.use ? P.practice : P.consent}>오늘의 연습 시작하기</Button>
+          <Button variant="secondary" to={P.learn}>기억 방법 배우기</Button>
           <Button variant="secondary" to={P.typeIntro}>유형 테스트 · 펫 고르기</Button>
         </div>
 

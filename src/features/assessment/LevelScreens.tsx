@@ -8,6 +8,7 @@ import { Button, Card, Screen, toast } from '@/design/ui';
 import { app, useApp, type Assessment } from '@/store/state';
 import { LEVELS, MODULES, MODULE_IDS, type LevelPlan } from './data';
 import { courseOf, weakAreas } from './scoring';
+import { Radar } from './Radar';
 import './assessment.css';
 
 /** 영역 점수 S_i. 예전 기록(점수 없음)은 정답률로 대신한다. */
@@ -24,6 +25,7 @@ function AreaBars({ a }: { a: Assessment }) {
   return (
     <Card>
       <span className="eyebrow">영역별 결과</span>
+      <div className="as-radar"><Radar scores={areas} /></div>
       <ul className="as-bars">
         {MODULE_IDS.map((m) => (
           <li key={m} className={weak.includes(m) ? 'weak' : undefined}>

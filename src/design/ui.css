@@ -156,3 +156,9 @@ button.chip[aria-pressed='true'] { background: var(--primary); color: var(--on-p
   .screen-foot > .small { flex-basis: 100%; }
   .toast { bottom: 32px; }
 }
+
+/* 5영역 점수 오각형 (분석 · 테스트 결과지) */
+.radar-ring { fill: none; stroke: var(--line); stroke-width: 1; }
+.radar-value { fill: color-mix(in srgb, var(--primary) 35%, transparent); stroke: var(--primary); stroke-width: 2; }
+.radar-label { fill: var(--ink); font-size: 13px; font-weight: 600; }
+.as-radar { display: grid; justify-items: center; }
