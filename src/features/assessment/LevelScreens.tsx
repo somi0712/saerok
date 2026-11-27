@@ -126,35 +126,3 @@ export function ResultScreen() {
     </Screen>
   );
 }
-
-/** 단계별 맞춤 훈련 — 노션 2주차 「기억력 훈련 메커니즘 설계」 */
-export function TrainingScreen() {
-  const training = useApp((s) => s.training);
-  const last = useApp((s) => s.assessments.at(-1));
-  if (!last) return <NoAssessment title="맞춤 훈련" />;
-  const level = training?.accepted ? training.level : last.level;
-  const plan = LEVELS[level - 1];
-  return (
-    <Screen title="맞춤 훈련" back={P.home} footer={<>
-      <Button to={P.order}>오늘의 훈련 시작하기</Button>
-      <Button variant="secondary" to={P.plan}>주간 계획에 담기</Button>
-    </>}>
-      <p className="eyebrow">{level}단계 · {plan.freq}</p>
-      <h2 className="title">오늘은 이렇게 연습해요</h2>
-      <div className="stack">
-        {plan.train.map((t, i) => (
-          <Card key={t}>
-            <span className="small">훈련 {i + 1}</span>
-            <strong>{t}</strong>
-          </Card>
-        ))}
-      </div>
-      <Card tone="mint">
-        <span className="eyebrow">생활 속에서 함께해요</span>
-        <p>{plan.habit}</p>
-      </Card>
-      {!training?.accepted && <Button variant="ghost" to={P.checkResult}>단계 결과 다시 보기</Button>}
-      <Button variant="ghost" to={P.check}>기억력 테스트 다시 하기</Button>
-    </Screen>
-  );
-}

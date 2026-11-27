@@ -59,7 +59,7 @@ export interface AppState {
   plan: { days: string[]; goals: string[]; at?: string; history: { at: string; days: string[]; goals: string[] }[] };
   assessments: Assessment[];
   attendance: string[];
-  training?: { level: number; accepted: boolean; at: string };
+  training?: { level: number; accepted: boolean; at: string; areas?: Partial<Record<ModuleId, number>> }; // areas: 영역별 훈련 레벨
   diary: DiaryEntry[];
   family: {
     linked: boolean;

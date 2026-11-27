@@ -38,7 +38,9 @@ export const P = {
   // 노션 회의 결정 사항 (assessment)
   check: '/check', //               정밀 기억력 테스트 A–E
   checkResult: '/check/result', //  10단계 결과
-  training: '/check/training', //   단계별 맞춤 훈련
+  training: '/check/training', //   훈련하기: 맞춤 훈련 · 영역 선택
+  trainingArea: '/check/training/area', // 영역별 레벨 1–10 (/check/training/area/B)
+  lesson: '/check/training/lesson', //   훈련 문항 (/check/training/lesson/mix, /check/training/lesson/B?level=3)
   talk: '/talk', //                 AI 음성 대화 친구
 
   // 내 기록 · 설정 (records-settings)

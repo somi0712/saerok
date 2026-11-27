@@ -85,19 +85,16 @@ export function Home() {
           <span className="pr-go"><Icon name="back" /></span>
         </Link>
 
-        {last ? (
-          <Link to={P.training} className="card pr-link">
-            <span className="pr-ico" aria-hidden="true">{last.level}</span>
-            <span><strong>나의 단계 {last.level} · 맞춤 훈련</strong><span>지금 단계에 맞는 연습을 이어가요</span></span>
-            <span className="pr-go"><Icon name="back" /></span>
-          </Link>
-        ) : (
-          <Link to={P.check} className="card pr-link">
-            <span className="pr-ico" aria-hidden="true">A–E</span>
-            <span><strong>정밀 기억력 테스트</strong><span>다섯 영역을 살펴보고 맞춤 훈련을 받아요</span></span>
-            <span className="pr-go"><Icon name="back" /></span>
-          </Link>
-        )}
+        <Link to={P.training} className="card pr-link">
+          <span className="pr-ico" aria-hidden="true">{s.training?.level ?? last?.level ?? 1}</span>
+          <span><strong>훈련하기</strong><span>영역과 레벨 1–10을 골라 15초 문제를 풀어요</span></span>
+          <span className="pr-go"><Icon name="back" /></span>
+        </Link>
+        <Link to={last ? P.checkResult : P.check} className="card pr-link">
+          <span className="pr-ico" aria-hidden="true">5</span>
+          <span><strong>기초 테스트</strong><span>{last ? `지난 결과 ${last.level}단계 · 결과지 보기` : '다섯 영역을 살펴보고 시작 레벨을 받아요'}</span></span>
+          <span className="pr-go"><Icon name="back" /></span>
+        </Link>
       </div>
     </Screen>
   );
