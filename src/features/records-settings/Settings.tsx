@@ -6,6 +6,7 @@ import { database } from '@/data/announcements';
 import { useAccount } from '@/store/account';
 import { app, useApp, type FontSize } from '@/store/state';
 import { CLOUD_NOTICE, disableCloud, enableCloud } from '@/store/cloudSync';
+import { formatPhone } from './logic';
 import './records.css';
 
 const SIZES: [FontSize, string][] = [[20, '보통'], [22, '크게'], [24, '더 크게']];
@@ -24,12 +25,11 @@ export function CounselInfo() {
   );
 }
 
-/** 시안 11 설정과 가족 공유 */
+/** 시안 11 설정과 보호자 연락처 */
 export default function Settings() {
   const nav = useNavigate();
   const { profile, settings, family, consent } = useApp();
   const { userId } = useAccount();
-  const [stopAsk, setStopAsk] = useState(false);
   const [wipeAsk, setWipeAsk] = useState(false);
   const [cloudAsk, setCloudAsk] = useState(false);
   const [cloudBusy, setCloudBusy] = useState(false);
@@ -43,13 +43,6 @@ export default function Settings() {
   };
 
   const setSettings = (patch: Partial<typeof settings>) => app.set((s) => ({ ...s, settings: { ...s.settings, ...patch } }));
-  const shared = [family.share.access && '접속 여부', family.share.practice && '연습 기록', family.share.diary && '일기'].filter(Boolean);
-
-  const stopSharing = () => {
-    app.set((s) => ({ ...s, family: { ...s.family, linked: false } }));
-    setStopAsk(false);
-    toast('가족 공유를 그만했어요. 언제든 다시 켤 수 있어요.');
-  };
   const wipe = () => {
     app.reset();
     toast('모든 기록을 지웠어요.');
@@ -100,20 +93,19 @@ export default function Settings() {
       </Card>
 
       <section className="card card-lavender">
-        <span className="rs-tag rs-tag-white">{family.linked ? `가족과 공유 중 · ${shared.length ? shared.join(', ') : '공유 항목 없음'}` : '현재 공유하지 않아요'}</span>
-        <p className="rs-h">공유는 내가 선택해요.</p>
-        <p className="sub">가족은 연습 방법을 제안할 수 있어요. 바꿀지는 언제나 내가 정해요.</p>
-        <Button variant="secondary" to={P.family}>가족 공유 살펴보기</Button>
-        {family.linked &&
-          (stopAsk ? (
-            <div className="card rs-confirm">
-              <p>가족 공유를 그만할까요? 가족 화면에 더 이상 아무것도 보이지 않아요.</p>
-              <Button onClick={stopSharing}>공유 그만하기</Button>
-              <Button variant="secondary" onClick={() => setStopAsk(false)}>계속 공유하기</Button>
-            </div>
-          ) : (
-            <Button variant="ghost" onClick={() => setStopAsk(true)}>공유 그만하기</Button>
-          ))}
+        <span className="rs-tag rs-tag-white">보호자 연락처</span>
+        {family.phone ? (
+          <>
+            <p className="rs-h">{formatPhone(family.phone)}</p>
+            <a className="btn btn-primary" href={`tel:${family.phone}`}>보호자에게 전화하기</a>
+            <Button variant="secondary" to={P.family}>번호 바꾸기</Button>
+          </>
+        ) : (
+          <>
+            <p className="sub">전화번호만 적어 두면, 누를 때 휴대폰 전화 앱으로 바로 걸 수 있어요.</p>
+            <Button variant="secondary" to={P.family}>보호자 번호 적기</Button>
+          </>
+        )}
       </section>
 
       {userId && (
