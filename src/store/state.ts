@@ -24,7 +24,7 @@ export interface Assessment {
   at: string;
   score: number; // 0–100
   level: number; // 1–10
-  modules: Record<ModuleId, { correct: number; total: number; ms: number; hints: number }>;
+  modules: Record<ModuleId, { correct: number; total: number; ms: number; hints: number; score?: number }>; // score: A안 영역 점수 S_i
 }
 
 export interface DiaryEntry {

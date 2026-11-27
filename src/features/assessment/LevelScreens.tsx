@@ -7,9 +7,46 @@ import { saveAssessment } from './CheckScreen';
 import { Button, Card, Screen, toast } from '@/design/ui';
 import { app, useApp, type Assessment } from '@/store/state';
 import { LEVELS, MODULES, MODULE_IDS, type LevelPlan } from './data';
+import { courseOf, weakAreas } from './scoring';
 import './assessment.css';
 
-const weakOf = (a: Assessment) => MODULE_IDS.filter((m) => a.modules[m].total && a.modules[m].correct / a.modules[m].total < 0.6);
+/** 영역 점수 S_i. 예전 기록(점수 없음)은 정답률로 대신한다. */
+export const areasOf = (a: Assessment) => Object.fromEntries(MODULE_IDS.map((m) => {
+  const r = a.modules[m];
+  return [m, r?.score ?? (r?.total ? Math.round((r.correct / r.total) * 100) : 0)];
+})) as Record<(typeof MODULE_IDS)[number], number>;
+
+export const weakOf = (a: Assessment) => weakAreas(areasOf(a));
+
+function AreaBars({ a }: { a: Assessment }) {
+  const areas = areasOf(a);
+  const weak = weakOf(a);
+  return (
+    <Card>
+      <span className="eyebrow">영역별 결과</span>
+      <ul className="as-bars">
+        {MODULE_IDS.map((m) => (
+          <li key={m} className={weak.includes(m) ? 'weak' : undefined}>
+            <span>{MODULES[m]}{weak.includes(m) && <small> · 더 연습해요</small>}</span>
+            <span className="as-bar" aria-hidden="true"><i style={{ width: `${areas[m]}%` }} /></span>
+            <b>{areas[m]}점</b>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
+function CourseCard({ level }: { level: number }) {
+  const c = courseOf(level);
+  return (
+    <Card tone="mint">
+      <span className="eyebrow">추천 코스 · {level}단계</span>
+      <p><b>한 번에 {c.questions}문항</b> · {c.minutes} · {c.freq}</p>
+      <p className="small">난이도 {c.difficulty}. 더 연습할 두 영역 문제를 먼저, 나머지 영역도 조금씩 섞어 드려요.</p>
+    </Card>
+  );
+}
 
 function Ladder({ level }: { level: number }) {
   return (
@@ -50,7 +87,6 @@ export function ResultScreen() {
   const last = preview?.assessment ?? (userId ? saved : undefined);
   if (!last) return <NoAssessment title="나의 기억 단계" />;
   const plan = LEVELS[last.level - 1];
-  const weak = weakOf(last);
   const accept = () => {
     if (!userId) return;
     if (preview) {
@@ -76,12 +112,8 @@ export function ResultScreen() {
         <Ladder level={last.level} />
         <p>{plan.desc}</p>
       </Card>
-      {weak.length > 0 && (
-        <section className="stack">
-          <h3>이 영역을 조금 더 연습해요</h3>
-          <div className="row">{weak.map((m) => <span key={m} className="chip">{MODULES[m]}</span>)}</div>
-        </section>
-      )}
+      <AreaBars a={last} />
+      <CourseCard level={last.level} />
       <Plan plan={plan} />
       {plan.family && (
         <Card tone="mint">

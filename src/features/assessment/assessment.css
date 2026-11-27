@@ -53,3 +53,13 @@
 @media (min-width: 768px) {
   .as-log { max-width: 720px; }
 }
+
+/* 영역별 결과 막대 */
+.as-bars { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--sp-3); }
+.as-bars li { display: grid; grid-template-columns: 11em 1fr 3.5em; align-items: center; text-align: left; gap: var(--sp-3); }
+.as-bars b { text-align: right; }
+.as-bars small { color: var(--primary); font-weight: var(--w-medium); }
+.as-bar { height: 12px; border-radius: 999px; background: var(--lavender-soft); overflow: hidden; }
+.as-bar i { display: block; height: 100%; border-radius: inherit; background: var(--muted); }
+.as-bars li.weak .as-bar i { background: var(--primary); }
+@media (max-width: 420px) { .as-bars li { grid-template-columns: 1fr auto; } .as-bar { grid-column: 1 / -1; grid-row: 2; } }
