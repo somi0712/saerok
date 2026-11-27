@@ -58,6 +58,10 @@ export function TrainingHub() {
         </div>
       </section>
 
+      <Link to={P.diary} className="card pr-link tr-diary">
+        <span><strong>내 일기로 훈련하기</strong><span>일기를 고르면 그날의 일로 일화기억 문제를 만들어요</span></span>
+        <Icon name="next" />
+      </Link>
       {!last && <Button variant="secondary" to={P.check}>기초 테스트로 시작 단계 정하기</Button>}
       <p className="small">문제가 보이고 15초가 지나면 힌트를 볼 수 있어요. 점수와 단계는 연습을 고르는 데만 써요.</p>
     </Screen>

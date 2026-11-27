@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { MOODS } from '@/features/training/diaryQuiz';
+import { LetterView, LettersSection } from './Letters';
 import { Button, Card, Screen, toast } from '@/design/ui';
 import { P } from '@/app/paths';
 import { app, uid, useApp, type AppState, type DiaryEntry } from '@/store/state';
 import { shortDate } from './logic';
 import './records.css';
 
-const MOODS = ['상쾌해요', '편안해요', '그저 그래요', '피곤해요', '속상해요'];
 const MAX_REC_MS = 60_000;
 const canRecord = typeof window !== 'undefined' && 'MediaRecorder' in window && !!navigator.mediaDevices?.getUserMedia;
 
@@ -118,6 +120,7 @@ function Entry({ e }: { e: DiaryEntry }) {
       {e.text && <p style={{ whiteSpace: 'pre-wrap' }}>{e.text}</p>}
       {e.photo && <img src={e.photo} alt={`${shortDate(e.at)}에 남긴 사진`} />}
       {e.audio && <audio controls src={e.audio} aria-label={`${shortDate(e.at)} 음성 메모`} />}
+      {e.text && <Button variant="secondary" to={`${P.diaryLesson}/${e.id}`}>이 일기로 훈련하기</Button>}
       {asking ? (
         <div className="card card-lavender rs-confirm">
           <p>이 기록을 지울까요? 지우면 되돌릴 수 없어요.</p>
@@ -134,6 +137,7 @@ function Entry({ e }: { e: DiaryEntry }) {
 /** 노션 1주차: 일기장/기억 기록 (글, 그림, 사진, 음성) */
 export default function Diary() {
   const diary = useApp((s) => s.diary);
+  const [sp] = useSearchParams();
   const [writing, setWriting] = useState(false);
   const [mood, setMood] = useState('');
   const [text, setText] = useState('');
@@ -166,6 +170,9 @@ export default function Diary() {
     toast('오늘의 기억을 남겼어요.');
   };
 
+  const letterId = sp.get('letter');
+  if (letterId) return <LetterView id={letterId} />;
+
   if (writing) {
     return (
       <Screen title="오늘 기록하기" back={P.diary}
@@ -175,7 +182,7 @@ export default function Diary() {
           <div className="rs-chips" role="group" aria-labelledby="mood-l">
             {MOODS.map((m) => (
               <button key={m} type="button" className="chip rs-mood" aria-pressed={mood === m} onClick={() => setMood(m)}>
-                {m}
+                <span className="rs-emoji" aria-hidden="true">{m.split(' ')[0]}</span> {m.split(' ').slice(1).join(' ')}
               </button>
             ))}
           </div>
@@ -206,6 +213,7 @@ export default function Diary() {
       footer={<Button onClick={() => setWriting(true)}>오늘 기록하기</Button>}>
       <span className="rs-tag">기억 일기장</span>
       <h2 className="title">오늘을 글, 사진, 목소리로 남겨요.</h2>
+      <LettersSection />
       {list.length === 0 ? (
         <Card tone="lavender">
           <p className="rs-h">아직 남긴 기록이 없어요.</p>
